@@ -1,0 +1,5 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: setup_privilege
+    args: "{{ _nexus_privilege_defaults|combine(item) }}"

@@ -1,0 +1,20 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: setup_ldap
+    args:
+      name: "{{ item.ldap_name }}"
+      protocol: "{{ item.ldap_protocol }}"
+      hostname: "{{ item.ldap_hostname }}"
+      port: "{{ item.ldap_port }}"
+      search_base: "{{ item.ldap_search_base }}"
+      user_base_dn: "{{ item.ldap_user_base_dn }}"
+      user_object_class: "{{ item.ldap_user_object_class }}"
+      user_id_attribute: "{{ item.ldap_user_id_attribute }}"
+      user_real_name_attribute: "{{ item.ldap_user_real_name_attribute }}"
+      user_email_attribute: "{{ item.ldap_user_email_attribute }}"
+      group_base_dn: "{{ item.ldap_group_base_dn }}"
+      group_object_class: "{{ item.ldap_group_object_class }}"
+      group_id_attribute: "{{ item.ldap_group_id_attribute }}"
+      group_member_attribute: "{{ item.ldap_group_member_attribute }}"
+      group_member_format: "{{ item.ldap_group_member_format }}"

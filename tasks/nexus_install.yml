@@ -1,0 +1,120 @@
+---
+- name: Download nexus_package
+  get_url: url=http://download.sonatype.com/nexus/3/{{ nexus_package }} dest="{{ nexus_download_dir }}/{{ nexus_package }}"
+
+- name: Ensure Nexus o/s group exists
+  group: name="{{ nexus_os_group }}" state=present
+
+- name: Ensure Nexus o/s user exists
+  user: name="{{ nexus_os_user }}" group="{{ nexus_os_group }}" shell="/bin/bash" state=present
+
+- name: Ensure Nexus installation directory exists
+  file:
+    path="{{ nexus_installation_dir }}"
+    state="directory"
+
+- name: Unpack Nexus download
+  unarchive:
+    src="{{ nexus_download_dir }}/{{ nexus_package }}"
+    dest="{{ nexus_installation_dir }}"
+    creates="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+    force=no
+    copy=false
+    owner={{ nexus_os_user }}
+    group={{ nexus_os_group }}
+    mode="0755"
+
+- name: Update symlink nexus-latest
+  file: path="{{ nexus_installation_dir }}/nexus-latest" src="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}" state=link
+
+- name: Set permissions and ownership on Nexus installation directory
+  file:
+    path={{ nexus_installation_dir }}/{{ nexus_package }}
+    state="directory"
+    owner="{{ nexus_os_user }}"
+    group="{{ nexus_os_group }}"
+    mode="0755"
+    recurse=true
+
+- name: Delete unpacked data directory
+  file: path="{{ nexus_installation_dir }}/nexus-latest/data" state=absent
+
+- name: Create Nexus data directory
+  file:
+    path="{{ nexus_data_dir }}"
+    state="directory"
+    owner={{ nexus_os_user }}
+    group={{ nexus_os_group }}
+
+- name: Setup Nexus data directory
+  lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Dkaraf.data=.*" line="-Dkaraf.data={{ nexus_data_dir }}"
+
+- name: Create Nexus tmp directory
+  file:
+    path="{{ nexus_tmp_dir }}"
+    state="directory"
+    owner={{ nexus_os_user }}
+    group={{ nexus_os_group }}
+
+- name: Setup Nexus tmp directory
+  lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Djava.io.tmpdir=.*" line="-Djava.io.tmpdir={{ nexus_tmp_dir }}"
+
+- name: Set NEXUS_HOME for the service user
+  lineinfile: dest="/home/{{ nexus_os_user }}/.bashrc" regexp="^export NEXUS_HOME=.*" line="export NEXUS_HOME=/opt/nexus-latest"
+
+- name: Set nexus user
+  lineinfile: dest="/opt/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
+
+- name: Create systemd service configuration
+  template: src="nexus.service" dest="/etc/systemd/system"
+
+# systemd available from ansible 2.2 only
+# - name: Enable nexus service
+#   systemd: name=nexus daemon_reload=yes enabled=yes state=started
+
+
+- name: 'Check if data directory is empty (first-time install)'
+  command: "ls {{ nexus_data_dir }}"
+  register: nexus_data_dir_contents
+
+- name: Reload systemd service configuration
+  shell: 'systemctl daemon-reload'
+
+- name: Enable systemd service
+  shell: 'systemctl enable nexus.service'
+
+- name: Restart systemd service
+  shell: 'systemctl restart nexus.service'
+
+- name: Waiting for Nexus service to be ready...
+  wait_for:
+    path: "{{ nexus_data_dir }}/log/nexus.log"
+    search_regex: "Started Sonatype Nexus OSS .*"
+    timeout: 240
+
+- name: Waiting for nexus to be ready...
+  wait_for: port=8081 delay=5
+
+- name: First-time install admin password
+  set_fact:
+    current_nexus_admin_password: 'admin123'
+  when: nexus_data_dir_contents.stdout == ""
+
+- name: Subsequent re-provision admin password
+  set_fact:
+    current_nexus_admin_password: "{{ nexus_admin_password }}"
+  when: nexus_data_dir_contents.stdout != ""
+  no_log: true
+
+- include: declare_script_each.yml
+  with_items:
+    - update_admin_password
+    - setup_ldap
+    - setup_anonymous_access
+    - setup_base_url
+    - setup_role
+    - setup_privilege
+    - delete_repo
+    - create_repo_maven_proxy
+    - create_repo_maven_group
+    - create_repo_maven_hosted

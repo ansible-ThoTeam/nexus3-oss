@@ -1,0 +1,24 @@
+---
+- name: Copy httpd vhost
+  template: src="nexus-vhost.conf" dest="/etc/httpd/conf.d"
+
+- name: Copy SSL certificate file
+  copy:
+    src: "{{ httpd_ssl_certificate_file }}"
+    dest: "/etc/pki/tls/certs"
+    mode: 600
+
+- name: Copy SSL certificate key file
+  copy:
+    src: "{{ httpd_ssl_certificate_key_file }}"
+    dest: "/etc/pki/tls/private"
+    mode: 600
+
+- name: Setsebool httpd_can_network_connect
+  shell: 'setsebool -P httpd_can_network_connect on'
+
+- name: Restart httpd
+  shell: 'systemctl restart httpd.service'
+
+- name: Waiting for httpd to be restarted
+  wait_for: port=443 delay=5

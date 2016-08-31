@@ -1,0 +1,49 @@
+---
+- include: nexus_install.yml
+
+- include: httpd_reverse_proxy_config.yml
+  when: httpd_setup_enable
+
+- include: admin_password_setup.yml
+
+- name: Deleting default repositories
+  include: delete_repo_each.yml
+  with_items:
+    - maven-central
+    - maven-public
+    - maven-releases
+    - maven-snapshots
+    - nuget-group
+    - nuget-hosted
+    - nuget.org-proxy
+  when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_repos
+
+- include: setup_ldap_each.yml
+  with_items: "{{ ldap_connections }}"
+
+- include: setup_privilege_each.yml
+  with_items: "{{ nexus_privileges }}"
+
+- include: setup_role_each.yml
+  with_items: "{{ nexus_roles }}"
+
+- include: create_repo_maven_proxy_each.yml
+  with_items: "{{ nexus_repos_maven_proxy }}"
+
+- include: create_repo_maven_hosted_each.yml
+  with_items: "{{ nexus_repos_maven_hosted }}"
+
+- include: create_repo_maven_group_each.yml
+  with_items: "{{ nexus_repos_maven_group }}"
+
+- include: call_script.yml
+  vars:
+    script_name: setup_anonymous_access
+    args:
+      anonymous_access: "{{ nexus_anonymous_access }}"
+
+- include: call_script.yml
+  vars:
+    script_name: setup_base_url
+    args:
+      base_url: "https://{{ public_hostname }}/"
