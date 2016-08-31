@@ -246,7 +246,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
       oracle_java_set_as_default: yes
     - role: geerlingguy.apache
       apache_create_vhosts: no
-    - role: ansible-nexus
+    - role: savoirfairelinux.nexus3-oss
 
 ```
 
