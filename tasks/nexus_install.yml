@@ -94,7 +94,7 @@
   wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
     search_regex: "Started Sonatype Nexus OSS .*"
-    timeout: 240
+    timeout: 1800
 
 - name: Waiting for nexus to be ready...
   wait_for: port=8081 delay=5
