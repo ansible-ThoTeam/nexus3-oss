@@ -20,21 +20,10 @@
     creates="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     force=no
     copy=false
-    owner={{ nexus_os_user }}
-    group={{ nexus_os_group }}
     mode="0755"
 
 - name: Update symlink nexus-latest
   file: path="{{ nexus_installation_dir }}/nexus-latest" src="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}" state=link
-
-- name: Set permissions and ownership on Nexus installation directory
-  file:
-    path={{ nexus_installation_dir }}/{{ nexus_package }}
-    state="directory"
-    owner="{{ nexus_os_user }}"
-    group="{{ nexus_os_group }}"
-    mode="0755"
-    recurse=true
 
 - name: Delete unpacked data directory
   file: path="{{ nexus_installation_dir }}/nexus-latest/data" state=absent
