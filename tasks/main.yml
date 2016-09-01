@@ -47,3 +47,15 @@
     script_name: setup_base_url
     args:
       base_url: "https://{{ public_hostname }}/"
+
+- name: Configure branding capability
+  include: call_script.yml
+  vars:
+    script_name: setup_capability
+    args:
+      capability_typeId: "rapture.branding"
+      capability_properties:
+        footerHtml: "{{ nexus_branding_footer }}"
+        headerHtml: "{{ nexus_branding_header }}"
+        footerEnabled: "{{ nexus_branding_footer != '' }}"
+        headerEnabled: "{{ nexus_branding_header != '' }}"

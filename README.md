@@ -47,11 +47,16 @@ Allow [anonymous access](https://books.sonatype.com/nexus-book/3.0/reference/sec
 
 The fully qualified domain name under which the nexus instance will be accessible to its clients.
 
+    nexus_branding_header: ""
+    nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
+    
+Header and footer branding, those can contain HTML.
+
     httpd_setup_enable: false
     httpd_ssl_certificate_file: 'files/nexus.vm.crt'
     httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 
-Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference/install.html#_example_reverse_proxy_ssl_termination_at_base_path), this needs httpd installed.
+Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference/install.html#_example_reverse_proxy_ssl_termination_at_base_path), this needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
 
     ldap_connections: []
 

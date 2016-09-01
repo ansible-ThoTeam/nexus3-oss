@@ -10,17 +10,16 @@
 
 - name: Ensure Nexus installation directory exists
   file:
-    path="{{ nexus_installation_dir }}"
-    state="directory"
+    path: "{{ nexus_installation_dir }}"
+    state: "directory"
 
 - name: Unpack Nexus download
   unarchive:
-    src="{{ nexus_download_dir }}/{{ nexus_package }}"
-    dest="{{ nexus_installation_dir }}"
-    creates="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-    force=no
-    copy=false
-    mode="0755"
+    src: "{{ nexus_download_dir }}/{{ nexus_package }}"
+    dest: "{{ nexus_installation_dir }}"
+    creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+    force: no
+    copy: false
 
 - name: Update symlink nexus-latest
   file: path="{{ nexus_installation_dir }}/nexus-latest" src="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}" state=link
@@ -28,22 +27,31 @@
 - name: Delete unpacked data directory
   file: path="{{ nexus_installation_dir }}/nexus-latest/data" state=absent
 
+- name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    mode: "0755"
+    recurse: false
+
 - name: Create Nexus data directory
   file:
-    path="{{ nexus_data_dir }}"
-    state="directory"
-    owner={{ nexus_os_user }}
-    group={{ nexus_os_group }}
+    path: "{{ nexus_data_dir }}"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
 
 - name: Setup Nexus data directory
   lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Dkaraf.data=.*" line="-Dkaraf.data={{ nexus_data_dir }}"
 
 - name: Create Nexus tmp directory
   file:
-    path="{{ nexus_tmp_dir }}"
-    state="directory"
-    owner={{ nexus_os_user }}
-    group={{ nexus_os_group }}
+    path: "{{ nexus_tmp_dir }}"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
 
 - name: Setup Nexus tmp directory
   lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Djava.io.tmpdir=.*" line="-Djava.io.tmpdir={{ nexus_tmp_dir }}"
@@ -53,6 +61,13 @@
 
 - name: Set nexus user
   lineinfile: dest="/opt/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
+
+- name: Bind nexus service to 127.0.0.1 only
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
+    regexp: "^application-host=.*"
+    line: "application-host=127.0.0.1"
+  when: httpd_setup_enable
 
 - name: Create systemd service configuration
   template: src="nexus.service" dest="/etc/systemd/system"
@@ -84,6 +99,23 @@
 - name: Waiting for nexus to be ready...
   wait_for: port=8081 delay=5
 
+- name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    recurse: true
+
+- name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+    recurse: false
+
 - name: First-time install admin password
   set_fact:
     current_nexus_admin_password: 'admin123'
@@ -101,6 +133,7 @@
     - setup_ldap
     - setup_anonymous_access
     - setup_base_url
+    - setup_capability
     - setup_role
     - setup_privilege
     - delete_repo
