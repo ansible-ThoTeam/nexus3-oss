@@ -114,6 +114,20 @@ List of the [privileges](https://books.sonatype.com/nexus-book/3.0/reference/sec
 
 List of the [roles](https://books.sonatype.com/nexus-book/3.0/reference/security.html#roles) to setup.
 
+    nexus_local_users: []
+
+Local (non-LDAP) users/accounts to create in nexus, items go as follow :
+
+```
+  - username: jenkins # used as key to update
+    first_name: Jenkins
+    last_name: CI
+    email: support@company.com
+    password: "s3cr3t"
+    roles:
+      - developers # role ID
+```
+
     nexus_delete_default_repos: false
 
 Delete the repositories from the nexus install initial default configuration. This step is only executed on first-time install (when `nexus_data_dir` has been detected empty).
@@ -232,6 +246,14 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
           - all-repos-read
           - company-project-deploy
         roles: []
+    nexus_local_users:
+      - username: jenkins # used as key to update
+        first_name: Jenkins
+        last_name: CI
+        email: support@company.com
+        password: "s3cr3t"
+        roles:
+          - Developpers # role ID here
     nexus_blobstores:
       - name: company-artifacts
         path: /var/nexus/blobs/company-artifacts

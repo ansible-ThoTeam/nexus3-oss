@@ -136,6 +136,7 @@
     - setup_capability
     - setup_role
     - setup_privilege
+    - setup_user
     - delete_repo
     - delete_blobstore
     - create_blobstore

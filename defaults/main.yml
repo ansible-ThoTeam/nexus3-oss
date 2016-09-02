@@ -57,6 +57,16 @@ nexus_roles:
       - all-repos-read
     roles: []
 
+nexus_local_users: []
+# example user item :
+#  - username: jenkins # used as key to update
+#    first_name: Jenkins
+#    last_name: CI
+#    email: support@company.com
+#    password: "s3cr3t"
+#    roles:
+#      - developers
+
 nexus_delete_default_repos: false
 
 nexus_delete_default_blobstore: false

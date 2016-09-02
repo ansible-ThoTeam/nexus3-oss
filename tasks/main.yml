@@ -33,6 +33,9 @@
 - include: setup_role_each.yml
   with_items: "{{ nexus_roles }}"
 
+- include: setup_user_each.yml
+  with_items: "{{ nexus_local_users }}"
+
 - include: create_blobstore_each.yml
   with_items: "{{ nexus_blobstores }}"
 
