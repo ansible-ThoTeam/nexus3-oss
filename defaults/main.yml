@@ -57,7 +57,14 @@ nexus_roles:
       - all-repos-read
     roles: []
 
-nexus_delete_default_repos: true
+nexus_delete_default_repos: false
+
+nexus_delete_default_blobstore: false
+
+nexus_blobstores: []
+# example blobstore item :
+# - name: separate-storage
+#   path: /mnt/custom/path
 
 # also see _nexus_repos_maven_defaults below
 nexus_repos_maven_proxy:
@@ -90,7 +97,7 @@ _nexus_privilege_defaults:
     - read
 
 _nexus_repos_maven_defaults:
-  blob_store: default
+  blob_store: default # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive

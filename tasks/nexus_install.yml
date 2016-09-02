@@ -137,6 +137,8 @@
     - setup_role
     - setup_privilege
     - delete_repo
+    - delete_blobstore
+    - create_blobstore
     - create_repo_maven_proxy
     - create_repo_maven_group
     - create_repo_maven_hosted

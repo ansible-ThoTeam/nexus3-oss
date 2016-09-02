@@ -2,6 +2,8 @@
 
 This role installs and configures Nexus Repository Manager OSS version 3.x on CentOS/RHEL.
 
+All configuration can be updated by re-running the role, except for the [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
+
 ## Requirements
 
 - This has only been tested on CentOS 7
@@ -33,7 +35,7 @@ User and group used to own the nexus files and run the service, those will be cr
     nexus_data_dir: '/var/nexus'
     nexus_tmp_dir: '/tmp/nexus'
 
-Nexus directories, `nexus_installation_dir` contains the installed executable(s), `nexus_data_dir` contains all configuration, repositories and uploaded artifacts.
+Nexus directories, `nexus_installation_dir` contains the installed executable(s), `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Note: custom blobstores paths outside of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
 
     nexus_admin_password: 'changeme'
 
@@ -112,9 +114,20 @@ List of the [privileges](https://books.sonatype.com/nexus-book/3.0/reference/sec
 
 List of the [roles](https://books.sonatype.com/nexus-book/3.0/reference/security.html#roles) to setup.
 
-    nexus_delete_default_repos: true
+    nexus_delete_default_repos: false
 
 Delete the repositories from the nexus install initial default configuration. This step is only executed on first-time install (when `nexus_data_dir` has been detected empty).
+
+    nexus_delete_default_blobstore: false
+
+Delete the default blobstore from the nexus install initial default configuration. This can be done only if `nexus_delete_default_repos: true` and all configured repositories (see below) have an explicit `blob_store: custom`. This step is only executed on first-time install (when `nexus_data_dir` has been detected empty).
+
+    nexus_blobstores: []
+    # example blobstore item :
+    # - name: separate-storage
+    #   path: /mnt/custom/path
+    
+[Blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
 
     nexus_repos_maven_proxy:
       - name: central
@@ -150,7 +163,7 @@ All three repository types are combined with the following default values :
 
 ```
     _nexus_repos_maven_defaults:
-      blob_store: default
+      blob_store: default # Note : cannot be updated once the repo has been created
       strict_content_validation: true
       version_policy: release # release, snapshot or mixed
       layout_policy: strict # strict or permissive
@@ -219,6 +232,9 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
           - all-repos-read
           - company-project-deploy
         roles: []
+    nexus_blobstores:
+      - name: company-artifacts
+        path: /var/nexus/blobs/company-artifacts
     nexus_repos_maven_proxy:
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'
@@ -238,6 +254,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
       - name: company-project
         version_policy: mixed
         write_policy: allow
+        blob_store: company-artifacts
     nexus_repos_maven_group:
       - name: public
         member_repos:
