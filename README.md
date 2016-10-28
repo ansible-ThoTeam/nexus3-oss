@@ -143,6 +143,16 @@ Delete the default blobstore from the nexus install initial default configuratio
     
 [Blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
 
+    nexus_scheduled_tasks: []
+    #  example task to compact blobstore :
+    #  - name: compact-blobstore
+    #    cron: '0 0 22 * * ?'
+    #    typeId: blobstore.compact
+    #    taskProperties:
+    #      blobstoreName: 'default' # all task attributes are stored as strings by nexus internally
+
+[Scheduled tasks](https://books.sonatype.com/nexus-book/reference3/admin.html#admin-system-tasks) to setup. `typeId` and task-specific `taskProperties` can be guessed either from the java type hierarchy of `org.sonatype.nexus.scheduling.TaskDescriptorSupport` or from peeking at the browser AJAX requests while manually configuring a task.
+
     nexus_repos_maven_proxy:
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'
@@ -257,6 +267,12 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
     nexus_blobstores:
       - name: company-artifacts
         path: /var/nexus/blobs/company-artifacts
+    nexus_scheduled_tasks:
+      - name: compact-blobstore
+        cron: '0 0 22 * * ?'
+        typeId: blobstore.compact
+        taskProperties:
+          blobstoreName: 'company-artifacts'
     nexus_repos_maven_proxy:
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'

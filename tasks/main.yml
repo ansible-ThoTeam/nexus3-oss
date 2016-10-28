@@ -71,3 +71,6 @@
         headerHtml: "{{ nexus_branding_header }}"
         footerEnabled: "{{ nexus_branding_footer != '' }}"
         headerEnabled: "{{ nexus_branding_header != '' }}"
+
+- include: create_task_each.yml
+  with_items: "{{ nexus_scheduled_tasks }}"
