@@ -45,7 +45,16 @@
     group: "{{ nexus_os_group }}"
 
 - name: Setup Nexus data directory
-  lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Dkaraf.data=.*" line="-Dkaraf.data={{ nexus_data_dir }}"
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Dkaraf.data=.*"
+    line: "-Dkaraf.data={{ nexus_data_dir }}"
+
+- name: Setup Nexus default timezone
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Duser.timezone=.*"
+    line: "-Duser.timezone={{ nexus_timezone }}"
 
 - name: Create Nexus tmp directory
   file:

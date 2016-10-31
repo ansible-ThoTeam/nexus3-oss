@@ -6,6 +6,7 @@ nexus_os_group: 'nexus'
 nexus_os_user: 'nexus'
 nexus_installation_dir: '/opt'
 nexus_data_dir: '/var/nexus'
+nexus_timezone: 'UTC' # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 
 nexus_admin_password: 'changeme' # Note : admin password change subsequent to first-time install is *not implemented* yet

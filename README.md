@@ -213,6 +213,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
 
   vars:
     nexus_version: '3.0.1-01'
+    nexus_timezone: 'Canada/Eastern'
     nexus_admin_password: "{{ vault_nexus_admin_password }}"
     httpd_server_name: 'nexus.vm'
     httpd_setup_enable: true
