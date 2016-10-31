@@ -28,6 +28,9 @@
 - name: Delete unpacked data directory
   file: path="{{ nexus_installation_dir }}/nexus-latest/data" state=absent
 
+- name: Delete unpacked data directory
+  file: path="{{ nexus_installation_dir }}/sonatype-work" state=absent
+
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest/etc"
@@ -72,9 +75,19 @@
 - name: Set nexus user
   lineinfile: dest="/opt/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
 
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
+  when: nexus_version < '3.1.0'
+
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
+  when: nexus_version >= '3.1.0'
+
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
-    dest: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
+    dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-host=.*"
     line: "application-host=127.0.0.1"
   when: httpd_setup_enable
