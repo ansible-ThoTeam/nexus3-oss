@@ -21,6 +21,15 @@
     force: no
     copy: false
 
+- name: Check if SystemD service is installed
+  stat:
+    path: /etc/systemd/system/nexus.service
+  register: nexus_systemd_service_file
+
+- name: Stop systemd service
+  shell: 'systemctl stop nexus.service'
+  when: nexus_systemd_service_file.stat.exists
+
 - name: Update symlink nexus-latest
   file: path="{{ nexus_installation_dir }}/nexus-latest" src="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}" state=link
   register: nexus_latest_version
@@ -28,17 +37,41 @@
 - name: Delete unpacked data directory
   file: path="{{ nexus_installation_dir }}/nexus-latest/data" state=absent
 
-- name: Delete unpacked data directory
-  file: path="{{ nexus_installation_dir }}/sonatype-work" state=absent
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
+  when: nexus_version < '3.1.0'
+
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
+  when: nexus_version >= '3.1.0'
+
+- name: Get application settings directories
+  set_fact:
+    nexus_app_dir_settings_dirs:
+      - "{{ nexus_installation_dir }}/nexus-latest/etc"
+  when: nexus_version < '3.1.0'
+
+- name: Get application settings directories
+  set_fact:
+    nexus_app_dir_settings_dirs:
+      - "{{ nexus_installation_dir }}/nexus-latest/etc"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/karaf"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/jetty"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
+  when: nexus_version >= '3.1.0'
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
-    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
+    path: "{{ item }}"
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     mode: "0755"
     recurse: false
+  with_items: "{{ nexus_app_dir_settings_dirs }}"
 
 - name: Create Nexus data directory
   file:
@@ -52,6 +85,12 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Dkaraf.data=.*"
     line: "-Dkaraf.data={{ nexus_data_dir }}"
+
+- name: Setup JVM logfile directory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-XX:LogFile=.*"
+    line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
 
 - name: Setup Nexus default timezone
   lineinfile:
@@ -70,20 +109,10 @@
   lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Djava.io.tmpdir=.*" line="-Djava.io.tmpdir={{ nexus_tmp_dir }}"
 
 - name: Set NEXUS_HOME for the service user
-  lineinfile: dest="/home/{{ nexus_os_user }}/.bashrc" regexp="^export NEXUS_HOME=.*" line="export NEXUS_HOME=/opt/nexus-latest"
+  lineinfile: dest="/home/{{ nexus_os_user }}/.bashrc" regexp="^export NEXUS_HOME=.*" line="export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
 
 - name: Set nexus user
-  lineinfile: dest="/opt/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
-
-- name: Get path to default settings
-  set_fact:
-    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
-  when: nexus_version < '3.1.0'
-
-- name: Get path to default settings
-  set_fact:
-    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
-  when: nexus_version >= '3.1.0'
+  lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
 
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
@@ -136,12 +165,13 @@
 
 - name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
-    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
+    path: "{{ item }}"
     state: "directory"
     owner: "root"
     group: "root"
     mode: "0755"
     recurse: false
+  with_items: "{{ nexus_app_dir_settings_dirs }}"
 
 - name: First-time install admin password
   set_fact:
