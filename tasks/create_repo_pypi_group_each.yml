@@ -1,0 +1,5 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: create_repo_pypi_group
+    args: "{{ _nexus_repos_pypi_defaults|combine(item) }}"

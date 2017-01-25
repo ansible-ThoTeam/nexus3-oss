@@ -6,7 +6,7 @@ All configuration can be updated by re-running the role, except for the [blobsto
 
 ## Requirements
 
-- This has only been tested on CentOS 7
+- This has only been tested on CentOS 7 + Ubuntu 16.04 (Xenial)
 - Oracle Java 8 (mandatory)
 - Apache HTTPD (optional, used to setup a SSL reverse-proxy)
 
@@ -195,6 +195,14 @@ All three repository types are combined with the following default values :
       write_policy: allow_once # allow_once or allow
 ```
 
+Docker, Pypi & Raw repository types:
+see `defaults/main/yml` for three options:
+
+      nexus_config_pypi: false
+      nexus_config_docker: false
+      nexus_config_raw: false
+
+These are all false unless you override them from playbook / group_var / cli, these all utlize the same mechanisem as maven.
 
 ## Dependencies
 

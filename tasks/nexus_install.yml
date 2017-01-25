@@ -200,4 +200,12 @@
     - create_repo_maven_proxy
     - create_repo_maven_group
     - create_repo_maven_hosted
+    - create_repo_docker_hosted
+    - create_repo_docker_proxy
+    - create_repo_docker_group
+    - create_repo_pypi_hosted
+    - create_repo_pypi_proxy
+    - create_repo_pypi_group
+    - create_repo_raw_proxy
+    - create_repo_raw_group
     - create_task

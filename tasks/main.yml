@@ -48,6 +48,36 @@
 - include: create_repo_maven_group_each.yml
   with_items: "{{ nexus_repos_maven_group }}"
 
+- block:
+  - include: create_repo_docker_hosted_each.yml
+    with_items: "{{ nexus_repos_docker_hosted }}"
+
+  - include: create_repo_docker_proxy_each.yml
+    with_items: "{{ nexus_repos_docker_proxy }}"
+
+  - include: create_repo_docker_group_each.yml
+    with_items: "{{ nexus_repos_docker_group }}"
+  when: nexus_config_docker
+
+- block:
+  - include: create_repo_pypi_proxy_each.yml
+    with_items: "{{ nexus_repos_pypi_proxy }}"
+
+  - include: create_repo_pypi_hosted_each.yml
+    with_items: "{{ nexus_repos_pypi_hosted }}"
+
+  - include: create_repo_pypi_group_each.yml
+    with_items: "{{ nexus_repos_pypi_group }}"
+  when: nexus_config_pypi
+
+- block:
+  - include: create_repo_raw_proxy_each.yml
+    with_items: "{{ nexus_repos_raw_proxy }}"
+
+  - include: create_repo_raw_group_each.yml
+    with_items: "{{ nexus_repos_raw_group }}"
+  when: nexus_config_raw
+
 - include: call_script.yml
   vars:
     script_name: setup_anonymous_access
