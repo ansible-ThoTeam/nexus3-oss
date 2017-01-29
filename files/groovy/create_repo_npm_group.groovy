@@ -5,15 +5,13 @@ parsed_args = new JsonSlurper().parseText(args)
 
 configuration = new Configuration(
         repositoryName: parsed_args.name,
-        recipeName: 'pypi-hosted',
+        recipeName: 'npm-group',
         online: true,
         attributes: [
-                maven  : [
-                        versionPolicy: parsed_args.version_policy.toUpperCase(),
-                        layoutPolicy : parsed_args.layout_policy.toUpperCase()
+                group  : [
+                        memberNames: parsed_args.member_repos
                 ],
                 storage: [
-                        writePolicy: parsed_args.write_policy.toUpperCase(),
                         blobStoreName: parsed_args.blob_store,
                         strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
                 ]

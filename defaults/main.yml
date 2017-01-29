@@ -42,10 +42,9 @@ ldap_connections: []
 nexus_config_pypi: false
 nexus_config_docker: false
 nexus_config_raw: false
-
-
-
-
+nexus_config_rubygems: false
+nexus_config_bower: false
+nexus_config_npm: false
 
 # also see _nexus_privilege_defaults below
 nexus_privileges:
@@ -92,7 +91,6 @@ nexus_repos_maven_proxy:
   - name: jboss
     remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
 
-
 # example with a login/password :
 # - name: secret-remote-repo
 #   remote_url: 'https://company.com/repo/secure/private/go/away'
@@ -131,10 +129,6 @@ _nexus_repos_maven_defaults:
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
   write_policy: allow_once # allow_once or allow
-
-
-
-
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -189,12 +183,12 @@ _nexus_repos_docker_defaults:
   write_policy: allow_once # allow_once or allow
 
 nexus_repos_docker_hosted:
-  - name: private-registry
+  - name: docker-hosted
     http_port: 9080
     v1_enabled: True
 
 nexus_repos_docker_proxy:
-  - name: proxy-registry
+  - name: docker-proxy
     http_port: 9081
     v1_enabled: True
     index_type: "HUB"
@@ -202,8 +196,72 @@ nexus_repos_docker_proxy:
     use_nexus_certificates_to_access_index: false
 
 nexus_repos_docker_group:
-  - name: registry-group
+  - name: docker-group
     http_port: 9082
     v1_enabled: True
 
+# RubyGems support
+_nexus_repos_rubygems_defaults:
+  blob_store: default # Note : cannot be updated once the repo has been created
+  strict_content_validation: true
+  write_policy: allow_once # allow_once or allow
 
+nexus_repos_rubygems_hosted:
+  - name: rubygems-hosted
+    blob_store: default
+
+nexus_repos_rubygems_group:
+  - name: rubygems
+    blob_store: default
+    member_repos:
+      - rubygems-hosted
+      - rubygems-proxy
+
+nexus_repos_rubygems_proxy:
+  - name: rubygems-proxy
+    blob_store: default
+    remote_url: https://rubygems.org
+
+# Bower support
+_nexus_repos_bower_defaults:
+  blob_store: default # Note : cannot be updated once the repo has been created
+  strict_content_validation: true
+  write_policy: allow_once # allow_once or allow
+
+nexus_repos_bower_hosted:
+  - name: bower-internal
+    blob_store: default
+
+nexus_repos_bower_group:
+  - name: bower-all
+    blob_store: default
+    member_repos:
+      - bower-internal
+      - bower-proxy
+
+nexus_repos_bower_proxy:
+  - name: bower-proxy
+    blob_store: default
+    remote_url: http://bower.herokuapp.com
+
+# npm support
+_nexus_repos_npm_defaults:
+  blob_store: default # Note : cannot be updated once the repo has been created
+  strict_content_validation: true
+  write_policy: allow_once # allow_once or allow
+
+nexus_repos_npm_hosted:
+  - name: npm-internal
+    blob_store: default
+
+nexus_repos_npm_group:
+  - name: npm-all
+    blob_store: default
+    member_repos:
+      - npm-internal
+      - npm-proxy
+
+nexus_repos_npm_proxy:
+  - name: npm-proxy
+    blob_store: default
+    remote_url: https://registry.npmjs.org

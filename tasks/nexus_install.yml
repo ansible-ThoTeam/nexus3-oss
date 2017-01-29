@@ -208,4 +208,13 @@
     - create_repo_pypi_group
     - create_repo_raw_proxy
     - create_repo_raw_group
+    - create_repo_rubygems_hosted
+    - create_repo_rubygems_proxy
+    - create_repo_rubygems_group
+    - create_repo_bower_hosted
+    - create_repo_bower_proxy
+    - create_repo_bower_group
+    - create_repo_npm_hosted
+    - create_repo_npm_proxy
+    - create_repo_npm_group
     - create_task

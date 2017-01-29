@@ -20,4 +20,5 @@
     body:
       name: "{{ item }}"
       type: 'groovy'
-      content: "{{ lookup('template', 'groovy/' + item + '.groovy') }}"
+      content: "{{ lookup('file', 'groovy/' + item + '.groovy') }}"
+

@@ -195,12 +195,15 @@ All three repository types are combined with the following default values :
       write_policy: allow_once # allow_once or allow
 ```
 
-Docker, Pypi & Raw repository types:
+Docker, Pypi, Raw, Rubygems, Bower, NPM repository types:
 see `defaults/main/yml` for three options:
 
       nexus_config_pypi: false
       nexus_config_docker: false
       nexus_config_raw: false
+      nexus_config_rubygems: false
+      nexus_config_bower: false
+      nexus_config_npm: false
 
 These are all false unless you override them from playbook / group_var / cli, these all utlize the same mechanisem as maven.
 

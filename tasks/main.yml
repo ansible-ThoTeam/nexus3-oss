@@ -78,6 +78,39 @@
     with_items: "{{ nexus_repos_raw_group }}"
   when: nexus_config_raw
 
+- block:
+  - include: create_repo_rubygems_proxy_each.yml
+    with_items: "{{ nexus_repos_rubygems_proxy }}"
+
+  - include: create_repo_rubygems_hosted_each.yml
+    with_items: "{{ nexus_repos_rubygems_hosted }}"
+
+  - include: create_repo_rubygems_group_each.yml
+    with_items: "{{ nexus_repos_rubygems_group }}"
+  when: nexus_config_rubygems
+
+- block:
+  - include: create_repo_bower_proxy_each.yml
+    with_items: "{{ nexus_repos_bower_proxy }}"
+
+  - include: create_repo_bower_hosted_each.yml
+    with_items: "{{ nexus_repos_bower_hosted }}"
+
+  - include: create_repo_bower_group_each.yml
+    with_items: "{{ nexus_repos_bower_group }}"
+  when: nexus_config_bower
+
+- block:
+  - include: create_repo_npm_proxy_each.yml
+    with_items: "{{ nexus_repos_npm_proxy }}"
+
+  - include: create_repo_npm_hosted_each.yml
+    with_items: "{{ nexus_repos_npm_hosted }}"
+
+  - include: create_repo_npm_group_each.yml
+    with_items: "{{ nexus_repos_npm_group }}"
+  when: nexus_config_npm
+
 - include: call_script.yml
   vars:
     script_name: setup_anonymous_access
