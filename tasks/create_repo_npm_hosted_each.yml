@@ -1,0 +1,5 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: create_repo_npm_hosted
+    args: "{{ _nexus_repos_npm_defaults|combine(item) }}"

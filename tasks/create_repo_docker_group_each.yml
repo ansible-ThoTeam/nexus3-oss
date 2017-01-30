@@ -1,0 +1,5 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: create_repo_docker_group
+    args: "{{ _nexus_repos_docker_defaults|combine(item) }}"

@@ -1,0 +1,5 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: create_repo_bower_group
+    args: "{{ _nexus_repos_bower_defaults|combine(item) }}"
