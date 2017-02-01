@@ -10,7 +10,7 @@ nexus_timezone: 'UTC' # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 
 nexus_admin_password: 'changeme' # Note : admin password change subsequent to first-time install is *not implemented* yet
-nexus_anonymous_access: false
+nexus_anonymous_access: true
 
 public_hostname: 'nexus.vm'
 
