@@ -165,6 +165,8 @@ _nexus_repos_raw_defaults:
 nexus_repos_raw_proxy:
   - name: jenkins-mirror
     remote_url: 'http://mirrors.jenkins-ci.org/'
+  - name: jenkins-updates
+    remote_url: 'http://updates.jenkins-ci.org/'
   - name: ubuntu-archive
     remote_url: 'http://archive.ubuntu.com/ubuntu/dists/'
 
