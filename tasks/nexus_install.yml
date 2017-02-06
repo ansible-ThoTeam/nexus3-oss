@@ -156,7 +156,7 @@
     timeout: 1800
 
 - name: Waiting for nexus to be ready...
-  wait_for: port=8081 delay=5
+  wait_for: port={{ nexus_default_port }} delay=5
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:
