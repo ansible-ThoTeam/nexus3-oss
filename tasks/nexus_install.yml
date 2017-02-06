@@ -21,6 +21,9 @@
     force: no
     copy: false
 
+- name: Configure nexus properties
+  template: src="nexus-default.properties" dest="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/nexus-default.properties"
+
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service
