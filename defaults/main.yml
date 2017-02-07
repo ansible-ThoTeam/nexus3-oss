@@ -27,9 +27,9 @@ ldap_connections: []
 #    ldap_protocol: 'ldaps' # ldap or ldaps
 #    ldap_hostname: 'ldap.mycompany.com'
 #    ldap_port: 636
-#    ldap_auth: 'simple'
-#    ldap_auth_username: 'username' (or DN)
-#    ldap_auth_password: 'password'
+#    ldap_auth: 'simple' or 'none'
+#    ldap_auth_username: 'username' (or DN)   (optional)
+#    ldap_auth_password: 'password'           (optional)
 #    ldap_search_base: 'dc=mycompany,dc=net'
 #    ldap_user_base_dn: 'ou=users'
 #    ldap_user_object_class: 'inetOrgPerson'
