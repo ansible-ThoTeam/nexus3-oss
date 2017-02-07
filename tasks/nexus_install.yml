@@ -21,9 +21,6 @@
     force: no
     copy: false
 
-- name: Configure nexus properties
-  template: src="nexus-default.properties" dest="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/nexus-default.properties"
-
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service
@@ -116,6 +113,18 @@
 
 - name: Set nexus user
   lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
+
+- name: Set nexus port
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^application-port=.*"
+    line: "application-port={{ nexus_default_port }}"
+
+- name: Set nexus context path
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^nexus-context-path=.*"
+    line: "nexus-context-path={{ nexus_default_context_path }}"
 
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
