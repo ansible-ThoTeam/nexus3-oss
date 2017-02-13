@@ -24,8 +24,13 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 The nexus version and package to install, see available versions at https://www.sonatype.com/download-oss-sonatype . `nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
 
     nexus_download_dir: '/tmp'
-
+    
 Directory on target where the nexus package will be downloaded.
+
+    nexus_default_port: 8081
+    nexus_default_context_path: '/'
+
+Port and context path of the java nexus process. `nexus_default_context_path` has to keep the trailing slash when set, for ex. : `nexus_default_context_path: '/nexus/'`.
 
     nexus_os_group: 'nexus'
     nexus_os_user: 'nexus'
