@@ -114,6 +114,18 @@
 - name: Set nexus user
   lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
 
+- name: Set nexus port
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^application-port=.*"
+    line: "application-port={{ nexus_default_port }}"
+
+- name: Set nexus context path
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^nexus-context-path=.*"
+    line: "nexus-context-path={{ nexus_default_context_path }}"
+
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
@@ -153,7 +165,7 @@
     timeout: 1800
 
 - name: Waiting for nexus to be ready...
-  wait_for: port=8081 delay=5
+  wait_for: port={{ nexus_default_port }} delay=5
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:

@@ -9,6 +9,10 @@ nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC' # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 
+# Nexus default properties
+nexus_default_port: 8081
+nexus_default_context_path: '/'
+
 nexus_admin_password: 'changeme' # Note : admin password change subsequent to first-time install is *not implemented* yet
 nexus_anonymous_access: true
 
