@@ -61,6 +61,7 @@
       - "{{ nexus_installation_dir }}/nexus-latest/etc/jetty"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
   when: nexus_version >= '3.1.0'
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
@@ -98,12 +99,15 @@
     regexp: "^-Duser.timezone=.*"
     line: "-Duser.timezone={{ nexus_timezone }}"
 
-- name: Create Nexus tmp directory
+- name: Create Nexus tmp/backup directory
   file:
-    path: "{{ nexus_tmp_dir }}"
+    path: "{{ item }}"
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+  with_items:
+  - "{{ nexus_tmp_dir }}"
+  - "{{ nexus_backup_dir }}"
 
 - name: Setup Nexus tmp directory
   lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Djava.io.tmpdir=.*" line="-Djava.io.tmpdir={{ nexus_tmp_dir }}"
@@ -230,3 +234,30 @@
     - create_repo_npm_proxy
     - create_repo_npm_group
     - create_task
+
+- name: "Deploy scripts"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ nexus_script_dir }}/{{ item }}"
+    mode: 0755
+  with_items:
+    - nexus-blob-backup.sh
+    - nexus-blob-restore.sh
+
+- name: "Symlink scripts to /sbin"
+  file:
+    src: "{{ item }}"
+    dest: "/sbin/{{ item | basename }}"
+    state: link
+  with_fileglob:
+    - "{{ nexus_script_dir }}/*.sh"
+
+- name: "Config backup cron"
+  cron:
+    name: "Backup nexus Blobstore"
+    minute: "1"
+    hour: "21"
+    job: "nexus-blob-backup.sh"
+    state: present
+    user: root
+    cron_file: /etc/crontab

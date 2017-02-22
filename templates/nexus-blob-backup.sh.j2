@@ -1,0 +1,21 @@
+#! /bin/bash
+
+MDATE=$(date +%y-%m-%d)
+blob_dir="blob-backup-${MDATE}"
+backup_dir={{ nexus_backup_dir }}
+data_dir={{ nexus_data_dir }}
+
+service nexus stop
+if [ $? != 0 ]; then
+  echo "Error code: $? Failed to stop nexus service"
+else
+  echo "Moving blobstores to Backup destination"
+  cp -r ${data_dir}/blobs ${backup_dir}/${blob_dir}
+  mkdir ${backup_dir}/${blob_dir}/db
+  echo "Moving DB config & Meta to Backup destination"
+  for file in $(find ${backup_dir} -name "*${MDATE}*.bak" -type f); do
+    mv ${file} ${backup_dir}/${blob_dir}/db/;
+  done
+fi
+
+service nexus start

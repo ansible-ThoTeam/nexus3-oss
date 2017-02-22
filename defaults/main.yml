@@ -1,13 +1,19 @@
 ---
-nexus_version: '3.1.0-04'
+nexus_version: '3.2.1-01'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 nexus_download_dir: '/tmp'
+nexus_backup_dir: '/tmp/nexus-backup'
 nexus_os_group: 'nexus'
 nexus_os_user: 'nexus'
 nexus_installation_dir: '/opt'
 nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC' # java timezone
 nexus_tmp_dir: '/tmp/nexus'
+nexus_script_dir: '{{ nexus_installation_dir }}/nexus-latest/etc/scripts'
+
+# Nexus restore procedure:
+# run ansible-playbook playbook/default.yml -t nexus_restore -e "nexus_restore_point=(# date of choice -> %y-%m-%d #)"
+# nexus_restore_point: '17-02-22' # Example format
 
 # Nexus default properties
 nexus_default_port: 8081
@@ -82,7 +88,22 @@ nexus_delete_default_repos: false
 
 nexus_delete_default_blobstore: false
 
-nexus_blobstores: []
+nexus_blobstores:
+  - name: 'blob-raw'
+    path: "{{ nexus_data_dir }}/blobs/blob-raw"
+  - name: 'blob-pypi'
+    path: "{{ nexus_data_dir }}/blobs/blob-pypi"
+  - name: 'blob-docker'
+    path: "{{ nexus_data_dir }}/blobs/blob-docker"
+  - name: 'blob-ruby'
+    path: "{{ nexus_data_dir }}/blobs/blob-ruby"
+  - name: 'blob-bower'
+    path: "{{ nexus_data_dir }}/blobs/blob-bower"
+  - name: 'blob-npm'
+    path: "{{ nexus_data_dir }}/blobs/blob-npm"
+  - name: 'blob-mvn'
+    path: "{{ nexus_data_dir }}/blobs/blob-mvn"
+
 # example blobstore item :
 # - name: separate-storage
 #   path: /mnt/custom/path
@@ -113,7 +134,19 @@ nexus_repos_maven_group:
       - jboss
 
 
-nexus_scheduled_tasks: []
+nexus_scheduled_tasks:
+  - name: db-backup
+    cron: '0 0 21 * * ?'
+    typeId: db.backup
+    taskProperties:
+      location: "{{ nexus_backup_dir }}/"
+#  - name: blob-backup
+#    cron: '0 0 22 * * ?'
+#    typeId: script
+#    taskProperties:
+#      language: bash
+#      source: "{{ nexus_script_dir }}/nexus-blob-backup.sh"
+
 #  example task to compact blobstore :
 #  - name: compact-blobstore
 #    cron: '0 0 22 * * ?'
@@ -128,7 +161,7 @@ _nexus_privilege_defaults:
     - read
 
 _nexus_repos_maven_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-mvn # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
@@ -136,7 +169,7 @@ _nexus_repos_maven_defaults:
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-pypi # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
@@ -160,7 +193,7 @@ nexus_repos_pypi_proxy:
 # raw repo support
 
 _nexus_repos_raw_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-raw # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
@@ -172,17 +205,30 @@ nexus_repos_raw_proxy:
   - name: jenkins-updates
     remote_url: 'http://updates.jenkins-ci.org/'
   - name: ubuntu-archive
-    remote_url: 'http://archive.ubuntu.com/ubuntu/dists/'
+    remote_url: 'http://archive.ubuntu.com/ubuntu/'
+  - name: ubuntu-security
+    remote_url: 'http://security.ubuntu.com/ubuntu'
+  - name: ubuntu-openstack
+    remote_url: 'http://ubuntu-cloud.archive.canonical.com/ubuntu'
+  - name: ubuntu-galera
+    remote_url: 'http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu'
+  - name: ubuntu-mongodb
+    remote_url: 'http://repo.mongodb.org/apt/ubuntu'
 
 nexus_repos_raw_group:
   - name: raw-all
     member_repos:
       - jenkins-mirror
+      - jenkins-updates
+      - ubuntu-security
       - ubuntu-archive
+      - ubuntu-openstack
+      - ubuntu-galera
+      - ubuntu-mongodb
 
 # Docker support
 _nexus_repos_docker_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-docker # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
@@ -208,39 +254,39 @@ nexus_repos_docker_group:
 
 # RubyGems support
 _nexus_repos_rubygems_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-ruby # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   write_policy: allow_once # allow_once or allow
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
-    blob_store: default
+    blob_store: blob-ruby
 
 nexus_repos_rubygems_group:
   - name: rubygems
-    blob_store: default
+    blob_store: blob-ruby
     member_repos:
       - rubygems-hosted
       - rubygems-proxy
 
 nexus_repos_rubygems_proxy:
   - name: rubygems-proxy
-    blob_store: default
+    blob_store: blob-ruby
     remote_url: https://rubygems.org
 
 # Bower support
 _nexus_repos_bower_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-bower # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   write_policy: allow_once # allow_once or allow
 
 nexus_repos_bower_hosted:
   - name: bower-internal
-    blob_store: default
+    blob_store: blob-bower
 
 nexus_repos_bower_group:
   - name: bower-all
-    blob_store: default
+    blob_store: blob-bower
     member_repos:
       - bower-internal
       - bower-proxy
@@ -252,22 +298,22 @@ nexus_repos_bower_proxy:
 
 # npm support
 _nexus_repos_npm_defaults:
-  blob_store: default # Note : cannot be updated once the repo has been created
+  blob_store: blob-npm # Note : cannot be updated once the repo has been created
   strict_content_validation: true
   write_policy: allow_once # allow_once or allow
 
 nexus_repos_npm_hosted:
   - name: npm-internal
-    blob_store: default
+    blob_store: blob-npm
 
 nexus_repos_npm_group:
   - name: npm-all
-    blob_store: default
+    blob_store: blob-npm
     member_repos:
       - npm-internal
       - npm-proxy
 
 nexus_repos_npm_proxy:
   - name: npm-proxy
-    blob_store: default
+    blob_store: blob-npm
     remote_url: https://registry.npmjs.org

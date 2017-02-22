@@ -1,4 +1,14 @@
 ---
+- include: nexus_purge.yml
+  when: ((purge is defined) and (purge | bool))
+
+- name: "Restore nexus backup"
+  include: nexus-restore.yml
+  when: nexus_restore_point is defined
+  tags:
+  - nexus_restore
+
+
 - include: nexus_install.yml
 
 - include: httpd_reverse_proxy_config.yml

@@ -1,0 +1,21 @@
+#! /bin/bash
+
+MDATE=$1 ## Should be %y-%m-%d format
+blob_dir="blob-backup-${MDATE}"
+backup_dir={{ nexus_backup_dir }}
+data_dir={{ nexus_data_dir }}
+
+service nexus stop
+if [ $? != 0 ]; then
+  echo "Error code: $? Failed to stop nexus service"
+else
+  echo "##------------------------------------------- Removing old DB metadata ---------------------------------------#"
+  rm -rf ${data_dir}/db/*
+  cp ${backup_dir}/${blob_dir}/db/* ${data_dir}/backup/
+  echo "##------------------------------------------- Restoring Blobstores -------------------------------------------#"
+  rm -rf ${data_dir}/blobs/*
+  cp -r ${backup_dir}/${blob_dir}/{blob-*,default} ${data_dir}/blobs/
+fi
+
+service nexus start
+service nexus status

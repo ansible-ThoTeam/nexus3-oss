@@ -1,0 +1,3 @@
+---
+- name: "Run restoration script"
+  shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a /tmp/nexus-restore.log"
