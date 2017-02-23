@@ -1,12 +1,23 @@
 ---
 - name: Download nexus_package
-  get_url: url=http://download.sonatype.com/nexus/3/{{ nexus_package }} dest="{{ nexus_download_dir }}/{{ nexus_package }}"
+  get_url:
+    url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
+    dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    force: no
 
 - name: Ensure Nexus o/s group exists
-  group: name="{{ nexus_os_group }}" state=present
+  group:
+    name: "{{ nexus_os_group }}"
+    state: present
 
 - name: Ensure Nexus o/s user exists
-  user: name="{{ nexus_os_user }}" group="{{ nexus_os_group }}" shell="/bin/bash" state=present
+  user:
+    name: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    shell: "/bin/bash"
+    state: present
 
 - name: Ensure Nexus installation directory exists
   file:
@@ -18,6 +29,8 @@
     src: "{{ nexus_download_dir }}/{{ nexus_package }}"
     dest: "{{ nexus_installation_dir }}"
     creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
     force: no
     copy: false
 
@@ -31,11 +44,18 @@
   when: nexus_systemd_service_file.stat.exists
 
 - name: Update symlink nexus-latest
-  file: path="{{ nexus_installation_dir }}/nexus-latest" src="{{ nexus_installation_dir }}/nexus-{{ nexus_version }}" state=link
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-latest"
+    src: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    state: link
   register: nexus_latest_version
 
 - name: Delete unpacked data directory
-  file: path="{{ nexus_installation_dir }}/nexus-latest/data" state=absent
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-latest/data"
+    state: absent
 
 - name: Get path to default settings
   set_fact:
@@ -56,6 +76,7 @@
 - name: Get application settings directories
   set_fact:
     nexus_app_dir_settings_dirs:
+      - "{{ nexus_installation_dir }}/nexus-latest/bin"
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/karaf"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/jetty"
@@ -110,13 +131,22 @@
   - "{{ nexus_backup_dir }}"
 
 - name: Setup Nexus tmp directory
-  lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" regexp="^-Djava.io.tmpdir=.*" line="-Djava.io.tmpdir={{ nexus_tmp_dir }}"
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Djava.io.tmpdir=.*"
+    line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
 
 - name: Set NEXUS_HOME for the service user
-  lineinfile: dest="/home/{{ nexus_os_user }}/.bashrc" regexp="^export NEXUS_HOME=.*" line="export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
+  lineinfile:
+    dest: "/home/{{ nexus_os_user }}/.bashrc"
+    regexp: "^export NEXUS_HOME=.*"
+    line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
 
 - name: Set nexus user
-  lineinfile: dest="{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc" regexp=".*run_as_user=.*" line="run_as_user=\"{{ nexus_os_user }}\""
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc"
+    regexp: ".*run_as_user=.*"
+    line: "run_as_user=\"{{ nexus_os_user }}\""
 
 - name: Set nexus port
   lineinfile:
@@ -138,7 +168,9 @@
   when: httpd_setup_enable
 
 - name: Create systemd service configuration
-  template: src="nexus.service" dest="/etc/systemd/system"
+  template:
+    src: "nexus.service"
+    dest: "/etc/systemd/system"
 
 # systemd available from ansible 2.2 only
 # - name: Enable nexus service
@@ -150,7 +182,9 @@
   register: nexus_data_dir_contents
 
 - name: Clean cache for upgrade process
-  file: path="{{ nexus_data_dir }}/clean_cache" state=touch
+  file:
+    path: "{{ nexus_data_dir }}/clean_cache"
+    state: touch
   when: nexus_latest_version.changed and nexus_data_dir_contents.stdout != ""
 
 - name: Reload systemd service configuration
@@ -169,25 +203,28 @@
     timeout: 1800
 
 - name: Waiting for nexus to be ready...
-  wait_for: port={{ nexus_default_port }} delay=5
+  wait_for:
+    port: "{{ nexus_default_port }}"
+    delay: 5
 
-- name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
-  file:
-    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-    recurse: true
+#- name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
+#  file:
+#    path: "{{ nexus_installation_dir }}/nexus-latest/etc"
+#    owner: "{{ nexus_os_user }}"
+#    group: "{{ nexus_os_group }}"
+#    mode: "0644"
+#    recurse: true
 
-- name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
-  file:
-    path: "{{ item }}"
-    state: "directory"
-    owner: "root"
-    group: "root"
-    mode: "0755"
-    recurse: false
-  with_items: "{{ nexus_app_dir_settings_dirs }}"
+#
+#- name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
+#  file:
+#    path: "{{ item }}"
+#    state: "directory"
+#    owner: "{{ nexus_os_user }}"
+#    group: "{{ nexus_os_group }}"
+#    mode: "0755"
+#    recurse: false
+#  with_items: "{{ nexus_app_dir_settings_dirs }}"
 
 - name: First-time install admin password
   set_fact:
@@ -240,24 +277,29 @@
     src: "{{ item }}.j2"
     dest: "{{ nexus_script_dir }}/{{ item }}"
     mode: 0755
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
   with_items:
     - nexus-blob-backup.sh
     - nexus-blob-restore.sh
+
 
 - name: "Symlink scripts to /sbin"
   file:
     src: "{{ item }}"
     dest: "/sbin/{{ item | basename }}"
     state: link
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
   with_fileglob:
     - "{{ nexus_script_dir }}/*.sh"
 
-- name: "Config backup cron"
+- name: "Config nexus-backup shell cron"
   cron:
     name: "Backup nexus Blobstore"
     minute: "1"
     hour: "21"
     job: "nexus-blob-backup.sh"
     state: present
-    user: root
+    user: "{{ nexus_os_user }}"
     cron_file: /etc/crontab
