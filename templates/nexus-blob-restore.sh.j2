@@ -2,7 +2,7 @@
 
 set -x
 
-if [ "x$1" = "x" ]; then  MDATE='$(date +%y-%m-%d)'; else d=$1; fi
+if [ "x$1" = "x" ]; then  MDATE='$(date +%y-%m-%d)'; else MDATE =$1; fi
 
 # Generated with Ansible vars
 MDATE=$1 ## Should be %y-%m-%d format

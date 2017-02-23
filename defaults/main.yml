@@ -24,7 +24,7 @@ nexus_default_port: 8081
 nexus_default_context_path: '/'
 
 nexus_admin_password: 'changeme' # Note : admin password change subsequent to first-time install is *not implemented* yet
-nexus_anonymous_access: true
+nexus_anonymous_access: false
 
 public_hostname: 'nexus.vm'
 
@@ -165,7 +165,7 @@ _nexus_repos_maven_defaults:
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
-  write_policy: allow # allow_once or allow # Note: nexus restore wont work with 'allow_once'
+  write_policy: allow_once # allow_once or allow
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -173,7 +173,7 @@ _nexus_repos_pypi_defaults:
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
-  write_policy: allow # allow_once or allow # Note: nexus restore wont work with 'allow_once'
+  write_policy: allow_once # allow_once or allow
 
 nexus_repos_pypi_hosted:
   - name: pypi-internal
@@ -197,7 +197,7 @@ _nexus_repos_raw_defaults:
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
-  write_policy: allow # allow or allow
+  write_policy: allow_once # allow_once or allow
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
@@ -214,7 +214,7 @@ _nexus_repos_docker_defaults:
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
-  write_policy: allow # allow_once or allow # Note: nexus restore wont work with 'allow_once'
+  write_policy: allow_once # allow_once or allow
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
@@ -238,7 +238,7 @@ nexus_repos_docker_group:
 _nexus_repos_rubygems_defaults:
   blob_store: "{{ nexus_blob_prefix }}ruby"
   strict_content_validation: true
-  write_policy: allow # allow_once or allow # Note: nexus restore wont work with 'allow_once'
+  write_policy: allow_once # allow_once or allow
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
@@ -260,7 +260,7 @@ nexus_repos_rubygems_proxy:
 _nexus_repos_bower_defaults:
   blob_store: "{{ nexus_blob_prefix }}bower"
   strict_content_validation: true
-  write_policy: allow # allow_once or allow # Note: nexus restore wont work with 'allow_once'
+  write_policy: allow_once # allow_once or allow
 
 nexus_repos_bower_hosted:
   - name: bower-internal
@@ -282,7 +282,7 @@ nexus_repos_bower_proxy:
 _nexus_repos_npm_defaults:
   blob_store: "{{ nexus_blob_prefix }}npm"
   strict_content_validation: true
-  write_policy: allow # allow_once or allow # Note: nexus restore wont work with 'allow_once'
+  write_policy: allow_once # allow_once or allow
 
 nexus_repos_npm_hosted:
   - name: npm-internal

@@ -5,10 +5,9 @@
     state: absent
   with_items:
   - "{{ nexus_data_dir }}"
-#  - "{{ nexus_backup_dir }}"
   - "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-  tags:
-  - purge
+  - "{{ nexus_restore_log }}"
+# - "{{ nexus_backup_dir }}" # Optional
 
 - name: "service stop"
   service:

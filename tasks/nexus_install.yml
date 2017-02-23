@@ -76,7 +76,6 @@
 - name: Get application settings directories
   set_fact:
     nexus_app_dir_settings_dirs:
-      - "{{ nexus_installation_dir }}/nexus-latest/bin"
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/karaf"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/jetty"
