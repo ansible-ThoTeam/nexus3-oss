@@ -300,5 +300,5 @@
     hour: "21"
     job: "nexus-blob-backup.sh"
     state: present
-    user: "{{ nexus_os_user }}"
+    user: "root"
     cron_file: /etc/crontab
