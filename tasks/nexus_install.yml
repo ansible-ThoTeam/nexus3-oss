@@ -298,7 +298,6 @@
     name: "Backup nexus Blobstore"
     minute: "1"
     hour: "21"
-    job: "nexus-blob-backup.sh"
+    job: "/sbin/nexus-blob-backup.sh 2>&1 | tee {{ nexus_backup_log }}"
     state: present
     user: "root"
-    cron_file: /etc/crontab

@@ -2,7 +2,7 @@
 nexus_version: '3.2.1-01'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 nexus_download_dir: '/tmp'
-nexus_backup_dir: '/tmp/nexus-backup'
+nexus_backup_dir: '/var/nexus-backup'
 nexus_os_group: 'nexus'
 nexus_os_user: 'nexus'
 nexus_installation_dir: '/opt'
@@ -11,6 +11,7 @@ nexus_timezone: 'UTC' # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-latest/etc/scripts'
 nexus_restore_log: '/var/log/nexus-restore.log'
+nexus_backup_log: '/var/log/nexus-backup.log'
 
 # Nexus restore procedure:
 # run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %y-%m-%d #)"

@@ -6,7 +6,7 @@ blob_dir="blob-backup-${MDATE}"
 backup_dir={{ nexus_backup_dir }}
 data_dir={{ nexus_data_dir }}
 
-service nexus stop
+systemctl stop nexus
 if [ $? != 0 ]; then
   echo "Error code: $? Failed to stop nexus service"
 else
@@ -17,5 +17,5 @@ else
   chown {{ nexus_os_user }}.{{ nexus_os_group }} -Rf ${backup_dir}
   done
 fi
+systemctl restart nexus
 
-service nexus start

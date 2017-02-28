@@ -11,7 +11,7 @@ backup_dir={{ nexus_backup_dir }}
 data_dir={{ nexus_data_dir }}
 blob_prefix={{ nexus_blob_prefix }}
 
-service nexus stop
+systemctl stop nexus
 if [ $? != 0 ]; then
   echo "Error code: $? Failed to stop nexus service"
 else
