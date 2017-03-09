@@ -9,7 +9,7 @@ MDATE=$1 ## Should be %y-%m-%d format
 blob_dir="blob-backup-${MDATE}"
 backup_dir={{ nexus_backup_dir }}
 data_dir={{ nexus_data_dir }}
-blob_prefix={{ nexus_blob_prefix }}
+blob_prefix={{ nexus_blob_prefix |d('blob-') }}
 
 systemctl stop nexus
 if [ $? != 0 ]; then

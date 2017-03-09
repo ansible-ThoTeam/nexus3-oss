@@ -25,6 +25,13 @@
   include: delete_blobstore_each.yml
   with_items:
     - name: default
+    - name: "{{ nexus_blob_names.raw.blob }}"
+    - name: "{{ nexus_blob_names.pypi.blob }}"
+    - name: "{{ nexus_blob_names.docker.blob }}"
+    - name: "{{ nexus_blob_names.ruby.blob }}"
+    - name: "{{ nexus_blob_names.bower.blob }}"
+    - name: "{{ nexus_blob_names.npm.blob }}"
+    - name: "{{ nexus_blob_names.mvn.blob }}"
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_blobstore
 
 - include: setup_ldap_each.yml
@@ -38,6 +45,10 @@
 
 - include: setup_user_each.yml
   with_items: "{{ nexus_local_users }}"
+
+- name: "Digest splited blob list var"
+  include_vars: blob_vars.yml
+  when: nexus_blob_split
 
 - include: create_blobstore_each.yml
   with_items: "{{ nexus_blobstores }}"
