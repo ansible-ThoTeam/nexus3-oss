@@ -78,7 +78,7 @@
       - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
-  when: nexus_version >= '3.2.1-01'
+  when: nexus_version >= '3.1.0'
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
