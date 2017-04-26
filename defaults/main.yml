@@ -208,9 +208,15 @@ nexus_repos_raw_proxy:
   - name: ubuntu-archive
     remote_url: 'http://archive.ubuntu.com/ubuntu/'
 
+nexus_repos_raw_hosted:
+  - name: raw-internal
+    version_policy: release
+    write_policy: allow_once
+
 nexus_repos_raw_group:
   - name: raw-all
     member_repos:
+      - raw-internal
       - ubuntu-archive
 
 # Docker support
