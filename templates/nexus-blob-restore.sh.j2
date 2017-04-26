@@ -1,0 +1,22 @@
+#! /bin/bash
+
+set -x
+
+if [ "x$1" = "x" ]; then  MDATE='$(date +%y-%m-%d)'; else MDATE =$1; fi
+
+# Generated with Ansible vars
+MDATE=$1 ## Should be %y-%m-%d format
+blob_dir="blob-backup-${MDATE}"
+backup_dir={{ nexus_backup_dir }}
+data_dir={{ nexus_data_dir }}
+blob_prefix={{ nexus_blob_prefix |d('blob-') }}
+
+systemctl stop nexus
+if [ $? != 0 ]; then
+  echo "Error code: $? Failed to stop nexus service"
+else
+  rm -rf ${data_dir}/db/*
+  rm -rf ${data_dir}/blobs/*
+  sudo -u {{ nexus_os_user }} cp ${backup_dir}/${blob_dir}/db/* ${data_dir}/backup/
+  sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/{${blob_prefix}*,default} ${data_dir}/blobs/
+fi

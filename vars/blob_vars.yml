@@ -1,0 +1,34 @@
+---
+nexus_blob_prefix: 'blob-' # Note: Nexus restore - blob name-convention 'blob-*'
+nexus_blob_names:
+  pypi:
+    blob: '{{ nexus_blob_prefix }}pypi'
+  raw:
+    blob: '{{ nexus_blob_prefix }}raw'
+  docker:
+    blob: '{{ nexus_blob_prefix }}docker'
+  ruby:
+    blob: '{{ nexus_blob_prefix }}ruby'
+  bower:
+    blob: '{{ nexus_blob_prefix }}bower'
+  npm:
+    blob: '{{ nexus_blob_prefix }}npm'
+  mvn:
+    blob: '{{ nexus_blob_prefix }}mvn'
+
+
+nexus_blobstores:
+  - name: '{{ nexus_blob_prefix }}raw'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.raw.blob }}"
+  - name: '{{ nexus_blob_prefix }}pypi'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.pypi.blob }}"
+  - name: '{{ nexus_blob_prefix }}docker'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.docker.blob }}"
+  - name: '{{ nexus_blob_prefix }}ruby'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.ruby.blob }}"
+  - name: '{{ nexus_blob_prefix }}bower'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.bower.blob }}"
+  - name: '{{ nexus_blob_prefix }}npm'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.npm.blob }}"
+  - name: '{{ nexus_blob_prefix }}mvn'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.mvn.blob }}"

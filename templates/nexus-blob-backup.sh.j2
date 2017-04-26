@@ -1,0 +1,21 @@
+#! /bin/bash
+
+# Generated with Ansible vars
+MDATE=$(date +%y-%m-%d)
+blob_dir="blob-backup-${MDATE}"
+backup_dir={{ nexus_backup_dir }}
+data_dir={{ nexus_data_dir }}
+
+systemctl stop nexus
+if [ $? != 0 ]; then
+  echo "Error code: $? Failed to stop nexus service"
+else
+  cp -r ${data_dir}/blobs ${backup_dir}/${blob_dir}
+  mkdir ${backup_dir}/${blob_dir}/db
+  for file in $(find ${backup_dir} -name "*${MDATE}*.bak" -type f); do
+    mv ${file} ${backup_dir}/${blob_dir}/db/;
+  chown {{ nexus_os_user }}.{{ nexus_os_group }} -Rf ${backup_dir}
+  done
+fi
+systemctl restart nexus
+

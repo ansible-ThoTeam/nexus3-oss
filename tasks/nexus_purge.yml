@@ -1,0 +1,20 @@
+---
+- name: "Purge Nexus"
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ nexus_data_dir }}"
+  - "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+  - "{{ nexus_restore_log }}"
+# - "{{ nexus_backup_dir }}" # Optional
+
+- name: "service stop"
+  service:
+    name: nexus
+    state: stopped
+
+- name: "remove nexus package"
+  package:
+    name: nexus
+    state: absent

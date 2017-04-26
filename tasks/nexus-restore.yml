@@ -1,0 +1,17 @@
+---
+- name: "Run restoration script"
+  shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a {{ nexus_restore_log }}"
+
+- name: Restart systemd service
+  shell: 'systemctl restart nexus.service'
+
+- name: Waiting for Nexus service to be ready...
+  wait_for:
+    path: "{{ nexus_data_dir }}/log/nexus.log"
+    search_regex: "Started Sonatype Nexus OSS .*"
+    timeout: 1800
+
+- name: Waiting for nexus to be ready...
+  wait_for:
+    port: "{{ nexus_default_port }}"
+    delay: 5
