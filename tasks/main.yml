@@ -93,6 +93,9 @@
   - include: create_repo_raw_proxy_each.yml
     with_items: "{{ nexus_repos_raw_proxy }}"
 
+  - include: create_repo_raw_hosted_each.yml
+    with_items: "{{ nexus_repos_raw_hosted }}"
+
   - include: create_repo_raw_group_each.yml
     with_items: "{{ nexus_repos_raw_group }}"
   when: nexus_config_raw

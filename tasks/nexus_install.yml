@@ -269,6 +269,7 @@
     - create_repo_pypi_hosted
     - create_repo_pypi_proxy
     - create_repo_pypi_group
+    - create_repo_raw_hosted
     - create_repo_raw_proxy
     - create_repo_raw_group
     - create_repo_rubygems_hosted
