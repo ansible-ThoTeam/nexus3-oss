@@ -13,10 +13,7 @@ configuration = new Configuration(
                         v1Enabled : parsed_args.v1_enabled
                 ],
                 group: [
-                        memberNames: [
-                                "private-registry",
-                                "proxy-registry"
-                        ]
+                        memberNames: parsed_args.member_repos
                 ],
                 storage: [
                         writePolicy: parsed_args.write_policy.toUpperCase(),

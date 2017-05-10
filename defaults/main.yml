@@ -22,6 +22,9 @@ nexus_backup_log: '/var/log/nexus-backup.log'
 
 # Nexus default properties
 nexus_default_port: 8081
+nexus_docker_hosted_port: 9080
+nexus_docker_proxy_port: 9081
+nexus_docker_group_port: 9082
 nexus_default_context_path: '/'
 
 nexus_admin_password: 'changeme' # Note : admin password change subsequent to first-time install is *not implemented* yet
@@ -232,12 +235,12 @@ _nexus_repos_docker_defaults:
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
-    http_port: 9080
+    http_port: "{{ nexus_docker_hosted_port }}"
     v1_enabled: True
 
 nexus_repos_docker_proxy:
   - name: docker-proxy
-    http_port: 9081
+    http_port: "{{ nexus_docker_proxy_port }}"
     v1_enabled: True
     index_type: "HUB"
     proxy_url: "https://registry-1.docker.io"
@@ -245,8 +248,11 @@ nexus_repos_docker_proxy:
 
 nexus_repos_docker_group:
   - name: docker-group
-    http_port: 9082
+    http_port: "{{ nexus_docker_group_port }}"
     v1_enabled: True
+    member_repos:
+      - docker-hosted
+      - docker-proxy
 
 # RubyGems support
 _nexus_repos_rubygems_defaults:
