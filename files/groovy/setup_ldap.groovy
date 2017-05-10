@@ -26,7 +26,14 @@ ldapConfig.setName(parsed_args.name)
 // Connection
 connection = new Connection()
 connection.setHost(new Connection.Host(Connection.Protocol.valueOf(parsed_args.protocol), parsed_args.hostname, Integer.valueOf(parsed_args.port)))
-connection.setAuthScheme("none")
+if(parsed_args.auth != null && parsed_args.auth.equals("simple")){
+    connection.setAuthScheme("simple")
+    connection.setSystemUsername(parsed_args.username)
+    connection.setSystemPassword(parsed_args.password)
+}
+else {
+    connection.setAuthScheme("none")
+}
 connection.setSearchBase(parsed_args.search_base)
 connection.setConnectionTimeout(30)
 connection.setConnectionRetryDelay(300)
