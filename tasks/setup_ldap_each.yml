@@ -21,3 +21,5 @@
       group_id_attribute: "{{ item.ldap_group_id_attribute }}"
       group_member_attribute: "{{ item.ldap_group_member_attribute }}"
       group_member_format: "{{ item.ldap_group_member_format }}"
+      user_subtree: "{{ item.ldap_user_subtree }}"
+      group_subtree: "{{ item.ldap_group_subtree }}"

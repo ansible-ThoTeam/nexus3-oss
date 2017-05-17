@@ -56,6 +56,9 @@ mapping.setGroupIdAttribute(parsed_args.group_id_attribute)
 mapping.setGroupMemberAttribute(parsed_args.group_member_attribute)
 mapping.setGroupMemberFormat(parsed_args.group_member_format)
 
+mapping.setUserSubtree(parsed_args.user_subtree)
+mapping.setGroupSubtree(parsed_args.group_subtree)
+
 ldapConfig.setMapping(mapping)
 
 

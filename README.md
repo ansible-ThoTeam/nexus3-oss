@@ -81,11 +81,13 @@ Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference
     ldap_user_id_attribute: 'uid'
     ldap_user_real_name_attribute: 'cn'
     ldap_user_email_attribute: 'mail'
+    ldap_user_subtree: false
     ldap_group_base_dn: 'ou=groups'
     ldap_group_object_class: 'posixGroup'
     ldap_group_id_attribute: 'cn'
     ldap_group_member_attribute: 'memberUid'
     ldap_group_member_format: '${username}'
+    ldap_group_subtree: false
     ldap_auth: 'none' # or simple
     ldap_auth_username: 'username' # if auth = simple
     ldap_auth_password: 'password' # if auth = simple
