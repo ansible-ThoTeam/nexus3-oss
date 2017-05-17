@@ -76,6 +76,9 @@ Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference
     ldap_hostname: 'ldap.mycompany.com'
     ldap_port: 636
     ldap_search_base: 'dc=mycompany,dc=net'
+    ldap_auth: 'none' # or simple
+    ldap_auth_username: 'username' # if auth = simple
+    ldap_auth_password: 'password' # if auth = simple
     ldap_user_base_dn: 'ou=users'
     ldap_user_object_class: 'inetOrgPerson'
     ldap_user_id_attribute: 'uid'
@@ -88,9 +91,6 @@ Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference
     ldap_group_member_attribute: 'memberUid'
     ldap_group_member_format: '${username}'
     ldap_group_subtree: false
-    ldap_auth: 'none' # or simple
-    ldap_auth_username: 'username' # if auth = simple
-    ldap_auth_password: 'password' # if auth = simple
 ```
 
 
