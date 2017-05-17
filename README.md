@@ -86,6 +86,9 @@ Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference
     ldap_group_id_attribute: 'cn'
     ldap_group_member_attribute: 'memberUid'
     ldap_group_member_format: '${username}'
+    ldap_auth: 'none' # or simple
+    ldap_auth_username: 'username' # if auth = simple
+    ldap_auth_password: 'password' # if auth = simple
 ```
 
 
