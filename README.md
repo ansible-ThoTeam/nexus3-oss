@@ -85,6 +85,7 @@ Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference
     ldap_user_real_name_attribute: 'cn'
     ldap_user_email_attribute: 'mail'
     ldap_user_subtree: false
+    ldap_map_groups_as_roles: false
     ldap_group_base_dn: 'ou=groups'
     ldap_group_object_class: 'posixGroup'
     ldap_group_id_attribute: 'cn'
@@ -93,6 +94,63 @@ Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference
     ldap_group_subtree: false
 ```
 
+Example LDAP config for anonymous authentication (anonymous bind), this is also the "minimal" config :
+
+```
+  - ldap_name: 'Simplest LDAP config'
+    ldap_protocol: 'ldaps'
+    ldap_hostname: 'annuaire.mycompany.com'
+    ldap_search_base: 'dc=mycompany,dc=net'
+    ldap_port: 636
+    ldap_user_id_attribute: 'uid'
+    ldap_user_real_name_attribute: 'cn'
+    ldap_user_email_attribute: 'mail'
+    ldap_user_object_class: 'inetOrgPerson'
+```
+
+Example LDAP config for simple authentication (using a DSA account) :
+
+```
+  - ldap_name: 'LDAP config with DSA'
+    ldap_protocol: 'ldaps'
+    ldap_hostname: 'annuaire.mycompany.com'
+    ldap_port: 636
+    ldap_auth: 'simple'
+    ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
+    ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
+    ldap_search_base: 'dc=mycompany,dc=net'
+    ldap_user_base_dn: 'ou=users'
+    ldap_user_object_class: 'inetOrgPerson'
+    ldap_user_id_attribute: 'uid'
+    ldap_user_real_name_attribute: 'cn'
+    ldap_user_email_attribute: 'mail'
+    ldap_user_subtree: false
+```
+
+Example LDAP config for simple authentication (using a DSA account) + groups mapped as roles :
+
+```
+  - ldap_name: 'LDAP config with DSA'
+    ldap_protocol: 'ldaps'
+    ldap_hostname: 'annuaire.mycompany.com'
+    ldap_port: 636
+    ldap_auth: 'simple'
+    ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
+    ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
+    ldap_search_base: 'dc=mycompany,dc=net'
+    ldap_user_base_dn: 'ou=users'
+    ldap_user_object_class: 'inetOrgPerson'
+    ldap_user_id_attribute: 'uid'
+    ldap_user_real_name_attribute: 'cn'
+    ldap_user_email_attribute: 'mail'
+    ldap_map_groups_as_roles: true
+    ldap_group_base_dn: 'ou=groups'
+    ldap_group_object_class: 'groupOfNames'
+    ldap_group_id_attribute: 'cn'
+    ldap_group_member_attribute: 'member'
+    ldap_group_member_format: 'uid=${username},ou=users,dc=mycompany,dc=net'
+    ldap_group_subtree: false
+```
 
     nexus_privileges:
       - name: all-repos-read # used as key to update a privilege
