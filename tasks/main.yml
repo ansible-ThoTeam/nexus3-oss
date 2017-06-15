@@ -32,6 +32,7 @@
     - name: "{{ nexus_blob_names.bower.blob }}"
     - name: "{{ nexus_blob_names.npm.blob }}"
     - name: "{{ nexus_blob_names.mvn.blob }}"
+    - name: "{{ nexus_blob_names.gitlfs.blob }}"
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_blobstore
 
 - include: setup_ldap_each.yml
@@ -132,6 +133,10 @@
   - include: create_repo_npm_group_each.yml
     with_items: "{{ nexus_repos_npm_group }}"
   when: nexus_config_npm
+
+- include: create_repo_gitlfs_hosted_each.yml
+  with_items: "{{ nexus_repos_gitlfs_hosted }}"
+  when: nexus_config_gitlfs
 
 - include: call_script.yml
   vars:

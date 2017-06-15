@@ -45,7 +45,7 @@ Nexus directories, `nexus_installation_dir` contains the installed executable(s)
 
     nexus_admin_password: 'changeme'
 
-The 'admin' account password to setup. Note : admin password change subsequent to first-time provisionning/install is *not implemented* by this role yet.
+The 'admin' account password to setup. Note : admin password change subsequent to first-time provisioning/install is *not implemented* by this role yet.
 
     nexus_anonymous_access: false
 
@@ -263,8 +263,8 @@ All three repository types are combined with the following default values :
       write_policy: allow_once # allow_once or allow
 ```
 
-Docker, Pypi, Raw, Rubygems, Bower, NPM repository types:
-see `defaults/main/yml` for three options:
+Docker, Pypi, Raw, Rubygems, Bower, NPM, and Git-LFS repository types:
+see `defaults/main.yml` for these options:
 
       nexus_config_pypi: false
       nexus_config_docker: false
@@ -272,8 +272,9 @@ see `defaults/main/yml` for three options:
       nexus_config_rubygems: false
       nexus_config_bower: false
       nexus_config_npm: false
+      nexus_config_gitlfs: false
 
-These are all false unless you override them from playbook / group_var / cli, these all utlize the same mechanisem as maven.
+These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.
 
 ## Dependencies
 
