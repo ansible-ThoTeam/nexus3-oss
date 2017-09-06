@@ -1,4 +1,12 @@
 ---
+- name: Create directory for blob store.
+  file:
+    path: "{{ item['path'] }}"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    state: directory
+    recurse: true
+
 - include: call_script.yml
   vars:
     script_name: create_blobstore
