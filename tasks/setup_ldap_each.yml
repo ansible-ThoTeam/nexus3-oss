@@ -12,6 +12,7 @@
       password: "{{ item.ldap_auth_password | default('') }}"
       search_base: "{{ item.ldap_search_base }}"
       user_base_dn: "{{ item.ldap_user_base_dn | default('ou=users') }}"
+      user_ldap_filter: "{{ item.ldap_user_filter | default('') }}"
       user_object_class: "{{ item.ldap_user_object_class }}"
       user_id_attribute: "{{ item.ldap_user_id_attribute }}"
       user_real_name_attribute: "{{ item.ldap_user_real_name_attribute }}"

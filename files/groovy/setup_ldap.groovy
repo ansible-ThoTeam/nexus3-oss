@@ -43,6 +43,7 @@ ldapConfig.setConnection(connection)
 // Mapping
 mapping = new Mapping()
 mapping.setUserBaseDn(parsed_args.user_base_dn)
+mapping.setLdapFilter(parsed_args.user_ldap_filter)
 mapping.setUserObjectClass(parsed_args.user_object_class)
 mapping.setUserIdAttribute(parsed_args.user_id_attribute)
 mapping.setUserRealNameAttribute(parsed_args.user_real_name_attribute)
