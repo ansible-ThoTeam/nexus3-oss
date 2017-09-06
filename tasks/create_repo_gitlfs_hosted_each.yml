@@ -1,0 +1,5 @@
+---
+- include: call_script.yml
+  vars:
+    script_name: create_repo_gitlfs_hosted
+    args: "{{ _nexus_repos_gitlfs_defaults|combine(item) }}"
