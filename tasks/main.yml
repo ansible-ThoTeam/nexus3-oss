@@ -150,6 +150,15 @@
     args:
       base_url: "https://{{ public_hostname }}/"
 
+- include: call_script.yml
+  vars:
+    script_name: setup_realms
+    args:
+      nuget_api_key_realm: "{{ nexus_nuget_api_key_realm }}"
+      npm_bearer_token_realm: "{{ nexus_npm_bearer_token_realm }}"
+      rut_auth_realm: "{{ nexus_rut_auth_realm }}"
+      ldap_realm: "{{ nexus_ldap_realm }}"
+
 - name: Configure branding capability
   include: call_script.yml
   vars:
