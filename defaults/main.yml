@@ -40,6 +40,20 @@ nexus_rut_auth_realm: false
 nexus_ldap_realm: false
 nexus_docker_bearer_token_realm: false
 
+# email server
+nexus_email_server_enabled: false
+nexus_email_server_host: "localhost"
+nexus_email_server_port: 25
+nexus_email_server_username: ""
+nexus_email_server_password: ""
+nexus_email_from_address: "nexus@example.org"
+nexus_email_subject_prefix: ""
+nexus_email_tls_enabled: false
+nexus_email_tls_required: false
+nexus_email_ssl_on_connect_enabled: false
+nexus_email_ssl_check_server_identity_enabled: false
+nexus_email_trust_store_enabled: false
+
 nexus_branding_header: ""
 nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
 
