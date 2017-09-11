@@ -196,6 +196,7 @@ nexus_scheduled_tasks:
   - name: db-backup # Note: CRON must be aligned to nexus-blob-backup.sh cron schedule. -> Task: "Config nexus-backup shell cron"
     cron: '0 0 21 * * ?'
     typeId: db.backup
+    task_alert_email: alerts@example.org # optional
     taskProperties:
       location: "{{ nexus_backup_dir }}/"
 
@@ -204,6 +205,7 @@ nexus_scheduled_tasks:
 #  - name: compact-blobstore
 #    cron: '0 0 22 * * ?'
 #    typeId: blobstore.compact
+#    task_alert_email: alerts@example.org # optional
 #    taskProperties:
 #      blobstoreName: 'default' # all task attributes are stored as strings by nexus internally
 
