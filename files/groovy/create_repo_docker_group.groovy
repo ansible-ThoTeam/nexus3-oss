@@ -9,7 +9,6 @@ configuration = new Configuration(
         online: true,
         attributes: [
                 docker: [
-                        httpPort: parsed_args.http_port,
                         v1Enabled : parsed_args.v1_enabled
                 ],
                 group: [
@@ -22,6 +21,10 @@ configuration = new Configuration(
                 ]
         ]
 )
+
+if (parsed_args.http_port) {
+    configuration.attributes['docker']['httpPort'] = parsed_args.http_port
+}
 
 def existingRepository = repository.getRepositoryManager().get(parsed_args.name)
 
