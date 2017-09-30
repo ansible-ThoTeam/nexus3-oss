@@ -37,6 +37,7 @@ nexus_nuget_api_key_realm: false
 nexus_npm_bearer_token_realm: false
 nexus_rut_auth_realm: false
 nexus_ldap_realm: false
+nexus_docker_bearer_token_realm: false
 
 nexus_branding_header: ""
 nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"

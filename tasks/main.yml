@@ -158,6 +158,7 @@
       npm_bearer_token_realm: "{{ nexus_npm_bearer_token_realm }}"
       rut_auth_realm: "{{ nexus_rut_auth_realm }}"
       ldap_realm: "{{ nexus_ldap_realm }}"
+      docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
 
 - name: Configure branding capability
   include: call_script.yml

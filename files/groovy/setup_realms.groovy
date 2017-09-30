@@ -16,3 +16,6 @@ realmManager.enableRealm("rutauth-realm", parsed_args.rut_auth_realm)
 
 // enable/disable the LDAP Realm
 realmManager.enableRealm("LdapRealm", parsed_args.ldap_realm)
+
+// enable/disable the Docker Bearer Token Realm
+realmManager.enableRealm("DockerToken", parsed_args.docker_bearer_token_realm)
