@@ -5,6 +5,7 @@ nexus_download_dir: '/tmp'
 nexus_backup_dir: '/var/nexus-backup'
 nexus_os_group: 'nexus'
 nexus_os_user: 'nexus'
+nexus_os_max_filedescriptors: 65536 # nexus > 3.5.x issues a warning on lower value. Next versions might not boot at all
 nexus_installation_dir: '/opt'
 nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC' # java timezone

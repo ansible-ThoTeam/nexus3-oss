@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=forking
-LimitNOFILE=65536
+LimitNOFILE={{ nexus_os_max_filedescriptors }}
 ExecStart={{ nexus_installation_dir }}/nexus-latest/bin/nexus start
 ExecStop={{ nexus_installation_dir }}/nexus-latest/bin/nexus stop
 User={{ nexus_os_user }}
