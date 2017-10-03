@@ -61,6 +61,22 @@ ldap_connections: []
 #    ldap_group_member_attribute: 'memberUid'
 #    ldap_group_member_format: '${username}'
 
+# http proxy
+nexus_with_http_proxy: false
+nexus_http_proxy_host: "proxy.example.com"
+nexus_http_proxy_port: 8080
+nexus_http_proxy_username: ""
+nexus_http_proxy_password: ""
+nexus_with_https_proxy: false
+nexus_https_proxy_host: "proxy.example.com"
+nexus_https_proxy_port: 8080
+nexus_https_proxy_username: ""
+nexus_https_proxy_password: ""
+nexus_proxy_exclude_hosts:
+  - "localhost"
+  - "127.*"
+  - "[::1]"
+
 nexus_config_pypi: false
 nexus_config_docker: false
 nexus_config_raw: false

@@ -254,6 +254,7 @@
     - setup_anonymous_access
     - setup_base_url
     - setup_capability
+    - setup_http_proxy
     - setup_role
     - setup_privilege
     - setup_user
