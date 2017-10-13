@@ -13,6 +13,8 @@ nexus_blob_names:
     blob: '{{ nexus_blob_prefix }}bower'
   npm:
     blob: '{{ nexus_blob_prefix }}npm'
+  nuget:
+    blob: '{{ nexus_blob_prefix }}nuget'
   mvn:
     blob: '{{ nexus_blob_prefix }}mvn'
   gitlfs:
@@ -32,6 +34,8 @@ nexus_blobstores:
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.bower.blob }}"
   - name: '{{ nexus_blob_prefix }}npm'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.npm.blob }}"
+  - name: '{{ nexus_blob_prefix }}nuget'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.nuget.blob }}"
   - name: '{{ nexus_blob_prefix }}mvn'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.mvn.blob }}"
   - name: '{{ nexus_blob_prefix }}gitlfs'

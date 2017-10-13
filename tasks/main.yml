@@ -31,6 +31,7 @@
     - name: "{{ nexus_blob_names.ruby.blob }}"
     - name: "{{ nexus_blob_names.bower.blob }}"
     - name: "{{ nexus_blob_names.npm.blob }}"
+    - name: "{{ nexus_blob_names.nuget.blob }}"
     - name: "{{ nexus_blob_names.mvn.blob }}"
     - name: "{{ nexus_blob_names.gitlfs.blob }}"
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_blobstore
@@ -133,6 +134,16 @@
   - include: create_repo_npm_group_each.yml
     with_items: "{{ nexus_repos_npm_group }}"
   when: nexus_config_npm
+
+- block:
+  - include: create_repo_nuget_proxy_each.yml
+    with_items: "{{ nexus_repos_nuget_proxy }}"
+  - include: create_repo_nuget_hosted_each.yml
+    with_items: "{{ nexus_repos_nuget_hosted }}"
+  - include: create_repo_nuget_group_each.yml
+    with_items: "{{ nexus_repos_nuget_group }}"
+  when: nexus_config_nuget
+
 
 - include: create_repo_gitlfs_hosted_each.yml
   with_items: "{{ nexus_repos_gitlfs_hosted }}"
