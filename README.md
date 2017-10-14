@@ -15,6 +15,7 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
+- Minimum ansible version 2.2 (see meta/main.yml)
 - This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
 - Oracle Java 8 (mandatory)
 - Apache HTTPD (optional, used to setup a SSL reverse-proxy)
@@ -354,7 +355,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
 ## Example Playbook
 
 ```yaml
--------
+---
 - name: Nexus
   hosts: nexus
   become: yes
@@ -456,7 +457,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
-    - { role: savoirfairelinux.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
+    - { role: ansible-ThoTeam.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
 
 ```
 
