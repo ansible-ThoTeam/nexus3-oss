@@ -1,0 +1,33 @@
+---
+- name: systemd-reload
+  systemd:
+    daemon-reload: yes
+
+- name: nexus-service-stop
+  systemd:
+    name: nexus.service
+    state: stopped
+  when: nexus_systemd_service_file.stat.exists
+
+- name: wait-for-nexus
+  wait_for:
+    path: "{{ nexus_data_dir }}/log/nexus.log"
+    search_regex: "Started Sonatype Nexus OSS .*"
+    timeout: 1800
+
+- name: wait-for-nexus-port
+  wait_for:
+    port: "{{ nexus_default_port }}"
+    delay: 5
+
+- name: apache-service-reload
+  systemd:
+    name: httpd.service
+    state: reloaded
+    enabled: yes
+    no_block: yes
+
+- name: wait-for-httpd
+  wait_for:
+    port: 443
+    delay: 5

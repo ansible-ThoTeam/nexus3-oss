@@ -1,4 +1,18 @@
 ---
+- name: Make sure nexus is stopped
+  debug:
+    msg: "trigger nexus stop"
+  changed_when: true
+  notify:
+    - nexus-service-stop
+
+- meta: flush_handlers
+
+- name: "Make sure an other nexus install is not running"
+  service:
+    name: nexus
+    state: stopped
+
 - name: "Purge Nexus"
   file:
     path: "{{ item }}"
@@ -9,12 +23,7 @@
   - "{{ nexus_restore_log }}"
 # - "{{ nexus_backup_dir }}" # Optional
 
-- name: "service stop"
-  service:
-    name: nexus
-    state: stopped
-
-- name: "remove nexus package"
+- name: "remove nexus package if present"
   package:
     name: nexus
     state: absent
