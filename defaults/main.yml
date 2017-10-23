@@ -60,6 +60,14 @@ nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
 httpd_setup_enable: false
 httpd_ssl_certificate_file: 'files/nexus.vm.crt'
 httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
+# If httpd_copy_ssl_files is false you need to provide the following variables:
+# - httpd_ssl_cert_file_location
+# - httpd_ssl_cert_key_location
+httpd_copy_ssl_files: true
+# These specifies to the vhost file where to find on the remote file system the certificates files.
+httpd_ssl_cert_file_location: "/etc/pki/tls/certs/nexus.vm.crt"
+httpd_ssl_cert_key_location: "/etc/pki/tls/private/nexus.vm.key"
+httpd_default_admin_email: "admin@example.com"
 
 ldap_connections: []
 # example ldap config :
