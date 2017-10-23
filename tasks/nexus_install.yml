@@ -226,7 +226,7 @@
     path: "{{ nexus_installation_dir }}/nexus-latest/etc"
     owner: "root"
     group: "root"
-    mode: "0644"
+    mode: a=rX,u+w
     recurse: true
 
 - name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
