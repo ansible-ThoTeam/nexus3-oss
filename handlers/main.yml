@@ -25,7 +25,6 @@
     name: httpd.service
     state: reloaded
     enabled: yes
-    no_block: yes
 
 - name: wait-for-httpd
   wait_for:

@@ -208,7 +208,6 @@
     name: nexus.service
     enabled: yes
     state: started
-    no_block: yes
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
