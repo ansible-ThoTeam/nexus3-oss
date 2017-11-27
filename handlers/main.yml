@@ -4,6 +4,11 @@
     daemon-reload: yes
     name: nexus.service
 
+- name: nexus-service-restart
+  systemd:
+    name: nexus.service
+    state: restarted
+
 - name: nexus-service-stop
   systemd:
     name: nexus.service
