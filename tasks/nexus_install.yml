@@ -34,11 +34,6 @@
   notify:
     - nexus-service-stop
 
-- name: Check if SystemD service is installed
-  stat:
-    path: /etc/systemd/system/nexus.service
-  register: nexus_systemd_service_file
-
 - meta: flush_handlers
 
 - name: Update symlink nexus-latest
