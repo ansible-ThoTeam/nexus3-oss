@@ -21,7 +21,7 @@
     port: "{{ nexus_default_port }}"
     delay: 5
 
-- name: apache-service-reload
+- name: httpd-service-reload
   systemd:
     name: httpd.service
     state: reloaded
