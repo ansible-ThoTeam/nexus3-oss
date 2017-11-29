@@ -8,11 +8,6 @@
 
 - meta: flush_handlers
 
-- name: "Make sure an other nexus install is not running"
-  service:
-    name: nexus
-    state: stopped
-
 - name: "Purge Nexus"
   file:
     path: "{{ item }}"
