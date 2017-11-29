@@ -9,6 +9,7 @@ configuration = new Configuration(
         online: true,
         attributes: [
                 docker: [
+                        forceBasicAuth: parsed_args.force_basic_auth,
                         httpPort: parsed_args.http_port,
                         v1Enabled : parsed_args.v1_enabled
                 ],

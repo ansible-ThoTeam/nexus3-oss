@@ -256,6 +256,7 @@ nexus_repos_raw_group:
 # Docker support
 _nexus_repos_docker_defaults:
   blob_store: "{{ nexus_blob_names.docker.blob }}"
+  force_basic_auth: true
   strict_content_validation: true
   version_policy: release # release, snapshot or mixed
   layout_policy: strict # strict or permissive
