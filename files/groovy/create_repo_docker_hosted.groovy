@@ -3,35 +3,48 @@ import org.sonatype.nexus.repository.config.Configuration
 
 parsed_args = new JsonSlurper().parseText(args)
 
-configuration = new Configuration(
-        repositoryName: parsed_args.name,
-        recipeName: 'docker-hosted',
-        online: true,
-        attributes: [
-                docker: [
-                        forceBasicAuth: parsed_args.force_basic_auth,
-                        httpPort: parsed_args.http_port,
-                        v1Enabled : parsed_args.v1_enabled
-                ],
-                storage: [
-                        writePolicy: parsed_args.write_policy.toUpperCase(),
-                        blobStoreName: parsed_args.blob_store,
-                        strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
-                ]
-        ]
-)
+repositoryManager = repository.repositoryManager
 
-if (parsed_args.http_port) {
-    configuration.attributes['docker']['httpPort'] = parsed_args.http_port
-}
-
-def existingRepository = repository.getRepositoryManager().get(parsed_args.name)
+existingRepository = repositoryManager.get(parsed_args.name)
 
 if (existingRepository != null) {
-    existingRepository.stop()
-    configuration.attributes['storage']['blobStoreName'] = existingRepository.configuration.attributes['storage']['blobStoreName']
-    existingRepository.update(configuration)
-    existingRepository.start()
+    newConfig = existingRepository.configuration.copy()
+    // We only update values we are allowed to change (cf. greyed out options in gui)
+    newConfig.attributes['docker']['forceBasicAuth'] = parsed_args.force_basic_auth
+    newConfig.attributes['docker']['v1Enabled'] = parsed_args.v1_enabled
+    newConfig.attributes['storage']['writePolicy'] = parsed_args.write_policy.toUpperCase()
+    newConfig.attributes['storage']['strictContentTypeValidation'] = Boolean.valueOf(parsed_args.strict_content_validation)
+    if (parsed_args.http_port) {
+        newConfig.attributes['docker']['httpPort'] = parsed_args.http_port
+    } else {
+        newConfig.attributes['docker']['httpPort'] = ""
+    }
+
+    repositoryManager.update(newConfig)
+
 } else {
-    repository.getRepositoryManager().create(configuration)
+
+    configuration = new Configuration(
+            repositoryName: parsed_args.name,
+            recipeName: 'docker-hosted',
+            online: true,
+            attributes: [
+                    docker: [
+                            forceBasicAuth: parsed_args.force_basic_auth,
+                            v1Enabled : parsed_args.v1_enabled
+                    ],
+                    storage: [
+                            writePolicy: parsed_args.write_policy.toUpperCase(),
+                            blobStoreName: parsed_args.blob_store,
+                            strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
+                    ]
+            ]
+    )
+
+    if (parsed_args.http_port) {
+        configuration.attributes['docker']['httpPort'] = parsed_args.http_port
+    }
+
+    repositoryManager.create(configuration)
+
 }

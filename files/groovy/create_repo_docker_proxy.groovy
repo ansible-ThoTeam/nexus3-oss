@@ -3,51 +3,75 @@ import org.sonatype.nexus.repository.config.Configuration
 
 parsed_args = new JsonSlurper().parseText(args)
 
-configuration = new Configuration(
-        repositoryName: parsed_args.name,
-        recipeName: 'docker-proxy',
-        online: true,
-        attributes: [
-                docker: [
-                        forceBasicAuth: parsed_args.force_basic_auth,
-                        httpPort: parsed_args.http_port,
-                        v1Enabled : parsed_args.v1_enabled
-                ],
-                proxy: [
-                        remoteUrl: parsed_args.proxy_url,
-                        contentMaxAge: 1440,
-                        metadataMaxAge: 1440
-                ],
-                dockerProxy: [
-                        indexType: parsed_args.index_type,
-                        useTrustStoreForIndexAccess: parsed_args.use_nexus_certificates_to_access_index
-                ],
-                httpclient: [
-                        blocked: false,
-                        autoBlock: true,
-                        connection: [
-                          useTrustStore: false
-                        ]
-                ],
-                storage: [
-                        writePolicy: parsed_args.write_policy.toUpperCase(),
-                        blobStoreName: parsed_args.blob_store,
-                        strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
-                ]
-        ]
-)
+repositoryManager = repository.repositoryManager
 
-if (parsed_args.http_port) {
-    configuration.attributes['docker']['httpPort'] = parsed_args.http_port
-}
+authentication = parsed_args.remote_username == null ? null : [
+        type: 'username',
+        username: parsed_args.remote_username,
+        password: parsed_args.remote_password
+]
 
-def existingRepository = repository.getRepositoryManager().get(parsed_args.name)
+existingRepository = repositoryManager.get(parsed_args.name)
 
 if (existingRepository != null) {
-    existingRepository.stop()
-    configuration.attributes['storage']['blobStoreName'] = existingRepository.configuration.attributes['storage']['blobStoreName']
-    existingRepository.update(configuration)
-    existingRepository.start()
+
+    newConfig = existingRepository.configuration.copy()
+    // Only set attributes that can be changed
+    newConfig.attributes['docker']['forceBasicAuth'] = parsed_args.force_basic_auth
+    newConfig.attributes['docker']['v1Enabled'] = parsed_args.v1_enabled
+    newConfig.attributes['proxy']['remoteUrl'] = parsed_args.proxy_url
+    newConfig.attributes['dockerProxy']['indexType'] = parsed_args.index_type
+    newConfig.attributes['dockerProxy']['useTrustStoreForIndexAccess'] = parsed_args.use_nexus_certificates_to_access_index
+    newConfig.attributes['storage']['strictContentTypeValidation'] = Boolean.valueOf(parsed_args.strict_content_validation)
+    newConfig.attributes['httpclient']['authentication'] = authentication
+
+    if (parsed_args.http_port) {
+        newConfig.attributes['docker']['httpPort'] = parsed_args.http_port
+    } else {
+        newConfig.attributes['docker']['httpPort'] = ""
+    }
+
+    repositoryManager.update(newConfig)
+
 } else {
-    repository.getRepositoryManager().create(configuration)
+
+    configuration = new Configuration(
+            repositoryName: parsed_args.name,
+            recipeName: 'docker-proxy',
+            online: true,
+            attributes: [
+                    docker: [
+                            forceBasicAuth: parsed_args.force_basic_auth,
+                            v1Enabled : parsed_args.v1_enabled
+                    ],
+                    proxy: [
+                            remoteUrl: parsed_args.proxy_url,
+                            contentMaxAge: 1440,
+                            metadataMaxAge: 1440
+                    ],
+                    dockerProxy: [
+                            indexType: parsed_args.index_type,
+                            useTrustStoreForIndexAccess: parsed_args.use_nexus_certificates_to_access_index
+                    ],
+                    httpclient: [
+                            blocked: false,
+                            autoBlock: true,
+                            connection: [
+                              useTrustStore: false
+                            ],
+                            authentication: authentication
+                    ],
+                    storage: [
+                            writePolicy: parsed_args.write_policy.toUpperCase(),
+                            blobStoreName: parsed_args.blob_store,
+                            strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
+                    ]
+            ]
+    )
+
+    if (parsed_args.http_port) {
+        configuration.attributes['docker']['httpPort'] = parsed_args.http_port
+    }
+
+    repositoryManager.create(configuration)
 }
