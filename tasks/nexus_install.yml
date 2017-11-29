@@ -238,48 +238,28 @@
   when: nexus_data_dir_contents.stdout != ""
   no_log: true
 
+- name: Create directory to hold current groovy scripts for reference
+  file:
+    path: "{{ nexus_data_dir }}/groovy-raw-scripts/current"
+    state: directory
+    owner: root
+    group: root
+
+- name: Upload new scripts
+  synchronize:
+    recursive: yes
+    delete: yes
+    mode: push
+    src: "files/groovy/"
+    dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+
+- name: Sync new scripts to old and get differences
+  shell: 'rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/ | cut -d" " -f 2 | sed "s/\.groovy//g"'
+  register: nexus_groovy_files_changed
+  changed_when: false
+
 - include: declare_script_each.yml
-  with_items:
-    - update_admin_password
-    - setup_ldap
-    - setup_anonymous_access
-    - setup_base_url
-    - setup_capability
-    - setup_http_proxy
-    - setup_role
-    - setup_privilege
-    - setup_user
-    - setup_realms
-    - setup_email
-    - delete_repo
-    - delete_blobstore
-    - create_blobstore
-    - create_repo_maven_proxy
-    - create_repo_maven_group
-    - create_repo_maven_hosted
-    - create_repo_docker_hosted
-    - create_repo_docker_proxy
-    - create_repo_docker_group
-    - create_repo_pypi_hosted
-    - create_repo_pypi_proxy
-    - create_repo_pypi_group
-    - create_repo_raw_hosted
-    - create_repo_raw_proxy
-    - create_repo_raw_group
-    - create_repo_rubygems_hosted
-    - create_repo_rubygems_proxy
-    - create_repo_rubygems_group
-    - create_repo_bower_hosted
-    - create_repo_bower_proxy
-    - create_repo_bower_group
-    - create_repo_npm_hosted
-    - create_repo_npm_proxy
-    - create_repo_npm_group
-    - create_repo_nuget_hosted
-    - create_repo_nuget_proxy
-    - create_repo_nuget_group
-    - create_repo_gitlfs_hosted
-    - create_task
+  with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"
 
 - name: "Config nexus-backup shell cron"
   cron:
