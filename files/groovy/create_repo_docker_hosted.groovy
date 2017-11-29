@@ -21,6 +21,10 @@ configuration = new Configuration(
         ]
 )
 
+if (parsed_args.http_port) {
+    configuration.attributes['docker']['httpPort'] = parsed_args.http_port
+}
+
 def existingRepository = repository.getRepositoryManager().get(parsed_args.name)
 
 if (existingRepository != null) {
