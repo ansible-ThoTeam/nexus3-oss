@@ -393,6 +393,16 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
 
 ```
 
+## Development / contribution and testing
+
+- Now integrates with travis using molecule for ansible role testing
+
+@todo Give more info
+- Coding/Contriution guidelines
+- Writtings test
+- etc.
+
+
 License
 -------
 
