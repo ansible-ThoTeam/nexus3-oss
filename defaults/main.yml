@@ -105,6 +105,7 @@ nexus_config_raw: false
 nexus_config_rubygems: false
 nexus_config_bower: false
 nexus_config_npm: false
+nexus_config_nuget: false
 nexus_config_gitlfs: false
 
 # also see _nexus_privilege_defaults below
@@ -154,6 +155,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
   bower:
     blob: 'default'
   npm:
+    blob: 'default'
+  nuget:
     blob: 'default'
   mvn:
     blob: 'default'
@@ -364,6 +367,27 @@ nexus_repos_npm_proxy:
   - name: npm-proxy
     blob_store: "{{ nexus_blob_names.npm.blob }}"
     remote_url: https://registry.npmjs.org
+
+_nexus_repos_nuget_defaults:
+  blob_store: "{{ nexus_blob_names.nuget.blob }}"
+  strict_content_validation: true
+  write_policy: allow_once # allow_once or allow
+
+nexus_repos_nuget_hosted:
+  - name: nuget-internal
+    blob_store: "{{ nexus_blob_names.nuget.blob }}"
+
+nexus_repos_nuget_group:
+  - name: nuget-all
+    blob_store: "{{ nexus_blob_names.nuget.blob }}"
+    member_repos:
+      - nuget-internal
+      - nuget-proxy
+
+nexus_repos_nuget_proxy:
+  - name: nuget-proxy
+    blob_store: "{{ nexus_blob_names.nuget.blob }}"
+    remote_url: http://www.nuget.org/api/v2
 
 # gitlfs support
 _nexus_repos_gitlfs_defaults:

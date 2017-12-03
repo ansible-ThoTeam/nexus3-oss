@@ -287,6 +287,9 @@
     - create_repo_npm_hosted
     - create_repo_npm_proxy
     - create_repo_npm_group
+    - create_repo_nuget_hosted
+    - create_repo_nuget_proxy
+    - create_repo_nuget_group
     - create_repo_gitlfs_hosted
     - create_task
 
