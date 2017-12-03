@@ -262,6 +262,7 @@
     - setup_privilege
     - setup_user
     - setup_realms
+    - setup_email
     - delete_repo
     - delete_blobstore
     - create_blobstore

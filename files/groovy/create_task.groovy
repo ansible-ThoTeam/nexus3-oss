@@ -21,6 +21,10 @@ taskConfiguration.setName(parsed_args.name)
 
 parsed_args.taskProperties.each { key, value -> taskConfiguration.setString(key, value) }
 
+if (parsed_args.task_alert_email) {
+    taskConfiguration.setAlertEmail(parsed_args.task_alert_email)
+}
+
 Schedule schedule = taskScheduler.scheduleFactory.cron(new Date(), parsed_args.cron)
 
 taskScheduler.scheduleTask(taskConfiguration, schedule)
