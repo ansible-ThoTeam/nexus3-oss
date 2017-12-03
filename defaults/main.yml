@@ -387,7 +387,7 @@ nexus_repos_nuget_group:
 nexus_repos_nuget_proxy:
   - name: nuget-proxy
     blob_store: "{{ nexus_blob_names.nuget.blob }}"
-    remote_url: http://www.nuget.org/api/v2 
+    remote_url: http://www.nuget.org/api/v2
 
 # gitlfs support
 _nexus_repos_gitlfs_defaults:
