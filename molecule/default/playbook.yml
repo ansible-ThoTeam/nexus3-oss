@@ -3,4 +3,4 @@
   hosts: all
   roles:
     - role: ansiblebit.oracle-java
-    - role: ansible-nexus3-oss
+    - role: nexus3-oss
