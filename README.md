@@ -411,4 +411,9 @@ GNU GPLv3
 Author Information
 ------------------
 
-See https://github.com/savoirfairelinux/ansible-nexus3-oss
+See: https://github.com/ansible-ThoTeam/nexus3-oss
+
+This role is a hard fork of https://github.com/savoirfairelinux/ansible-nexus3-oss
+after maintenance was discontinued. See:
+- https://github.com/savoirfairelinux/ansible-nexus3-oss/issues/36
+- https://github.com/savoirfairelinux/ansible-nexus3-oss/issues/38
