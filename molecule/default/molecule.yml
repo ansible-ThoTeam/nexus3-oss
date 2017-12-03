@@ -1,0 +1,64 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: ubuntu-16.04
+    image: ubuntu
+    image_version: '16.04'
+    command: /lib/systemd/systemd
+    privileged: true
+  # - name: centos-7
+  #   image: centos
+  #   image_version: '7'
+  #   command: /lib/systemd/systemd
+  #   privileged: true
+  # - name: centos-8
+  #   image: centos
+  #   image_version: '8'
+  #   command: /lib/systemd/systemd
+  #   privileged: true
+  # - name: opensuse-13.2
+  #   image: opensuse
+  #   image_version: '13.2'
+  #   command: /lib/systemd/systemd
+  #   privileged: true
+  # - name: opensuse-42.3
+  #   image: opensuse
+  #   image_version: '42.3'
+  #   command: /lib/systemd/systemd
+  #   privileged: true
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+    enabled: False
+
+scenario:
+  name: default
+  check_sequence:
+    - destroy
+    - create
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - converge
+  destroy_sequence:
+    - destroy
+  test_sequence:
+    - destroy
+    - dependency
+    - create
+    - converge
+    - lint
+    - verify
+    - destroy
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
