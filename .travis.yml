@@ -12,5 +12,4 @@ install:
   - pip install molecule
   - pip install docker-py
 script:
-  - ./tests/test_groovySyntax.sh
-  - molecule test
+  - ./tests/run_all_tests.sh
