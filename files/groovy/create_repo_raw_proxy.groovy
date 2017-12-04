@@ -38,7 +38,7 @@ if (existingRepository != null) {
                     httpclient: [
                             blocked: false,
                             autoBlock: true,
-                            authentication: authentication
+                            authentication: authentication,
                             connection: [
                                     useTrustStore: false
                             ]
