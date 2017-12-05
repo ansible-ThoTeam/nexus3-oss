@@ -11,11 +11,11 @@ platforms:
     image_version: '16.04'
     command: /lib/systemd/systemd
     privileged: true
-  # - name: centos-7
-  #   image: centos
-  #   image_version: '7'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
+  - name: centos-7
+    image: centos
+    image_version: '7'
+    command: /lib/systemd/systemd
+    privileged: true
   # - name: centos-8
   #   image: centos
   #   image_version: '8'
