@@ -66,6 +66,18 @@ Header and footer branding, those can contain HTML.
 
 Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference/install.html#_example_reverse_proxy_ssl_termination_at_base_path), this needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
 
+    httpd_copy_ssl_files: true  # Default is false
+    # These specifies to the vhost where to find on the remote server file 
+    # system the certificate files.
+    httpd_ssl_cert_file_location: "/etc/pki/tls/certs/wildcard.vm.crt"
+    httpd_ssl_cert_key_location: "/etc/pki/tls/private/wildcard.vm.key"
+
+Use already existing SSL certificates on the server file system for the https reverse proxy
+
+    httpd_default_admin_email: "admin@example.com"
+
+Set httpd default admin email address
+
     ldap_connections: []
 
 [LDAP connection(s)](https://books.sonatype.com/nexus-book/3.0/reference/security.html#ldap) setup, each item goes as follow :
@@ -385,11 +397,12 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
           - jaspersoft
 
   roles:
-    - role: ansiblebit.oracle-java
-      oracle_java_set_as_default: yes
-    - role: geerlingguy.apache
-      apache_create_vhosts: no
-    - role: savoirfairelinux.nexus3-oss
+    - { role: ansiblebit.oracle-java, oracle_java_set_as_default: yes, tags: ['ansiblebit.oracle-java'] }
+    # Debian/Ubuntu only
+    # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
+    # RedHat/CentOS only
+    - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
+    - { role: savoirfairelinux.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
 
 ```
 
