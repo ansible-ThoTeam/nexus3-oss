@@ -1,7 +1,7 @@
 galaxy_info:
-  author: Savoir-faire Linux
-  description: Nexus Repository Manager 3.x for RedHat/CentOS
-  company: Savoir-faire Linux
+  author: ansible-ThoTeam
+  description: Nexus Repository Manager 3.x
+  company: ThoTeam
 
   license: license (GPLv3)
 
@@ -13,11 +13,20 @@ galaxy_info:
     - name: EL
       versions:
       - 7
+    - name: Ubuntu
+      versions:
+      - all
 
   galaxy_tags:
     - nexus
+    - nexus3
     - java
     - maven
+    - npm
+    - nuget
+    - yum
+    - docker
+    - pypi
     - web
 
 dependencies: []
