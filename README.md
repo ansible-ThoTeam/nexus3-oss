@@ -1,6 +1,6 @@
 # Ansible Role: Nexus 3 OSS
 
-This role installs and configures Nexus Repository Manager OSS version 3.x. It is currently tested through travis on the following platforms
+This role installs and configures Nexus Repository Manager OSS version 3.x. 
 
 All configuration can be updated by re-running the role, except forthe [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
 
@@ -15,7 +15,7 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- This has only been tested on CentOS 7 + Ubuntu 16.04 (Xenial)
+- This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
 - Oracle Java 8 (mandatory)
 - Apache HTTPD (optional, used to setup a SSL reverse-proxy)
 
