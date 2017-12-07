@@ -2,7 +2,9 @@
 
 sudo: required
 language: python
-python: 2.7
+python:
+  - 2.7
+  - 3
 services:
   - docker
 before_install:
