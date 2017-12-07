@@ -9,6 +9,7 @@ before_install:
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   - sudo apt-get -y install groovy
 install:
+  - pip install 'ansible>=2.2,<2.3'
   - pip install molecule
   - pip install docker-py
 script:
