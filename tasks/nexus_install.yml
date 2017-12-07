@@ -247,6 +247,8 @@
 
 - name: Upload new scripts
   synchronize:
+    archive: no
+    checksum: yes
     recursive: yes
     delete: yes
     mode: push
