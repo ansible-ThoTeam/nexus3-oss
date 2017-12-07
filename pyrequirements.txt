@@ -2,15 +2,15 @@
 ## Python requirement for testing.
 ## For testing locally, you can import in a virtualenv
 ## i.e.
-## virtualenv --python=python2.7 pyenv-nexus3-oss
+## virtualenv --python=python3 pyenv-nexus3-oss
 ## . ./pyenv-nexus3-oss/bin/activate
 ## pip install -r pyrequirements.txt
 ## ./tests/run_all_tests.sh
 ## deactivate
 ##################################
 
-# Latest ansible 2.2.x
-ansible>=2.2,<2.3
+# Latest ansible 2.3.x
+ansible>=2.3,<2.4
 # Latest molecule
 molecule
 # Latest docker-py
