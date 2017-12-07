@@ -1,3 +1,5 @@
 .idea/
 *.iml
 molecule/**/.molecule/
+molecule/**/__pycache__/
+
