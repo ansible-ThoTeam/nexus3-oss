@@ -2,7 +2,7 @@
 ## Python requirement for testing.
 ## For testing locally, you can import in a virtualenv
 ## i.e.
-## virtualenv ./pyenv-nexus3-oss
+## virtualenv --python=python2.7 pyenv-nexus3-oss
 ## . ./pyenv-nexus3-oss/bin/activate
 ## pip install -r pyrequirements.txt
 ## ./tests/run_all_tests.sh
