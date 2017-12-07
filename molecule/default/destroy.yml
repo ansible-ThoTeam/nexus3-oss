@@ -9,8 +9,7 @@
     molecule_yml: "{{ lookup('file', molecule_file) | from_yaml }}"
   tasks:
     - name: Destroy molecule instance(s)
-      docker_container:
+      lxd_container:
         name: "{{ item.name }}"
         state: absent
-        force_kill: "{{ item.force_kill | default(True) }}"
       with_items: "{{ molecule_yml.platforms }}"

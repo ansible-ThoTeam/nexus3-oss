@@ -2,20 +2,14 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
+  name: lxd
 lint:
   name: yamllint
 platforms:
-  - name: ubuntu-16.04
-    image: ubuntu
-    image_version: '16.04'
-    command: /lib/systemd/systemd
-    privileged: true
-  - name: centos-7
-    image: centos
-    image_version: '7'
-    command: /lib/systemd/systemd
-    privileged: true
+  - name: ubuntuXenial
+    alias: ubuntu/xenial/amd64
+  - name: centos7
+    alias: centos/7/amd64
   # - name: centos-8
   #   image: centos
   #   image_version: '8'
