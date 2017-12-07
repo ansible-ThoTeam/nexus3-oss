@@ -3,16 +3,19 @@
   systemd:
     daemon-reload: yes
     name: nexus.service
+    no_block: yes
 
 - name: nexus-service-restart
   systemd:
     name: nexus.service
     state: restarted
+    no_block: yes
 
 - name: nexus-service-stop
   systemd:
     name: nexus.service
     state: stopped
+    no_block: yes
   when: nexus_systemd_service_file.stat.exists
 
 - name: wait-for-nexus
@@ -31,6 +34,7 @@
     name: httpd.service
     state: reloaded
     enabled: yes
+    no_block: yes
 
 - name: wait-for-httpd
   wait_for:
