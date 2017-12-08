@@ -33,6 +33,6 @@
 
 - name: Setsebool httpd_can_network_connect
   shell: 'setsebool -P httpd_can_network_connect on'
-  when: selinux_enabled
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - meta: flush_handlers

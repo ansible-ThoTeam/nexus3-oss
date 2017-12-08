@@ -2,6 +2,5 @@
 
 httpd_package_name: "httpd"
 httpd_config_dir: "/etc/{{ httpd_package_name }}/conf.d"
-selinux_enabled: true
 certificate_file_dest: "/etc/pki/tls/certs"
 certificate_key_dest: "/etc/pki/tls/private"
