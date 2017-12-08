@@ -31,7 +31,7 @@
 
 - name: httpd-service-reload
   systemd:
-    name: httpd.service
+    name: "{{ httpd_package_name }}.service"
     state: reloaded
     enabled: yes
     no_block: yes

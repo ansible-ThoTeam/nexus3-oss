@@ -1,5 +1,8 @@
 ---
 
+- name: Include OS specific variables.
+  include_vars: "configure-{{ ansible_os_family }}.yml"
+
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service

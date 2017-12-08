@@ -1,8 +1,5 @@
 ---
 
-- name: Include OS specific variables.
-  include_vars: "configure-{{ ansible_os_family }}.yml"
-
 - name: Copy {{ httpd_package_name }} vhost
   template:
     src: "nexus-vhost.conf"
