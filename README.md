@@ -15,7 +15,7 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- Minimum ansible version 2.2 (see meta/main.yml)
+- Minimum ansible version 2.3 (see meta/main.yml)
 - This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
 - Oracle Java 8 (mandatory)
 - Apache HTTPD (optional, used to setup a SSL reverse-proxy)
