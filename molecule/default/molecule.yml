@@ -1,10 +1,13 @@
 ---
 dependency:
   name: galaxy
+
 driver:
   name: docker
+
 lint:
   name: yamllint
+
 platforms:
   - name: ubuntu-16.04
     image: thoteam/ansible-ubuntu16.04-apache-java
@@ -16,21 +19,7 @@ platforms:
     image_version: latest
     command: /lib/systemd/systemd
     privileged: true
-  # - name: centos-8
-  #   image: centos
-  #   image_version: '8'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
-  # - name: opensuse-13.2
-  #   image: opensuse
-  #   image_version: '13.2'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
-  # - name: opensuse-42.3
-  #   image: opensuse
-  #   image_version: '42.3'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
+
 provisioner:
   name: ansible
   lint:
@@ -51,12 +40,13 @@ scenario:
   destroy_sequence:
     - destroy
   test_sequence:
+    - lint
     - destroy
     - create
     - converge
-    - lint
     - verify
     - destroy
+
 verifier:
   name: testinfra
   lint:
