@@ -40,10 +40,10 @@ scenario:
   destroy_sequence:
     - destroy
   test_sequence:
+    - lint
     - destroy
     - create
     - converge
-    - lint
     - verify
     - destroy
 
