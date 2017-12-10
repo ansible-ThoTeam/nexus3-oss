@@ -17,8 +17,13 @@ We would like to thank the original authors for the work done.
 
 - Minimum ansible version 2.3 (see meta/main.yml)
 - This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
-- Oracle Java 8 (mandatory)
-- Apache HTTPD (optional, used to setup a SSL reverse-proxy)
+- Java 8 (mandatory)
+    - Oracle Java 8 is the official supported platform by Sonatype
+    - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
+    - For more information see [nexus3 system requirements](https://help.sonatype.com/display/NXRM3/System+Requirements)
+- Apache HTTPD (optional)
+    - Used to setup a SSL reverse-proxy
+    - The following modules must be enabled in your configuration: mod_ssl, mod_rewrite, mod_proxy, mod_headers.
 
 (see [Dependencies](#dependencies) section below for matching roles on galaxy)
 

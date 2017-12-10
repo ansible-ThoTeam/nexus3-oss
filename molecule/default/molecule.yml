@@ -7,13 +7,13 @@ lint:
   name: yamllint
 platforms:
   - name: ubuntu-16.04
-    image: ubuntu
-    image_version: '16.04'
+    image: thoteam/ansible-ubuntu16.04-apache-java
+    image_version: latest
     command: /lib/systemd/systemd
     privileged: true
   - name: centos-7
-    image: centos
-    image_version: '7'
+    image: thoteam/ansible-centos7-apache-java
+    image_version: latest
     command: /lib/systemd/systemd
     privileged: true
   # - name: centos-8
@@ -52,7 +52,6 @@ scenario:
     - destroy
   test_sequence:
     - destroy
-    - dependency
     - create
     - converge
     - lint

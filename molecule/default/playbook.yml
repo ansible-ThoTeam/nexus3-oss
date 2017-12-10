@@ -5,8 +5,6 @@
     - name: configure default ssl key and cert based on OS
       include_vars: "ssl-{{ ansible_os_family }}.yml"
   roles:
-    - role: ansiblebit.oracle-java
-    - role: geerlingguy.apache
     - role: nexus3-oss
   vars:
     httpd_setup_enable: true
