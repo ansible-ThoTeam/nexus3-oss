@@ -2,4 +2,3 @@
 *.iml
 molecule/**/.molecule/
 molecule/**/__pycache__/
-pyenv*
