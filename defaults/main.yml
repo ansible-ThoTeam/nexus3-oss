@@ -58,6 +58,7 @@ nexus_branding_header: ""
 nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
 
 httpd_setup_enable: false
+httpd_server_name: nexus.vm
 httpd_ssl_certificate_file: 'files/nexus.vm.crt'
 httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 # If httpd_copy_ssl_files is false you need to provide the following variables:

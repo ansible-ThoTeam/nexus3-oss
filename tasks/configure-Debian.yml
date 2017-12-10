@@ -2,6 +2,5 @@
 
 httpd_package_name: "apache2"
 httpd_config_dir: "/etc/{{ httpd_package_name }}/sites-enabled"
-selinux_enabled: false
 certificate_file_dest: "/etc/ssl/certs"
 certificate_key_dest: "/etc/ssl/private"

@@ -1,4 +1,13 @@
 ---
+
+- name: Include OS specific variables.
+  include_vars: "configure-{{ ansible_os_family }}.yml"
+
+- name: Check if SystemD service is installed
+  stat:
+    path: /etc/systemd/system/nexus.service
+  register: nexus_systemd_service_file
+
 - include: nexus_purge.yml
   when: ((purge is defined) and (purge | bool))
 

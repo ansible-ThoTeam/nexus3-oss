@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 thisScriptPath=`dirname $(readlink -f $0)`
 groovyScriptsPath=`dirname $thisScriptPath`/files/groovy

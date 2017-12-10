@@ -4,6 +4,8 @@
     url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
     force: no
+  notify:
+    - nexus-service-stop
 
 - name: Ensure Nexus o/s group exists
   group:
@@ -29,15 +31,10 @@
     creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     force: no
     copy: false
+  notify:
+    - nexus-service-stop
 
-- name: Check if SystemD service is installed
-  stat:
-    path: /etc/systemd/system/nexus.service
-  register: nexus_systemd_service_file
-
-- name: Stop systemd service
-  shell: 'systemctl stop nexus.service'
-  when: nexus_systemd_service_file.stat.exists
+- meta: flush_handlers
 
 - name: Update symlink nexus-latest
   file:
@@ -166,10 +163,8 @@
   template:
     src: "nexus.service"
     dest: "/etc/systemd/system"
-
-# systemd available from ansible 2.2 only
-# - name: Enable nexus service
-#   systemd: name=nexus daemon_reload=yes enabled=yes state=started
+  notify:
+    - systemd-reload
 
 - name: "Register scripts to be deployed"
   set_fact:
@@ -201,25 +196,18 @@
     state: touch
   when: nexus_latest_version.changed and nexus_data_dir_contents.stdout != ""
 
-- name: Reload systemd service configuration
-  shell: 'systemctl daemon-reload'
+- meta: flush_handlers
 
-- name: Enable systemd service
-  shell: 'systemctl enable nexus.service'
+- name: Enable nexus service and make sure it is started
+  systemd:
+    name: nexus.service
+    enabled: yes
+    state: started
+  notify:
+    - wait-for-nexus
+    - wait-for-nexus-port
 
-- name: Restart systemd service
-  shell: 'systemctl restart nexus.service'
-
-- name: Waiting for Nexus service to be ready...
-  wait_for:
-    path: "{{ nexus_data_dir }}/log/nexus.log"
-    search_regex: "Started Sonatype Nexus OSS .*"
-    timeout: 1800
-
-- name: Waiting for nexus to be ready...
-  wait_for:
-    port: "{{ nexus_default_port }}"
-    delay: 5
+- meta: flush_handlers
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:
@@ -250,48 +238,30 @@
   when: nexus_data_dir_contents.stdout != ""
   no_log: true
 
+- name: Create directory to hold current groovy scripts for reference
+  file:
+    path: "{{ nexus_data_dir }}/groovy-raw-scripts/current"
+    state: directory
+    owner: root
+    group: root
+
+- name: Upload new scripts
+  synchronize:
+    archive: no
+    checksum: yes
+    recursive: yes
+    delete: yes
+    mode: push
+    src: "files/groovy/"
+    dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+
+- name: Sync new scripts to old and get differences
+  shell: 'rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/ | cut -d" " -f 2 | sed "s/\.groovy//g"'
+  register: nexus_groovy_files_changed
+  changed_when: false
+
 - include: declare_script_each.yml
-  with_items:
-    - update_admin_password
-    - setup_ldap
-    - setup_anonymous_access
-    - setup_base_url
-    - setup_capability
-    - setup_http_proxy
-    - setup_role
-    - setup_privilege
-    - setup_user
-    - setup_realms
-    - setup_email
-    - delete_repo
-    - delete_blobstore
-    - create_blobstore
-    - create_repo_maven_proxy
-    - create_repo_maven_group
-    - create_repo_maven_hosted
-    - create_repo_docker_hosted
-    - create_repo_docker_proxy
-    - create_repo_docker_group
-    - create_repo_pypi_hosted
-    - create_repo_pypi_proxy
-    - create_repo_pypi_group
-    - create_repo_raw_hosted
-    - create_repo_raw_proxy
-    - create_repo_raw_group
-    - create_repo_rubygems_hosted
-    - create_repo_rubygems_proxy
-    - create_repo_rubygems_group
-    - create_repo_bower_hosted
-    - create_repo_bower_proxy
-    - create_repo_bower_group
-    - create_repo_npm_hosted
-    - create_repo_npm_proxy
-    - create_repo_npm_group
-    - create_repo_nuget_hosted
-    - create_repo_nuget_proxy
-    - create_repo_nuget_group
-    - create_repo_gitlfs_hosted
-    - create_task
+  with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"
 
 - name: "Config nexus-backup shell cron"
   cron:
