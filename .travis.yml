@@ -5,10 +5,7 @@ language: python
 cache: pip
 services:
   - docker
-before_install:
-  - sudo apt-get update
-  - sudo apt-get -y install groovy
 install:
   - pip install -r requirements.txt
 script:
-  - ./tests/run_all_tests.sh
+  - ./tests/test_molecule.sh

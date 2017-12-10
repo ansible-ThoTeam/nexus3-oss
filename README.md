@@ -360,6 +360,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
 ## Example Playbook
 
 ```yaml
+
 ---
 - name: Nexus
   hosts: nexus
@@ -463,10 +464,11 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     - { role: ansible-ThoTeam.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
-
 ```
 
-## Development, contribution and testing
+## Development, Contribution and Testing
+
+### Contributions
 
 All contributions to this role are welcome, either for bugfixes, new features or documentation.
 
@@ -475,11 +477,48 @@ If you wish to contribute:
 - Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
   - feature_<someFeature> for features
   - fix_<someBugFix> for bug fixes
-- If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed.
+- If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
 Moreover, if you have time to devote for code review, merge for realeases, etc... drop an email to contact@thoteam.com to get in touch.
 
+
+### Testing
+
+This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only molecule deployment tests are ran automatically on every merge request creation/upate.
+
+#### Groovy syntax
+
+This role contains a set of groovy files used to provision nexus. Those files seldom change and tests on travis require a lot of time for setup/run. So they are not run automatically.
+
+If you submit changes to groovy files, please run the groovy syntax check locally before pushing your changes
+```bash
+./tests/test_groovySyntax.sh
+```
+
+You will need the groovy package installed locally to run this test.
+
+#### Full role testing with molecule
+
+The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
+```bash
+# Note: the following path should be outside the working dir
+virtualenv /path/to/some/pyenv
+. /path/to/some/pyenv/bin/activate
+pip install -r requirements.txt
+./tests/test_molecule.sh
+deactivate
+```
+
+To speed up tests, molecule uses automated docker build images on docker hub:
+- https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
+- https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+
+#### Testing everything
+As a convenience, we provide a script to run all test as once:
+```bash
+./tests/test_all.sh
+```
 
 License
 -------
