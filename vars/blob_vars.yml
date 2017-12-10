@@ -1,5 +1,5 @@
 ---
-nexus_blob_prefix: 'blob-' # Note: Nexus restore - blob name-convention 'blob-*'
+nexus_blob_prefix: 'blob-'  # Note: Nexus restore - blob name-convention 'blob-*'
 nexus_blob_names:
   pypi:
     blob: '{{ nexus_blob_prefix }}pypi'

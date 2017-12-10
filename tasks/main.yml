@@ -79,78 +79,78 @@
   with_items: "{{ nexus_repos_maven_group }}"
 
 - block:
-  - include: create_repo_docker_hosted_each.yml
-    with_items: "{{ nexus_repos_docker_hosted }}"
+    - include: create_repo_docker_hosted_each.yml
+      with_items: "{{ nexus_repos_docker_hosted }}"
 
-  - include: create_repo_docker_proxy_each.yml
-    with_items: "{{ nexus_repos_docker_proxy }}"
+    - include: create_repo_docker_proxy_each.yml
+      with_items: "{{ nexus_repos_docker_proxy }}"
 
-  - include: create_repo_docker_group_each.yml
-    with_items: "{{ nexus_repos_docker_group }}"
+    - include: create_repo_docker_group_each.yml
+      with_items: "{{ nexus_repos_docker_group }}"
   when: nexus_config_docker
 
 - block:
-  - include: create_repo_pypi_proxy_each.yml
-    with_items: "{{ nexus_repos_pypi_proxy }}"
+    - include: create_repo_pypi_proxy_each.yml
+      with_items: "{{ nexus_repos_pypi_proxy }}"
 
-  - include: create_repo_pypi_hosted_each.yml
-    with_items: "{{ nexus_repos_pypi_hosted }}"
+    - include: create_repo_pypi_hosted_each.yml
+      with_items: "{{ nexus_repos_pypi_hosted }}"
 
-  - include: create_repo_pypi_group_each.yml
-    with_items: "{{ nexus_repos_pypi_group }}"
+    - include: create_repo_pypi_group_each.yml
+      with_items: "{{ nexus_repos_pypi_group }}"
   when: nexus_config_pypi
 
 - block:
-  - include: create_repo_raw_proxy_each.yml
-    with_items: "{{ nexus_repos_raw_proxy }}"
+    - include: create_repo_raw_proxy_each.yml
+      with_items: "{{ nexus_repos_raw_proxy }}"
 
-  - include: create_repo_raw_hosted_each.yml
-    with_items: "{{ nexus_repos_raw_hosted }}"
+    - include: create_repo_raw_hosted_each.yml
+      with_items: "{{ nexus_repos_raw_hosted }}"
 
-  - include: create_repo_raw_group_each.yml
-    with_items: "{{ nexus_repos_raw_group }}"
+    - include: create_repo_raw_group_each.yml
+      with_items: "{{ nexus_repos_raw_group }}"
   when: nexus_config_raw
 
 - block:
-  - include: create_repo_rubygems_proxy_each.yml
-    with_items: "{{ nexus_repos_rubygems_proxy }}"
+    - include: create_repo_rubygems_proxy_each.yml
+      with_items: "{{ nexus_repos_rubygems_proxy }}"
 
-  - include: create_repo_rubygems_hosted_each.yml
-    with_items: "{{ nexus_repos_rubygems_hosted }}"
+    - include: create_repo_rubygems_hosted_each.yml
+      with_items: "{{ nexus_repos_rubygems_hosted }}"
 
-  - include: create_repo_rubygems_group_each.yml
-    with_items: "{{ nexus_repos_rubygems_group }}"
+    - include: create_repo_rubygems_group_each.yml
+      with_items: "{{ nexus_repos_rubygems_group }}"
   when: nexus_config_rubygems
 
 - block:
-  - include: create_repo_bower_proxy_each.yml
-    with_items: "{{ nexus_repos_bower_proxy }}"
+    - include: create_repo_bower_proxy_each.yml
+      with_items: "{{ nexus_repos_bower_proxy }}"
 
-  - include: create_repo_bower_hosted_each.yml
-    with_items: "{{ nexus_repos_bower_hosted }}"
+    - include: create_repo_bower_hosted_each.yml
+      with_items: "{{ nexus_repos_bower_hosted }}"
 
-  - include: create_repo_bower_group_each.yml
-    with_items: "{{ nexus_repos_bower_group }}"
+    - include: create_repo_bower_group_each.yml
+      with_items: "{{ nexus_repos_bower_group }}"
   when: nexus_config_bower
 
 - block:
-  - include: create_repo_npm_proxy_each.yml
-    with_items: "{{ nexus_repos_npm_proxy }}"
+    - include: create_repo_npm_proxy_each.yml
+      with_items: "{{ nexus_repos_npm_proxy }}"
 
-  - include: create_repo_npm_hosted_each.yml
-    with_items: "{{ nexus_repos_npm_hosted }}"
+    - include: create_repo_npm_hosted_each.yml
+      with_items: "{{ nexus_repos_npm_hosted }}"
 
-  - include: create_repo_npm_group_each.yml
-    with_items: "{{ nexus_repos_npm_group }}"
+    - include: create_repo_npm_group_each.yml
+      with_items: "{{ nexus_repos_npm_group }}"
   when: nexus_config_npm
 
 - block:
-  - include: create_repo_nuget_proxy_each.yml
-    with_items: "{{ nexus_repos_nuget_proxy }}"
-  - include: create_repo_nuget_hosted_each.yml
-    with_items: "{{ nexus_repos_nuget_hosted }}"
-  - include: create_repo_nuget_group_each.yml
-    with_items: "{{ nexus_repos_nuget_group }}"
+    - include: create_repo_nuget_proxy_each.yml
+      with_items: "{{ nexus_repos_nuget_proxy }}"
+    - include: create_repo_nuget_hosted_each.yml
+      with_items: "{{ nexus_repos_nuget_hosted }}"
+    - include: create_repo_nuget_group_each.yml
+      with_items: "{{ nexus_repos_nuget_group }}"
   when: nexus_config_nuget
 
 
