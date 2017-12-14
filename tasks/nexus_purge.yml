@@ -16,6 +16,7 @@
     - "{{ nexus_data_dir }}"
     - "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     - "{{ nexus_restore_log }}"
+    - "{{ nexus_installation_dir }}/nexus-latest"
     # - "{{ nexus_backup_dir }}" # Optional
 
 - name: "remove nexus package if present"

@@ -86,6 +86,8 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
+  when: nexus_latest_version.changed
+  register: chown_config_first_time
 
 - name: Create Nexus data directory
   file:
@@ -189,6 +191,7 @@
 - name: 'Check if data directory is empty (first-time install)'
   command: "ls {{ nexus_data_dir }}"
   register: nexus_data_dir_contents
+  changed_when: false
 
 - name: Clean cache for upgrade process
   file:
@@ -216,6 +219,7 @@
     group: "root"
     mode: a=rX,u+w
     recurse: true
+  when: chown_config_first_time.changed
 
 - name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
