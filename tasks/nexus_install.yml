@@ -270,8 +270,8 @@
 - name: "Config nexus-backup shell cron"
   cron:
     name: "Backup nexus Blobstore"
-    minute: "1"
-    hour: "21"
+    minute: "{{ nexus_backup_time_minute + nexus_backup_cron_delay }}"
+    hour: "{{ nexus_backup_time_hour }}"
     job: "/sbin/nexus-blob-backup.sh 2>&1 | tee {{ nexus_backup_log }}"
     state: present
     user: "root"

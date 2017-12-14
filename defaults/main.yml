@@ -203,15 +203,26 @@ nexus_repos_maven_group:
       - central
       - jboss
 
+########
+# Nexus Backup
+# Backup time configuration
+# Hour and minute for the schedulled task in nexus
+nexus_backup_time_hour: 21
+nexus_backup_time_minute: 0
+# Introduce a delay (in minutes) between the schedulled task in nexus
+# and the cron to backup blobstores -> ask: "Config nexus-backup shell cron
+# If there is no delay and the nexus schedulled task is too long to complete
+# the corresponding *.bak files will not be moved in the restore point directory
+# @todo: fix the backup workflow so that we can use the exact same time
+nexus_backup_cron_delay: 1
 
 nexus_scheduled_tasks:
   - name: db-backup  # Note: CRON must be aligned to nexus-blob-backup.sh cron schedule. -> Task: "Config nexus-backup shell cron"
-    cron: '0 0 21 * * ?'
+    cron: '0 {{ nexus_backup_time_minute }} {{ nexus_backup_time_hour }} * * ?'
     typeId: db.backup
     task_alert_email: alerts@example.org  # optional
     taskProperties:
       location: "{{ nexus_backup_dir }}/"
-
 
 #  example task to compact blobstore :
 #  - name: compact-blobstore
