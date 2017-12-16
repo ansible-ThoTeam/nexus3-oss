@@ -4,10 +4,18 @@
   connection: local
   gather_facts: False
   no_log: "{{ not lookup('env', 'MOLECULE_DEBUG') | bool }}"
+
   vars:
     molecule_file: "{{ lookup('env', 'MOLECULE_FILE') }}"
     molecule_yml: "{{ lookup('file', molecule_file) | from_yaml }}"
+    molecule_ephemeral_directory: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
+
   tasks:
+
+    - name: include variables from tested playbook
+      include_vars:
+        file: "{{ molecule_ephemeral_directory }}/../../../defaults/main.yml"
+
     - name: Create molecule instance(s)
       docker_container:
         name: "{{ item.name }}"
@@ -20,4 +28,19 @@
         privileged: "{{ item.privileged | default(omit) }}"
         volumes: "{{ item.volumes | default(omit) }}"
         capabilities: "{{ item.capabilities | default(omit) }}"
+        ports: "{{ item.ports | default(omit) }}"
+      with_items: "{{ molecule_yml.platforms }}"
+
+    - name: get the current nexus version
+      get_url:
+        url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
+        dest: "{{ molecule_ephemeral_directory }}"
+        force: no
+
+    - name: create the nexus default dir into images
+      shell: "docker exec {{ item.name }} mkdir -p {{ nexus_installation_dir }}"
+      with_items: "{{ molecule_yml.platforms }}"
+
+    - name: copy nexus package do default image location into images
+      shell: "docker cp {{ molecule_ephemeral_directory }}/{{ nexus_package }} {{ item.name }}:{{ nexus_installation_dir }}"
       with_items: "{{ molecule_yml.platforms }}"

@@ -2,7 +2,10 @@
 
 sudo: required
 language: python
-cache: pip
+cache:
+  pip: true
+  directories:
+    - molecule/default/.molecule
 services:
   - docker
 install:
