@@ -21,7 +21,7 @@ platforms:
   - name: centos-7
     image: thoteam/ansible-centos7-apache-java
     image_version: latest
-    command: /lib/systemd/systemd
+    command: /usr/sbin/init
     privileged: true
     ports:
       - 8091:443
