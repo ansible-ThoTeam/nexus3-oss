@@ -48,6 +48,7 @@ scenario:
   test_sequence:
     - lint
     - destroy
+    - syntax
     - create
     - converge
     - idempotence
