@@ -4,6 +4,8 @@ dependency:
 
 driver:
   name: docker
+  safe_files:
+    - nexus-downloads
 
 lint:
   name: yamllint
