@@ -23,6 +23,7 @@
         image: "{{ item.image }}"
         state: started
         recreate: False
+        pull: true
         log_driver: syslog
         command: "{{ item.command | default('sleep infinity') }}"
         privileged: "{{ item.privileged | default(omit) }}"
