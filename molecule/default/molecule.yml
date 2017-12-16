@@ -16,11 +16,15 @@ platforms:
     image_version: latest
     command: /lib/systemd/systemd
     privileged: true
+    ports:
+      - 8090:443
   - name: centos-7
     image: thoteam/ansible-centos7-apache-java
     image_version: latest
     command: /lib/systemd/systemd
     privileged: true
+    ports:
+      - 8091:443
 
 provisioner:
   name: ansible
