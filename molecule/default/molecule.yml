@@ -45,8 +45,6 @@ scenario:
   converge_sequence:
     - create
     - converge
-  destroy_sequence:
-    - destroy
   test_sequence:
     - lint
     - destroy
