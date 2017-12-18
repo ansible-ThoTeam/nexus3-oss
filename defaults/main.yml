@@ -11,8 +11,8 @@ nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC'  # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
-nexus_restore_log: '/var/log/nexus-restore.log'
-nexus_backup_log: '/var/log/nexus-backup.log'
+nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
 
 # Nexus restore procedure:
 # run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %y-%m-%d #)"
