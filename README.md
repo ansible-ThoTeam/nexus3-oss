@@ -1,8 +1,22 @@
 # Ansible Role: Nexus 3 OSS
 
-This role installs and configures Nexus Repository Manager OSS version 3.x. 
+This role installs and configures Nexus Repository Manager OSS version 3.x.
 
 All configuration can be updated by re-running the role, except forthe [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
+
+* [History / Credits](#history--credits)
+* [Requirements](#requirements)
+* [Role Variables](#role-variables)
+* [Dependencies](#dependencies)
+* [Example Playbook](#example-playbook)
+* [Development, Contribution and Testing](#development-contribution-and-testing)
+* [Contributions](#contributions)
+* [Testing](#testing)
+    * [Groovy syntax](#groovy-syntax)
+    * [Full role testing with molecule](#full-role-testing-with-molecule)
+    * [Testing everything](#testing-everything)
+* [License](#license)
+* [Author Information](#author-information)
 
 ## History / Credits
 
