@@ -184,6 +184,7 @@
 - name: 'Check if data directory is empty (first-time install)'
   command: "ls {{ nexus_data_dir }}"
   register: nexus_data_dir_contents
+  check_mode: no
   changed_when: false
 
 - name: Clean cache for upgrade process
@@ -255,7 +256,9 @@
 - name: Sync new scripts to old and get differences
   shell: 'rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/ | cut -d" " -f 2 | sed "s/\.groovy//g"'
   register: nexus_groovy_files_changed
+  check_mode: no
   changed_when: false
 
-- include: declare_script_each.yml
+- name: Declare new or changed groovy scripts in nexus
+  include: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"
