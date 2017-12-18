@@ -363,6 +363,40 @@ see `defaults/main.yml` for these options:
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.
 
+```yaml
+      nexus_backup_configure: false
+      nexus_backup_cron: '* 0 21 * * ?'  # See cron expressions definition in nexus create task gui
+      nexus_backup_dir: '/var/nexus-backup'
+      nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
+      nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+```
+
+Backup will not be configured unless you switch `nexus_backup_configure` to `true`.
+In this case, a scheduled script task will be configured in nexus to run every day
+at time specified by `nexus_backup_cron` (defaults to 9pm).
+See [the groovy template for this task](templates/backup.groovy.j2) for details.
+
+Note that `nexus_backup_log` must be writable by the nexus user or the backup
+task will fail
+
+**Restore procedure**
+
+Run your playbook with parameter `-e nexus_restore_point=<YY-MM-dd>`
+(e.g. 17-12-17 for 17th of December 2017)
+
+**Current limitations:**
+* Due to the initial chosen naming convention for restore points,
+backups can only be ran once a day (this will be fixed in a future release - see #19).
+Running more than once a day will work without errors but will:
+    * overwrite the last blobstore copy in the current daily backup dir
+    * multiply the instances of nexus db backup files in the daily backup dir
+    which might later confuse the restore script.
+* Blobstore copies are made directly from nexus by the script scheduled task.
+This has only been tested on rather small blobstores (less than 50Go) and should
+be used with caution and tested carefully on larger installations before moving
+to production. In any case, you are free to implement your own backup scenario.
+
+
 ## Dependencies
 
 This role requires Ansible 2.2 or higher.
