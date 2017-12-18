@@ -1,8 +1,22 @@
 # Ansible Role: Nexus 3 OSS
 
-This role installs and configures Nexus Repository Manager OSS version 3.x. 
+This role installs and configures Nexus Repository Manager OSS version 3.x.
 
 All configuration can be updated by re-running the role, except forthe [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
+
+* [History / Credits](#history--credits)
+* [Requirements](#requirements)
+* [Role Variables](#role-variables)
+* [Dependencies](#dependencies)
+* [Example Playbook](#example-playbook)
+* [Development, Contribution and Testing](#development-contribution-and-testing)
+* [Contributions](#contributions)
+* [Testing](#testing)
+    * [Groovy syntax](#groovy-syntax)
+    * [Full role testing with molecule](#full-role-testing-with-molecule)
+    * [Testing everything](#testing-everything)
+* [License](#license)
+* [Author Information](#author-information)
 
 ## History / Credits
 
@@ -15,7 +29,7 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- Minimum ansible version 2.3 (see meta/main.yml)
+- Minimum ansible version 2.2 (see meta/main.yml). Due to the use of the ansible [synchronize module](http://docs.ansible.com/ansible/latest/synchronize_module.html) you will need _version 2.3 for tests with molecule (using docker containers)_.
 - This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
 - Java 8 (mandatory)
     - Oracle Java 8 is the official supported platform by Sonatype
@@ -33,7 +47,7 @@ We would like to thank the original authors for the work done.
 Ansible variables, along with the default values (see `default/main.yml`) :
 
 ```yaml
-    nexus_version: '3.1.0-04'
+    nexus_version: '3.6.1-02'
     nexus_timezone: 'UTC'
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 ```
@@ -349,9 +363,43 @@ see `defaults/main.yml` for these options:
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.
 
+```yaml
+      nexus_backup_configure: false
+      nexus_backup_cron: '* 0 21 * * ?'  # See cron expressions definition in nexus create task gui
+      nexus_backup_dir: '/var/nexus-backup'
+      nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
+      nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+```
+
+Backup will not be configured unless you switch `nexus_backup_configure` to `true`.
+In this case, a scheduled script task will be configured in nexus to run every day
+at time specified by `nexus_backup_cron` (defaults to 9pm).
+See [the groovy template for this task](templates/backup.groovy.j2) for details.
+
+Note that `nexus_backup_log` must be writable by the nexus user or the backup
+task will fail
+
+**Restore procedure**
+
+Run your playbook with parameter `-e nexus_restore_point=<YY-MM-dd>`
+(e.g. 17-12-17 for 17th of December 2017)
+
+**Current limitations:**
+* Due to the initial chosen naming convention for restore points,
+backups can only be ran once a day (this will be fixed in a future release - see #19).
+Running more than once a day will work without errors but will:
+    * overwrite the last blobstore copy in the current daily backup dir
+    * multiply the instances of nexus db backup files in the daily backup dir
+    which might later confuse the restore script.
+* Blobstore copies are made directly from nexus by the script scheduled task.
+This has only been tested on rather small blobstores (less than 50Go) and should
+be used with caution and tested carefully on larger installations before moving
+to production. In any case, you are free to implement your own backup scenario.
+
+
 ## Dependencies
 
-This role requires Ansible 2.1 or higher.
+This role requires Ansible 2.2 or higher.
 
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
   - [ansiblebit.oracle-java](https://galaxy.ansible.com/ansiblebit/oracle-java/)

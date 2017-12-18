@@ -9,7 +9,7 @@ final File file
 final CompilationUnit unit
 final URL url
 
-file = new File('files/groovy/'+args[0])
+file = new File(args[0])
 url = file.toURI().toURL()
 unit = new CompilationUnit(
         CompilerConfiguration.DEFAULT,

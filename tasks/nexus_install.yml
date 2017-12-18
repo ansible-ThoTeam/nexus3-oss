@@ -168,25 +168,18 @@
   notify:
     - systemd-reload
 
-- name: "Register scripts to be deployed"
-  set_fact:
-    nexus_deployed_scripts:
-      - nexus-blob-backup.sh
-      - nexus-blob-restore.sh
-
-- name: "Deploy scripts"
-  template:
-    src: "{{ item }}.j2"
-    dest: "{{ nexus_script_dir }}/{{ item }}"
-    mode: 0755
-  with_items: "{{ nexus_deployed_scripts }}"
-
-- name: "Symlink scripts to /sbin"
-  file:
-    src: "{{ nexus_script_dir }}/{{ item }}"
-    dest: "/sbin/{{ item }}"
-    state: link
-  with_items: "{{ nexus_deployed_scripts }}"
+- block:
+    - name: "Deploy backup restore script"
+      template:
+        src: "nexus-blob-restore.sh.j2"
+        dest: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
+        mode: 0755
+    - name: "Symlink backup restore script to /sbin"
+      file:
+        src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
+        dest: "/sbin/nexus-blob-restore.sh"
+        state: link
+  when: nexus_backup_configure | bool
 
 - name: 'Check if data directory is empty (first-time install)'
   command: "ls {{ nexus_data_dir }}"
@@ -266,12 +259,3 @@
 
 - include: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"
-
-- name: "Config nexus-backup shell cron"
-  cron:
-    name: "Backup nexus Blobstore"
-    minute: "1"
-    hour: "21"
-    job: "/sbin/nexus-blob-backup.sh 2>&1 | tee {{ nexus_backup_log }}"
-    state: present
-    user: "root"

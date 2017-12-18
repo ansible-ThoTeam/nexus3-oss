@@ -11,8 +11,8 @@ nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC'  # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
-nexus_restore_log: '/var/log/nexus-restore.log'
-nexus_backup_log: '/var/log/nexus-backup.log'
+nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
 
 # Nexus restore procedure:
 # run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %y-%m-%d #)"
@@ -203,16 +203,15 @@ nexus_repos_maven_group:
       - central
       - jboss
 
+########
+# Nexus Backup
+# Shall we configure backup ?
+nexus_backup_configure: false
+# Backup time cron expression
+# Current limitation: can only be ran once a day
+nexus_backup_cron: "* 0 21 * * ?"  # See cron expression in nexus create task GUI
 
-nexus_scheduled_tasks:
-  - name: db-backup  # Note: CRON must be aligned to nexus-blob-backup.sh cron schedule. -> Task: "Config nexus-backup shell cron"
-    cron: '0 0 21 * * ?'
-    typeId: db.backup
-    task_alert_email: alerts@example.org  # optional
-    taskProperties:
-      location: "{{ nexus_backup_dir }}/"
-
-
+nexus_scheduled_tasks: []
 #  example task to compact blobstore :
 #  - name: compact-blobstore
 #    cron: '0 0 22 * * ?'

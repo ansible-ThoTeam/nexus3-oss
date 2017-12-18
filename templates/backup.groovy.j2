@@ -1,0 +1,58 @@
+import java.time.LocalDateTime
+import org.apache.commons.io.FileUtils
+import java.time.format.DateTimeFormatter
+import org.sonatype.nexus.scheduling.TaskConfiguration
+import org.sonatype.nexus.scheduling.TaskScheduler
+import org.sonatype.nexus.scheduling.TaskInfo
+import org.sonatype.nexus.scheduling.schedule.Schedule
+import java.util.concurrent.TimeUnit
+
+/**
+ * This groovy script is meant to be included in a schedulled task in nexus.
+ * It will perform a full backup of your installation with the following steps.
+ * 1- Create a blob-backup-<YY-MM-dd> folder in <nexusBackupDirPath> directory
+ * 2- Create a temporary nexus db-backup task to store db backup in <nexusBackupDirPath>/blob-backup-<YY-MM-dd>/db
+ * 3- Start running the temporary task
+ * 4- Copy all blobstores from <nexusDataDirPath>/blobs to <nexusBackupDirPath>/blob-backup-<YY-MM-dd>
+ * 5- Eventually wait for the nexus temporary db-backup task to complete
+ * 6- Delete the nexus temporary db-backup task
+ */
+
+
+nexusBackupLogFilePath = "{{ nexus_backup_log }}"
+nexusBackupDirPath = "{{ nexus_backup_dir }}"
+nexusDataDirPath = "{{ nexus_data_dir }}"
+
+backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('YY-MM-dd'))
+CurrentBackupDirPath = nexusBackupDirPath+'/blob-backup-'+backupDateString
+
+backupLog = new File(nexusBackupLogFilePath)
+
+/** Clear log from previous backup */
+backupLog.text = ""
+
+try {
+    backupLog << "Backup directory is "+CurrentBackupDirPath+"\n"
+    backupLog << "Create a temporary task to backup nexus db in "+CurrentBackupDirPath+"/db\n"
+    TaskScheduler taskScheduler = container.lookup(TaskScheduler.class.getName())
+    TaskConfiguration tempBackupTaskConfiguration = taskScheduler.createTaskConfigurationInstance('db.backup')
+    tempBackupTaskConfiguration.setName('Temporary db.backup task')
+    tempBackupTaskConfiguration.setString('location', CurrentBackupDirPath+'/db')
+    Schedule schedule = taskScheduler.scheduleFactory.manual()
+    TaskInfo tempBackupTask = taskScheduler.scheduleTask(tempBackupTaskConfiguration, schedule)
+
+    backupLog << "Run the temporay db backup task\n"
+    tempBackupTask.runNow()
+
+    backupLog << "Copy the blobstores into "+CurrentBackupDirPath+"\n"
+    FileUtils.copyDirectory(new File(nexusDataDirPath+'/blobs'), new File(CurrentBackupDirPath))
+
+    backupLog << "Wait for temporary db backup task to finish\n"
+    while (tempBackupTask.currentState.state != TaskInfo.State.WAITING) {
+        TimeUnit.SECONDS.sleep(1)
+    }
+    backupLog << "Remove temporary task\n"
+    tempBackupTask.remove()
+} catch (Exception e) {
+    backupLog << e.toString()
+}
