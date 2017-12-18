@@ -29,7 +29,7 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- Minimum ansible version 2.3 (see meta/main.yml)
+- Minimum ansible version 2.2 (see meta/main.yml). Due to the use of the ansible [synchronize module](http://docs.ansible.com/ansible/latest/synchronize_module.html) you will need _version 2.3 for tests with molecule (using docker containers)_.
 - This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
 - Java 8 (mandatory)
     - Oracle Java 8 is the official supported platform by Sonatype
@@ -365,7 +365,7 @@ These are all false unless you override them from playbook / group_var / cli, th
 
 ## Dependencies
 
-This role requires Ansible 2.1 or higher.
+This role requires Ansible 2.2 or higher.
 
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
   - [ansiblebit.oracle-java](https://galaxy.ansible.com/ansiblebit/oracle-java/)
