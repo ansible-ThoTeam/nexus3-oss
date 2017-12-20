@@ -3,6 +3,10 @@
 - name: Include OS specific variables.
   include_vars: "configure-{{ ansible_os_family }}.yml"
 
+- name: Include OS specific selinux libs and utils if needed
+  include: "selinux-{{ ansible_os_family }}.yml"
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service
