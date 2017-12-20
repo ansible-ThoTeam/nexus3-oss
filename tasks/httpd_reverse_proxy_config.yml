@@ -12,7 +12,7 @@
   copy:
     src: "{{ httpd_ssl_certificate_file }}"
     dest: "{{ certificate_file_dest }}"
-    mode: 600
+    mode: 0600
   when: httpd_copy_ssl_files
   notify:
     - httpd-service-reload
@@ -22,7 +22,7 @@
   copy:
     src: "{{ httpd_ssl_certificate_key_file }}"
     dest: "{{ certificate_key_dest }}"
-    mode: 600
+    mode: 0600
   when: httpd_copy_ssl_files
   notify:
     - httpd-service-reload
