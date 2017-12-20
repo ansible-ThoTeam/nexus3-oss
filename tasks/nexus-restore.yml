@@ -1,6 +1,11 @@
 ---
 - name: "Run restoration script"
   shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a {{ nexus_restore_log }}"
+  tags:
+    # This is only run when a restore point is defined
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lint
+
   notify:
     - nexus-service-restart
     - wait-for-nexus
