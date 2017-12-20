@@ -19,3 +19,5 @@ ansible>=2.3,<2.4
 molecule
 # Latest docker-py
 docker-py
+# Python vagrant only needed for local test for selinux
+# python-vagrant

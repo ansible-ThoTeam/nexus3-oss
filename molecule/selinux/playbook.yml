@@ -1,6 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  become: yes
   pre_tasks:
     - name: configure default ssl key and cert based on OS
       include_vars: "../ssl-{{ ansible_os_family }}.yml"
@@ -11,5 +12,3 @@
     httpd_copy_ssl_files: false
     httpd_ssl_cert_file_location: "{{ default_cert }}"
     httpd_ssl_cert_key_location: "{{ default_key }}"
-    public_hostname: localhost
-    nexus_backup_configure: true
