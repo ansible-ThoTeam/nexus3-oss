@@ -214,14 +214,44 @@ nexus_backup_configure: false
 # Current limitation: can only be ran once a day
 nexus_backup_cron: "* 0 21 * * ?"  # See cron expression in nexus create task GUI
 
+# Scheduled tasks
+# Note: these are tasks you define by yourself (default: none)
+# If you used `nexus_backup_configure: true` above you will see a scheduled task for this
+# in your GUI which is not part of the below list
 nexus_scheduled_tasks: []
-#  example task to compact blobstore :
-#  - name: compact-blobstore
+#  #  Example task to compact blobstore :
+#  - name: compact-docker-blobstore
 #    cron: '0 0 22 * * ?'
 #    typeId: blobstore.compact
-#    task_alert_email: alerts@example.org # optional
+#    task_alert_email: alerts@example.org  # optional
 #    taskProperties:
-#      blobstoreName: 'default' # all task attributes are stored as strings by nexus internally
+#      blobstoreName: {{ nexus_blob_names.docker.blob }} # all task attributes are stored as strings by nexus internally
+#  #  Example task to purge maven snapshots
+#  - name: Purge-maven-snapshots
+#    cron: '0 50 23 * * ?'
+#    typeId: repository.maven.remove-snapshots
+#    task_alert_email: alerts@example.org  # optional
+#    taskProperties:
+#      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+#      minimumRetained: "2"
+#      snapshotRetentionDays: "2"
+#      gracePeriodInDays: "2"
+#    booleanTaskProperties:
+#      removeIfReleased: true
+#  #  Example task to purge unused docker manifest and images
+#  - name: Purge unused docker manifests and images
+#    cron: '0 55 23 * * ?'
+#    typeId: "repository.docker.gc"
+#    task_alert_email: alerts@example.org  # optional
+#    taskProperties:
+#      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+#  #  Example task to purge incomplete docker uploads
+#  - name: Purge incomplete docker uploads
+#    cron: '0 0 0 * * ?'
+#    typeId: "repository.docker.upload-purge"
+#    task_alert_email: alerts@example.org  # optional
+#    taskProperties:
+#      age: "24"
 
 _nexus_privilege_defaults:
   type: repository-view
