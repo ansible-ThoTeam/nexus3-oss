@@ -292,15 +292,49 @@ Delete the default blobstore from the nexus install initial default configuratio
 
 ```yaml
     nexus_scheduled_tasks: []
-    #  example task to compact blobstore :
-    #  - name: compact-blobstore
+    #  #  Example task to compact blobstore :
+    #  - name: compact-docker-blobstore
     #    cron: '0 0 22 * * ?'
     #    typeId: blobstore.compact
+    #    task_alert_email: alerts@example.org  # optional
     #    taskProperties:
-    #      blobstoreName: 'default' # all task attributes are stored as strings by nexus internally
+    #      blobstoreName: {{ nexus_blob_names.docker.blob }} # all task attributes are stored as strings by nexus internally
+    #  #  Example task to purge maven snapshots
+    #  - name: Purge-maven-snapshots
+    #    cron: '0 50 23 * * ?'
+    #    typeId: repository.maven.remove-snapshots
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+    #      minimumRetained: "2"
+    #      snapshotRetentionDays: "2"
+    #      gracePeriodInDays: "2"
+    #    booleanTaskProperties:
+    #      removeIfReleased: true
+    #  #  Example task to purge unused docker manifest and images
+    #  - name: Purge unused docker manifests and images
+    #    cron: '0 55 23 * * ?'
+    #    typeId: "repository.docker.gc"
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+    #  #  Example task to purge incomplete docker uploads
+    #  - name: Purge incomplete docker uploads
+    #    cron: '0 0 0 * * ?'
+    #    typeId: "repository.docker.upload-purge"
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      age: "24"
 ```
 
-[Scheduled tasks](https://books.sonatype.com/nexus-book/reference3/admin.html#admin-system-tasks) to setup. `typeId` and task-specific `taskProperties` can be guessed either from the java type hierarchy of `org.sonatype.nexus.scheduling.TaskDescriptorSupport` or from peeking at the browser AJAX requests while manually configuring a task.
+[Scheduled tasks](https://books.sonatype.com/nexus-book/reference3/admin.html#admin-system-tasks) to setup. `typeId` and task-specific `taskProperties`/`booleanTaskProperties` can be guessed either:
+* from the java type hierarchy of `org.sonatype.nexus.scheduling.TaskDescriptorSupport`
+* by inspecting the task creation html form in your browser
+* from peeking at the browser AJAX requests while manually configuring a task.
+
+**Task properties must be declared in the correct yaml block depending on their type**:
+* `taskProperties` for all string properties (i.e. repository names, blobstore names, time periods...).
+* `booleanTaskProperties` for all boolean properties (i.e. mainly checkboxes in nexus create task GUI).
 
 ```yaml
     nexus_repos_maven_proxy:
@@ -376,6 +410,8 @@ Backup will not be configured unless you switch `nexus_backup_configure` to `tru
 In this case, a scheduled script task will be configured in nexus to run every day
 at time specified by `nexus_backup_cron` (defaults to 9pm).
 See [the groovy template for this task](templates/backup.groovy.j2) for details.
+This scheduled task is independent from the other `nexus_scheduled_tasks` you
+declare in your playbook
 
 Note that `nexus_backup_log` must be writable by the nexus user or the backup
 task will fail
@@ -392,10 +428,13 @@ Running more than once a day will work without errors but will:
     * overwrite the last blobstore copy in the current daily backup dir
     * multiply the instances of nexus db backup files in the daily backup dir
     which might later confuse the restore script.
+* There is no rotation for backups. All of them will be kept unless you implement
+a rotation/cleanup by yourself. This might be added as an enhancement in a future release
 * Blobstore copies are made directly from nexus by the script scheduled task.
 This has only been tested on rather small blobstores (less than 50Go) and should
 be used with caution and tested carefully on larger installations before moving
-to production. In any case, you are free to implement your own backup scenario.
+to production. In any case, you are free to implement your own backup scenario
+outside of this role.
 
 
 ## Dependencies
