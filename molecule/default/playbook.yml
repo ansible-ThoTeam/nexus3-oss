@@ -18,3 +18,17 @@
     nexus_repos_yum_proxy:
       - name: epel_centos_7_x86_64
         remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+
+    nexus_scheduled_tasks:
+      #  Example task to purge maven snapshots
+      - name: Purge-maven-snapshots
+        cron: '0 50 23 * * ?'
+        typeId: repository.maven.remove-snapshots
+        task_alert_email: alerts@example.org  # optional
+        taskProperties:
+          repositoryName: "*"
+          minimumRetained: "2"
+          snapshotRetentionDays: "2"
+          gracePeriodInDays: "2"
+        booleanTaskProperties:
+          removeIfReleased: true
