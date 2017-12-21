@@ -116,6 +116,7 @@ nexus_config_bower: false
 nexus_config_npm: false
 nexus_config_nuget: false
 nexus_config_gitlfs: false
+nexus_config_yum: false
 
 # also see _nexus_privilege_defaults below
 nexus_privileges:
@@ -170,6 +171,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
   mvn:
     blob: 'default'
   gitlfs:
+    blob: 'default'
+  yum:
     blob: 'default'
 
 
@@ -406,3 +409,13 @@ _nexus_repos_gitlfs_defaults:
 nexus_repos_gitlfs_hosted:
   - name: gitlfs-internal
     blob_store: "{{ nexus_blob_names.gitlfs.blob }}"
+
+# yum support ...
+nexus_repos_yum_proxy: []
+# Example for epel centos-7 x86_64
+# - name: epel_centos_7_x86_64
+#   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+
+_nexus_repos_yum_defaults:
+  blob_store: "{{ nexus_blob_names.yum.blob }}"
+  strict_content_validation: true

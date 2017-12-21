@@ -348,7 +348,7 @@ All three repository types are combined with the following default values :
       write_policy: allow_once # allow_once or allow
 ```
 
-Docker, Pypi, Raw, Rubygems, Bower, NPM, and Git-LFS repository types:
+Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
 see `defaults/main.yml` for these options:
 
 ```yaml
@@ -359,6 +359,7 @@ see `defaults/main.yml` for these options:
       nexus_config_bower: false
       nexus_config_npm: false
       nexus_config_gitlfs: false
+      nexus_config_yum: false
 ```
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.

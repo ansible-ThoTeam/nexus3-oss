@@ -19,6 +19,8 @@ nexus_blob_names:
     blob: '{{ nexus_blob_prefix }}mvn'
   gitlfs:
     blob: '{{ nexus_blob_prefix }}gitlfs'
+  yum:
+    blob: '{{ nexus_blob_prefix }}yum'
 
 
 nexus_blobstores:
@@ -40,3 +42,5 @@ nexus_blobstores:
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.mvn.blob }}"
   - name: '{{ nexus_blob_prefix }}gitlfs'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.gitlfs.blob }}"
+  - name: '{{ nexus_blob_prefix }}yum'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.yum.blob }}"
