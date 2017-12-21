@@ -1,5 +1,5 @@
 ---
-nexus_version: '3.6.1-02'
+nexus_version: '3.6.2-01'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 nexus_download_dir: '/tmp'
 nexus_backup_dir: '/var/nexus-backup'
