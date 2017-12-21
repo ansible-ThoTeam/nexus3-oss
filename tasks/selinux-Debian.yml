@@ -1,0 +1,10 @@
+---
+
+- name: Make sure we have the necessary deb packages available for selinux
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - python-selinux
+    - python-semanage

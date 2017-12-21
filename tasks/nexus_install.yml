@@ -88,6 +88,9 @@
   with_items: "{{ nexus_app_dir_settings_dirs }}"
   when: nexus_latest_version.changed
   register: chown_config_first_time
+  tags:
+    # hard to run as a handler for time being
+    - skip_ansible_lint
 
 - name: Create Nexus data directory
   file:
@@ -192,6 +195,9 @@
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
   when: nexus_latest_version.changed and nexus_data_dir_contents.stdout != ""
+  tags:
+    # hard to run as a handler for time being
+    - skip_ansible_lint
 
 - meta: flush_handlers
 
@@ -214,6 +220,9 @@
     mode: a=rX,u+w
     recurse: true
   when: chown_config_first_time.changed
+  tags:
+    # hard to run as a handler for time being
+    - skip_ansible_lint
 
 - name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
@@ -258,6 +267,10 @@
   register: nexus_groovy_files_changed
   check_mode: no
   changed_when: false
+  # simple check on changed files kept on host
+  # skip ansible lint (we don't want to use synchronize module for this)
+  args:
+    warn: false
 
 - name: Declare new or changed groovy scripts in nexus
   include: declare_script_each.yml

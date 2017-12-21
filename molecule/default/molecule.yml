@@ -30,7 +30,6 @@ provisioner:
   name: ansible
   lint:
     name: ansible-lint
-    enabled: False
 
 scenario:
   name: default

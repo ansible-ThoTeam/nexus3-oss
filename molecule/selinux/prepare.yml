@@ -1,0 +1,31 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Install needed dependencies for role testing (redhat)
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - java-1.8.0-openjdk-headless
+        - httpd
+        - mod_ssl
+        - rsync
+      when: ansible_os_family == 'RedHat'
+
+    - block:
+        - name: Install needed dependencie for role testing (debian/ubuntu)
+          apt:
+            name: "{{ item }}"
+            state: present
+            update_cache: true
+          with_items:
+            - apache2
+            - openjdk-8-jre-headless
+            - rsync
+
+        - name: Enable needed apache modules
+          shell: a2enmod ssl rewrite proxy proxy_http headers
+
+      when: ansible_os_family == 'Debian'
