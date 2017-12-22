@@ -1,18 +1,18 @@
 ---
-nexus_version: '3.6.1-02'
+nexus_version: '3.7.0-04'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 nexus_download_dir: '/tmp'
 nexus_backup_dir: '/var/nexus-backup'
 nexus_os_group: 'nexus'
 nexus_os_user: 'nexus'
-nexus_os_max_filedescriptors: 65536 # nexus > 3.5.x issues a warning on lower value. Next versions might not boot at all
+nexus_os_max_filedescriptors: 65536  # nexus > 3.5.x issues a warning on lower value. Next versions might not boot at all
 nexus_installation_dir: '/opt'
 nexus_data_dir: '/var/nexus'
-nexus_timezone: 'UTC' # java timezone
+nexus_timezone: 'UTC'  # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
-nexus_restore_log: '/var/log/nexus-restore.log'
-nexus_backup_log: '/var/log/nexus-backup.log'
+nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
 
 # Nexus restore procedure:
 # run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %y-%m-%d #)"
@@ -28,7 +28,7 @@ nexus_docker_proxy_port: 9081
 nexus_docker_group_port: 9082
 nexus_default_context_path: '/'
 
-nexus_admin_password: 'changeme' # Note : admin password change subsequent to first-time install is *not implemented* yet
+nexus_admin_password: 'changeme'  # Note : admin password change subsequent to first-time install is *not implemented* yet
 nexus_anonymous_access: false
 
 public_hostname: 'nexus.vm'
@@ -58,6 +58,7 @@ nexus_branding_header: ""
 nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
 
 httpd_setup_enable: false
+httpd_server_name: nexus.vm
 httpd_ssl_certificate_file: 'files/nexus.vm.crt'
 httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 # If httpd_copy_ssl_files is false you need to provide the following variables:
@@ -115,10 +116,11 @@ nexus_config_bower: false
 nexus_config_npm: false
 nexus_config_nuget: false
 nexus_config_gitlfs: false
+nexus_config_yum: false
 
 # also see _nexus_privilege_defaults below
 nexus_privileges:
-  - name: all-repos-read # used as key to update a privilege
+  - name: all-repos-read  # used as key to update a privilege
     description: 'Read & Browse access to all repos'
     repository: '*'
     actions:
@@ -126,7 +128,7 @@ nexus_privileges:
       - browse
 
 nexus_roles:
-  - id: Developpers # can map to a LDAP group id, also used as a key to update a role
+  - id: Developpers  # can map to a LDAP group id, also used as a key to update a role
     name: developers
     description: All developers
     privileges:
@@ -170,6 +172,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
     blob: 'default'
   gitlfs:
     blob: 'default'
+  yum:
+    blob: 'default'
 
 
 nexus_blobstores: []
@@ -202,23 +206,52 @@ nexus_repos_maven_group:
       - central
       - jboss
 
+########
+# Nexus Backup
+# Shall we configure backup ?
+nexus_backup_configure: false
+# Backup time cron expression
+# Current limitation: can only be ran once a day
+nexus_backup_cron: "* 0 21 * * ?"  # See cron expression in nexus create task GUI
 
-nexus_scheduled_tasks:
-  - name: db-backup # Note: CRON must be aligned to nexus-blob-backup.sh cron schedule. -> Task: "Config nexus-backup shell cron"
-    cron: '0 0 21 * * ?'
-    typeId: db.backup
-    task_alert_email: alerts@example.org # optional
-    taskProperties:
-      location: "{{ nexus_backup_dir }}/"
-
-
-#  example task to compact blobstore :
-#  - name: compact-blobstore
+# Scheduled tasks
+# Note: these are tasks you define by yourself (default: none)
+# If you used `nexus_backup_configure: true` above you will see a scheduled task for this
+# in your GUI which is not part of the below list
+nexus_scheduled_tasks: []
+#  #  Example task to compact blobstore :
+#  - name: compact-docker-blobstore
 #    cron: '0 0 22 * * ?'
 #    typeId: blobstore.compact
-#    task_alert_email: alerts@example.org # optional
+#    task_alert_email: alerts@example.org  # optional
 #    taskProperties:
-#      blobstoreName: 'default' # all task attributes are stored as strings by nexus internally
+#      blobstoreName: {{ nexus_blob_names.docker.blob }} # all task attributes are stored as strings by nexus internally
+#  #  Example task to purge maven snapshots
+#  - name: Purge-maven-snapshots
+#    cron: '0 50 23 * * ?'
+#    typeId: repository.maven.remove-snapshots
+#    task_alert_email: alerts@example.org  # optional
+#    taskProperties:
+#      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+#      minimumRetained: "2"
+#      snapshotRetentionDays: "2"
+#      gracePeriodInDays: "2"
+#    booleanTaskProperties:
+#      removeIfReleased: true
+#  #  Example task to purge unused docker manifest and images
+#  - name: Purge unused docker manifests and images
+#    cron: '0 55 23 * * ?'
+#    typeId: "repository.docker.gc"
+#    task_alert_email: alerts@example.org  # optional
+#    taskProperties:
+#      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+#  #  Example task to purge incomplete docker uploads
+#  - name: Purge incomplete docker uploads
+#    cron: '0 0 0 * * ?'
+#    typeId: "repository.docker.upload-purge"
+#    task_alert_email: alerts@example.org  # optional
+#    taskProperties:
+#      age: "24"
 
 _nexus_privilege_defaults:
   type: repository-view
@@ -229,17 +262,17 @@ _nexus_privilege_defaults:
 _nexus_repos_maven_defaults:
   blob_store: "{{ nexus_blob_names.mvn.blob }}"
   strict_content_validation: true
-  version_policy: release # release, snapshot or mixed
-  layout_policy: strict # strict or permissive
-  write_policy: allow_once # allow_once or allow
+  version_policy: release  # release, snapshot or mixed
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # allow_once or allow
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
   blob_store: "{{ nexus_blob_names.pypi.blob }}"
   strict_content_validation: true
-  version_policy: release # release, snapshot or mixed
-  layout_policy: strict # strict or permissive
-  write_policy: allow_once # allow_once or allow
+  version_policy: release  # release, snapshot or mixed
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_pypi_hosted:
   - name: pypi-internal
@@ -261,9 +294,9 @@ nexus_repos_pypi_proxy:
 _nexus_repos_raw_defaults:
   blob_store: "{{ nexus_blob_names.raw.blob }}"
   strict_content_validation: true
-  version_policy: release # release, snapshot or mixed
-  layout_policy: strict # strict or permissive
-  write_policy: allow_once # allow_once or allow
+  version_policy: release  # release, snapshot or mixed
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
@@ -285,9 +318,9 @@ _nexus_repos_docker_defaults:
   blob_store: "{{ nexus_blob_names.docker.blob }}"
   force_basic_auth: true
   strict_content_validation: true
-  version_policy: release # release, snapshot or mixed
-  layout_policy: strict # strict or permissive
-  write_policy: allow_once # allow_once or allow
+  version_policy: release  # release, snapshot or mixed
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
@@ -314,7 +347,7 @@ nexus_repos_docker_group:
 _nexus_repos_rubygems_defaults:
   blob_store: "{{ nexus_blob_names.ruby.blob }}"
   strict_content_validation: true
-  write_policy: allow_once # allow_once or allow
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
@@ -336,7 +369,7 @@ nexus_repos_rubygems_proxy:
 _nexus_repos_bower_defaults:
   blob_store: "{{ nexus_blob_names.bower.blob }}"
   strict_content_validation: true
-  write_policy: allow_once # allow_once or allow
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_bower_hosted:
   - name: bower-internal
@@ -358,7 +391,7 @@ nexus_repos_bower_proxy:
 _nexus_repos_npm_defaults:
   blob_store: "{{ nexus_blob_names.npm.blob }}"
   strict_content_validation: true
-  write_policy: allow_once # allow_once or allow
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_npm_hosted:
   - name: npm-internal
@@ -379,7 +412,7 @@ nexus_repos_npm_proxy:
 _nexus_repos_nuget_defaults:
   blob_store: "{{ nexus_blob_names.nuget.blob }}"
   strict_content_validation: true
-  write_policy: allow_once # allow_once or allow
+  write_policy: allow_once  # allow_once or allow
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -406,3 +439,13 @@ _nexus_repos_gitlfs_defaults:
 nexus_repos_gitlfs_hosted:
   - name: gitlfs-internal
     blob_store: "{{ nexus_blob_names.gitlfs.blob }}"
+
+# yum support ...
+nexus_repos_yum_proxy: []
+# Example for epel centos-7 x86_64
+# - name: epel_centos_7_x86_64
+#   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+
+_nexus_repos_yum_defaults:
+  blob_store: "{{ nexus_blob_names.yum.blob }}"
+  strict_content_validation: true

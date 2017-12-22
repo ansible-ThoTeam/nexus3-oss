@@ -1,0 +1,30 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+lint:
+  name: yamllint
+platforms:
+  - name: vb-centos7
+    box: thoteam/vb-centos7
+    box_url: http://vagrant.thoteam.com/vb-centos7/vb-centos7.json
+    cpu: 4
+    memory: 4096
+  - name: vb-debian-stretch
+    box: thoteam/vb-stretch
+    box_url: http://vagrant.thoteam.com/vb-stretch/vb-stretch.json
+    cpu: 4
+    memory: 4096
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+scenario:
+  name: selinux
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

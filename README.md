@@ -1,8 +1,42 @@
 # Ansible Role: Nexus 3 OSS
 
-This role installs and configures Nexus Repository Manager OSS version 3.x. 
+This role installs and configures Nexus Repository Manager OSS version 3.x.
 
 All configuration can be updated by re-running the role, except forthe [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
+
+## Table of Contents
+(Toc created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))
+
+* [History / Credits](#history--credits)
+* [Requirements](#requirements)
+* [Role Variables](#role-variables)
+   * [General variables](#general-variables)
+   * [Download dir for nexus package](#download-dir-for-nexus-package)
+   * [Nexus port and context path](#nexus-port-and-context-path)
+   * [Nexus OS user and group](#nexus-os-user-and-group)
+   * [Nexus instance directories](#nexus-instance-directories)
+   * [Admin password](#admin-password)
+   * [Default anonymous access](#default-anonymous-access)
+   * [Public hostname](#public-hostname)
+   * [Branding capabalities](#branding-capabalities)
+   * [Reverse proxy setup](#reverse-proxy-setup)
+   * [LDAP configuration](#ldap-configuration)
+   * [Privileges, roles and users](#privileges-roles-and-users)
+   * [Blobstores and repositories](#blobstores-and-repositories)
+   * [Scheduled tasks](#scheduled-tasks)
+   * [Backups](#backups)
+      * [Restore procedure](#restore-procedure)
+      * [Current limitations:](#current-limitations)
+* [Dependencies](#dependencies)
+* [Example Playbook](#example-playbook)
+* [Development, Contribution and Testing](#development-contribution-and-testing)
+   * [Contributions](#contributions)
+   * [Testing](#testing)
+      * [Groovy syntax](#groovy-syntax)
+      * [Full role testing with molecule](#full-role-testing-with-molecule)
+      * [Testing everything](#testing-everything)
+* [License](#license)
+* [Author Information](#author-information)
 
 ## History / Credits
 
@@ -15,31 +49,39 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
+- Minimum ansible version 2.2 (see meta/main.yml). Due to the use of the ansible [synchronize module](http://docs.ansible.com/ansible/latest/synchronize_module.html) you will need _version 2.3 for tests with molecule (using docker containers)_.
 - This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
-- Oracle Java 8 (mandatory)
-- Apache HTTPD (optional, used to setup a SSL reverse-proxy)
+- Java 8 (mandatory)
+    - Oracle Java 8 is the official supported platform by Sonatype
+    - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
+    - For more information see [nexus3 system requirements](https://help.sonatype.com/display/NXRM3/System+Requirements)
+- Apache HTTPD (optional)
+    - Used to setup a SSL reverse-proxy
+    - The following modules must be enabled in your configuration: mod_ssl, mod_rewrite, mod_proxy, mod_headers.
 
 (see [Dependencies](#dependencies) section below for matching roles on galaxy)
 
 ## Role Variables
 
-
 Ansible variables, along with the default values (see `default/main.yml`) :
 
+### General variables
 ```yaml
-    nexus_version: '3.1.0-04'
+    nexus_version: '3.6.1-02'
     nexus_timezone: 'UTC'
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 ```
 
 The nexus version and package to install, see available versions at https://www.sonatype.com/download-oss-sonatype . `nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
 
+### Download dir for nexus package
 ```yaml
     nexus_download_dir: '/tmp'
 ```
 
 Directory on target where the nexus package will be downloaded.
 
+### Nexus port and context path
 ```yaml
     nexus_default_port: 8081
     nexus_default_context_path: '/'
@@ -47,6 +89,7 @@ Directory on target where the nexus package will be downloaded.
 
 Port and context path of the java nexus process. `nexus_default_context_path` has to keep the trailing slash when set, for ex. : `nexus_default_context_path: '/nexus/'`.
 
+### Nexus OS user and group
 ```yaml
     nexus_os_group: 'nexus'
     nexus_os_user: 'nexus'
@@ -54,6 +97,7 @@ Port and context path of the java nexus process. `nexus_default_context_path` ha
 
 User and group used to own the nexus files and run the service, those will be created by the role if absent.
 
+### Nexus instance directories
 ```yaml
     nexus_installation_dir: '/opt'
     nexus_data_dir: '/var/nexus'
@@ -62,24 +106,29 @@ User and group used to own the nexus files and run the service, those will be cr
 
 Nexus directories, `nexus_installation_dir` contains the installed executable(s), `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Note: custom blobstores paths outside of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
 
+### Admin password
 ```yaml
     nexus_admin_password: 'changeme'
 ```
 
 The 'admin' account password to setup. Note : admin password change subsequent to first-time provisioning/install is *not implemented* by this role yet.
+**It is strongly advised that you do not keep your password in clear text in you playbook and include it from a separate ansible-vault encrypted files (loaded with include_vars for example)**
 
+### Default anonymous access
 ```yaml
     nexus_anonymous_access: false
 ```
 
 Allow [anonymous access](https://books.sonatype.com/nexus-book/3.0/reference/security.html#anonymous) to nexus.
 
+### Public hostname
 ```yaml
     public_hostname: 'nexus.vm'
 ```
 
 The fully qualified domain name under which the nexus instance will be accessible to its clients.
 
+### Branding capabalities
 ```yaml
     nexus_branding_header: ""
     nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
@@ -87,6 +136,7 @@ The fully qualified domain name under which the nexus instance will be accessibl
 
 Header and footer branding, those can contain HTML.
 
+### Reverse proxy setup
 ```yaml
     httpd_setup_enable: false
     httpd_ssl_certificate_file: 'files/nexus.vm.crt'
@@ -111,6 +161,7 @@ Use already existing SSL certificates on the server file system for the https re
 
 Set httpd default admin email address
 
+### LDAP configuration
 ```yaml
     ldap_connections: []
 ```
@@ -200,6 +251,7 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
     ldap_group_subtree: false
 ```
 
+### Privileges, roles and users
 ```yaml
     nexus_privileges:
       - name: all-repos-read # used as key to update a privilege
@@ -249,6 +301,7 @@ Local (non-LDAP) users/accounts to create in nexus, items go as follow :
       - developers # role ID
 ```
 
+### Blobstores and repositories
 ```yaml
     nexus_delete_default_repos: false
 ```
@@ -269,18 +322,6 @@ Delete the default blobstore from the nexus install initial default configuratio
 ```
 
 [Blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
-
-```yaml
-    nexus_scheduled_tasks: []
-    #  example task to compact blobstore :
-    #  - name: compact-blobstore
-    #    cron: '0 0 22 * * ?'
-    #    typeId: blobstore.compact
-    #    taskProperties:
-    #      blobstoreName: 'default' # all task attributes are stored as strings by nexus internally
-```
-
-[Scheduled tasks](https://books.sonatype.com/nexus-book/reference3/admin.html#admin-system-tasks) to setup. `typeId` and task-specific `taskProperties` can be guessed either from the java type hierarchy of `org.sonatype.nexus.scheduling.TaskDescriptorSupport` or from peeking at the browser AJAX requests while manually configuring a task.
 
 ```yaml
     nexus_repos_maven_proxy:
@@ -328,7 +369,7 @@ All three repository types are combined with the following default values :
       write_policy: allow_once # allow_once or allow
 ```
 
-Docker, Pypi, Raw, Rubygems, Bower, NPM, and Git-LFS repository types:
+Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
 see `defaults/main.yml` for these options:
 
 ```yaml
@@ -339,13 +380,101 @@ see `defaults/main.yml` for these options:
       nexus_config_bower: false
       nexus_config_npm: false
       nexus_config_gitlfs: false
+      nexus_config_yum: false
 ```
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.
 
+### Scheduled tasks
+```yaml
+    nexus_scheduled_tasks: []
+    #  #  Example task to compact blobstore :
+    #  - name: compact-docker-blobstore
+    #    cron: '0 0 22 * * ?'
+    #    typeId: blobstore.compact
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      blobstoreName: {{ nexus_blob_names.docker.blob }} # all task attributes are stored as strings by nexus internally
+    #  #  Example task to purge maven snapshots
+    #  - name: Purge-maven-snapshots
+    #    cron: '0 50 23 * * ?'
+    #    typeId: repository.maven.remove-snapshots
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+    #      minimumRetained: "2"
+    #      snapshotRetentionDays: "2"
+    #      gracePeriodInDays: "2"
+    #    booleanTaskProperties:
+    #      removeIfReleased: true
+    #  #  Example task to purge unused docker manifest and images
+    #  - name: Purge unused docker manifests and images
+    #    cron: '0 55 23 * * ?'
+    #    typeId: "repository.docker.gc"
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
+    #  #  Example task to purge incomplete docker uploads
+    #  - name: Purge incomplete docker uploads
+    #    cron: '0 0 0 * * ?'
+    #    typeId: "repository.docker.upload-purge"
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      age: "24"
+```
+
+[Scheduled tasks](https://books.sonatype.com/nexus-book/reference3/admin.html#admin-system-tasks) to setup. `typeId` and task-specific `taskProperties`/`booleanTaskProperties` can be guessed either:
+* from the java type hierarchy of `org.sonatype.nexus.scheduling.TaskDescriptorSupport`
+* by inspecting the task creation html form in your browser
+* from peeking at the browser AJAX requests while manually configuring a task.
+
+**Task properties must be declared in the correct yaml block depending on their type**:
+* `taskProperties` for all string properties (i.e. repository names, blobstore names, time periods...).
+* `booleanTaskProperties` for all boolean properties (i.e. mainly checkboxes in nexus create task GUI).
+
+### Backups
+```yaml
+      nexus_backup_configure: false
+      nexus_backup_cron: '* 0 21 * * ?'  # See cron expressions definition in nexus create task gui
+      nexus_backup_dir: '/var/nexus-backup'
+      nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
+      nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+```
+
+Backup will not be configured unless you switch `nexus_backup_configure` to `true`.
+In this case, a scheduled script task will be configured in nexus to run every day
+at time specified by `nexus_backup_cron` (defaults to 9pm).
+See [the groovy template for this task](templates/backup.groovy.j2) for details.
+This scheduled task is independent from the other `nexus_scheduled_tasks` you
+declare in your playbook
+
+Note that `nexus_backup_log` must be writable by the nexus user or the backup
+task will fail
+
+#### Restore procedure
+
+Run your playbook with parameter `-e nexus_restore_point=<YY-MM-dd>`
+(e.g. 17-12-17 for 17th of December 2017)
+
+#### Current limitations
+* Due to the initial chosen naming convention for restore points,
+backups can only be ran once a day (this will be fixed in a future release - see #19).
+Running more than once a day will work without errors but will:
+    * overwrite the last blobstore copy in the current daily backup dir
+    * multiply the instances of nexus db backup files in the daily backup dir
+    which might later confuse the restore script.
+* There is no rotation for backups. All of them will be kept unless you implement
+a rotation/cleanup by yourself. This might be added as an enhancement in a future release
+* Blobstore copies are made directly from nexus by the script scheduled task.
+This has only been tested on rather small blobstores (less than 50Go) and should
+be used with caution and tested carefully on larger installations before moving
+to production. In any case, you are free to implement your own backup scenario
+outside of this role.
+
+
 ## Dependencies
 
-This role requires Ansible 2.1 or higher.
+This role requires Ansible 2.2 or higher.
 
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
   - [ansiblebit.oracle-java](https://galaxy.ansible.com/ansiblebit/oracle-java/)
@@ -354,7 +483,8 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
 ## Example Playbook
 
 ```yaml
--------
+
+---
 - name: Nexus
   hosts: nexus
   become: yes
@@ -456,11 +586,12 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
-    - { role: savoirfairelinux.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
-
+    - { role: ansible-ThoTeam.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
 ```
 
-## Development, contribution and testing
+## Development, Contribution and Testing
+
+### Contributions
 
 All contributions to this role are welcome, either for bugfixes, new features or documentation.
 
@@ -469,18 +600,53 @@ If you wish to contribute:
 - Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
   - feature_<someFeature> for features
   - fix_<someBugFix> for bug fixes
-- If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed.
+- If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
 Moreover, if you have time to devote for code review, merge for realeases, etc... drop an email to contact@thoteam.com to get in touch.
 
 
-License
--------
+### Testing
+
+This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only molecule deployment tests are ran automatically on every merge request creation/upate.
+
+#### Groovy syntax
+
+This role contains a set of groovy files used to provision nexus. Those files seldom change and tests on travis require a lot of time for setup/run. So they are not run automatically.
+
+If you submit changes to groovy files, please run the groovy syntax check locally before pushing your changes
+```bash
+./tests/test_groovySyntax.sh
+```
+
+You will need the groovy package installed locally to run this test.
+
+#### Full role testing with molecule
+
+The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
+```bash
+# Note: the following path should be outside the working dir
+virtualenv /path/to/some/pyenv
+. /path/to/some/pyenv/bin/activate
+pip install -r requirements.txt
+./tests/test_molecule.sh
+deactivate
+```
+
+To speed up tests, molecule uses automated docker build images on docker hub:
+- https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
+- https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+
+#### Testing everything
+As a convenience, we provide a script to run all test as once:
+```bash
+./tests/test_all.sh
+```
+
+## License
 
 GNU GPLv3
 
-Author Information
-------------------
+## Author Information
 
 See: https://github.com/ansible-ThoTeam

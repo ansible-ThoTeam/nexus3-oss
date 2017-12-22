@@ -21,4 +21,3 @@
       name: "{{ item }}"
       type: 'groovy'
       content: "{{ lookup('file', 'groovy/' + item + '.groovy') }}"
-

@@ -1,4 +1,17 @@
 ---
+
+- name: Include OS specific variables.
+  include_vars: "configure-{{ ansible_os_family }}.yml"
+
+- name: Include OS specific selinux libs and utils if needed
+  include: "selinux-{{ ansible_os_family }}.yml"
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+
+- name: Check if SystemD service is installed
+  stat:
+    path: /etc/systemd/system/nexus.service
+  register: nexus_systemd_service_file
+
 - include: nexus_purge.yml
   when: ((purge is defined) and (purge | bool))
 
@@ -34,6 +47,7 @@
     - name: "{{ nexus_blob_names.nuget.blob }}"
     - name: "{{ nexus_blob_names.mvn.blob }}"
     - name: "{{ nexus_blob_names.gitlfs.blob }}"
+    - name: "{{ nexus_blob_names.yum.blob }}"
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_blobstore
 
 - include: setup_ldap_each.yml
@@ -70,84 +84,88 @@
   with_items: "{{ nexus_repos_maven_group }}"
 
 - block:
-  - include: create_repo_docker_hosted_each.yml
-    with_items: "{{ nexus_repos_docker_hosted }}"
+    - include: create_repo_docker_hosted_each.yml
+      with_items: "{{ nexus_repos_docker_hosted }}"
 
-  - include: create_repo_docker_proxy_each.yml
-    with_items: "{{ nexus_repos_docker_proxy }}"
+    - include: create_repo_docker_proxy_each.yml
+      with_items: "{{ nexus_repos_docker_proxy }}"
 
-  - include: create_repo_docker_group_each.yml
-    with_items: "{{ nexus_repos_docker_group }}"
+    - include: create_repo_docker_group_each.yml
+      with_items: "{{ nexus_repos_docker_group }}"
   when: nexus_config_docker
 
 - block:
-  - include: create_repo_pypi_proxy_each.yml
-    with_items: "{{ nexus_repos_pypi_proxy }}"
+    - include: create_repo_pypi_proxy_each.yml
+      with_items: "{{ nexus_repos_pypi_proxy }}"
 
-  - include: create_repo_pypi_hosted_each.yml
-    with_items: "{{ nexus_repos_pypi_hosted }}"
+    - include: create_repo_pypi_hosted_each.yml
+      with_items: "{{ nexus_repos_pypi_hosted }}"
 
-  - include: create_repo_pypi_group_each.yml
-    with_items: "{{ nexus_repos_pypi_group }}"
+    - include: create_repo_pypi_group_each.yml
+      with_items: "{{ nexus_repos_pypi_group }}"
   when: nexus_config_pypi
 
 - block:
-  - include: create_repo_raw_proxy_each.yml
-    with_items: "{{ nexus_repos_raw_proxy }}"
+    - include: create_repo_raw_proxy_each.yml
+      with_items: "{{ nexus_repos_raw_proxy }}"
 
-  - include: create_repo_raw_hosted_each.yml
-    with_items: "{{ nexus_repos_raw_hosted }}"
+    - include: create_repo_raw_hosted_each.yml
+      with_items: "{{ nexus_repos_raw_hosted }}"
 
-  - include: create_repo_raw_group_each.yml
-    with_items: "{{ nexus_repos_raw_group }}"
+    - include: create_repo_raw_group_each.yml
+      with_items: "{{ nexus_repos_raw_group }}"
   when: nexus_config_raw
 
 - block:
-  - include: create_repo_rubygems_proxy_each.yml
-    with_items: "{{ nexus_repos_rubygems_proxy }}"
+    - include: create_repo_rubygems_proxy_each.yml
+      with_items: "{{ nexus_repos_rubygems_proxy }}"
 
-  - include: create_repo_rubygems_hosted_each.yml
-    with_items: "{{ nexus_repos_rubygems_hosted }}"
+    - include: create_repo_rubygems_hosted_each.yml
+      with_items: "{{ nexus_repos_rubygems_hosted }}"
 
-  - include: create_repo_rubygems_group_each.yml
-    with_items: "{{ nexus_repos_rubygems_group }}"
+    - include: create_repo_rubygems_group_each.yml
+      with_items: "{{ nexus_repos_rubygems_group }}"
   when: nexus_config_rubygems
 
 - block:
-  - include: create_repo_bower_proxy_each.yml
-    with_items: "{{ nexus_repos_bower_proxy }}"
+    - include: create_repo_bower_proxy_each.yml
+      with_items: "{{ nexus_repos_bower_proxy }}"
 
-  - include: create_repo_bower_hosted_each.yml
-    with_items: "{{ nexus_repos_bower_hosted }}"
+    - include: create_repo_bower_hosted_each.yml
+      with_items: "{{ nexus_repos_bower_hosted }}"
 
-  - include: create_repo_bower_group_each.yml
-    with_items: "{{ nexus_repos_bower_group }}"
+    - include: create_repo_bower_group_each.yml
+      with_items: "{{ nexus_repos_bower_group }}"
   when: nexus_config_bower
 
 - block:
-  - include: create_repo_npm_proxy_each.yml
-    with_items: "{{ nexus_repos_npm_proxy }}"
+    - include: create_repo_npm_proxy_each.yml
+      with_items: "{{ nexus_repos_npm_proxy }}"
 
-  - include: create_repo_npm_hosted_each.yml
-    with_items: "{{ nexus_repos_npm_hosted }}"
+    - include: create_repo_npm_hosted_each.yml
+      with_items: "{{ nexus_repos_npm_hosted }}"
 
-  - include: create_repo_npm_group_each.yml
-    with_items: "{{ nexus_repos_npm_group }}"
+    - include: create_repo_npm_group_each.yml
+      with_items: "{{ nexus_repos_npm_group }}"
   when: nexus_config_npm
 
 - block:
-  - include: create_repo_nuget_proxy_each.yml
-    with_items: "{{ nexus_repos_nuget_proxy }}"
-  - include: create_repo_nuget_hosted_each.yml
-    with_items: "{{ nexus_repos_nuget_hosted }}"
-  - include: create_repo_nuget_group_each.yml
-    with_items: "{{ nexus_repos_nuget_group }}"
+    - include: create_repo_nuget_proxy_each.yml
+      with_items: "{{ nexus_repos_nuget_proxy }}"
+    - include: create_repo_nuget_hosted_each.yml
+      with_items: "{{ nexus_repos_nuget_hosted }}"
+    - include: create_repo_nuget_group_each.yml
+      with_items: "{{ nexus_repos_nuget_group }}"
   when: nexus_config_nuget
 
 
 - include: create_repo_gitlfs_hosted_each.yml
   with_items: "{{ nexus_repos_gitlfs_hosted }}"
   when: nexus_config_gitlfs
+
+- include: create_repo_yum_proxy_each.yml
+  with_items: "{{ nexus_repos_yum_proxy }}"
+  when: nexus_config_yum
 
 - include: call_script.yml
   vars:
@@ -218,3 +236,16 @@
 
 - include: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks }}"
+
+- name: Configure nexus backup task
+  include: call_script.yml
+  vars:
+    script_name: create_task
+    args:
+      name: db and blobstores backup
+      typeId: script
+      cron: "{{ nexus_backup_cron }}"
+      taskProperties:
+        language: groovy
+        source: "{{ lookup('template', './templates/backup.groovy.j2') }}"
+  when: nexus_backup_configure | bool

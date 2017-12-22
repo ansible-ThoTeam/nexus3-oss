@@ -1,17 +1,43 @@
+---
 extends: default
 
 rules:
-  braces:
-    max-spaces-inside: 1
-    level: warning
-  brackets:
-    max-spaces-inside: 1
-    level: warning
-  line-length: disable
-  truthy: disable
-  empty-lines:
-    level: warning
   indentation:
+    spaces: 2
+    check-multi-line-strings: true
+  line-length:
+    max: 250
     level: warning
-    indent-sequences: consistent
+  document-start:
+    present: true
+    level: error
+  key-duplicates: enable
+  trailing-spaces: enable
+  hyphens:
+    max-spaces-after: 1
+    level: error
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 0
+    level: error
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+    level: error
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+    level: error
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+    level: error
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+    level: error
+  truthy: disable
   new-line-at-end-of-file: disable
+  comments-indentation: enable

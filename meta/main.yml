@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: ansible-ThoTeam
   description: Nexus Repository Manager 3.x
@@ -5,17 +6,17 @@ galaxy_info:
 
   license: license (GPLv3)
 
-  min_ansible_version: 2.1
+  min_ansible_version: 2.2
 
   github_branch: master
 
   platforms:
     - name: EL
       versions:
-      - 7
+        - 7
     - name: Ubuntu
       versions:
-      - all
+        - all
 
   galaxy_tags:
     - nexus

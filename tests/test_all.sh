@@ -2,4 +2,4 @@
 
 set -ev
 ./tests/test_groovySyntax.sh
-molecule test
+./tests/test_molecule.sh

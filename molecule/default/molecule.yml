@@ -1,44 +1,40 @@
 ---
 dependency:
   name: galaxy
+
 driver:
   name: docker
+  safe_files:
+    - nexus-downloads
+
 lint:
   name: yamllint
+
 platforms:
   - name: ubuntu-16.04
-    image: ubuntu
-    image_version: '16.04'
+    image: thoteam/ansible-ubuntu16.04-apache-java
+    image_version: latest
     command: /lib/systemd/systemd
     privileged: true
+    ports:
+      - 8090:443
   - name: centos-7
-    image: centos
-    image_version: '7'
-    command: /lib/systemd/systemd
+    image: thoteam/ansible-centos7-apache-java
+    image_version: latest
+    command: /usr/sbin/init
     privileged: true
-  # - name: centos-8
-  #   image: centos
-  #   image_version: '8'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
-  # - name: opensuse-13.2
-  #   image: opensuse
-  #   image_version: '13.2'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
-  # - name: opensuse-42.3
-  #   image: opensuse
-  #   image_version: '42.3'
-  #   command: /lib/systemd/systemd
-  #   privileged: true
+    ports:
+      - 8091:443
+
 provisioner:
   name: ansible
   lint:
     name: ansible-lint
-    enabled: False
 
 scenario:
   name: default
+  create_sequence:
+    - create
   check_sequence:
     - destroy
     - create
@@ -48,16 +44,17 @@ scenario:
   converge_sequence:
     - create
     - converge
-  destroy_sequence:
-    - destroy
   test_sequence:
+    - lint
     - destroy
-    - dependency
+    - syntax
     - create
     - converge
-    - lint
+    - idempotence
+    - check
     - verify
     - destroy
+
 verifier:
   name: testinfra
   lint:

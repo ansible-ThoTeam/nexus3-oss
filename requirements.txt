@@ -1,0 +1,23 @@
+##################################
+## Python requirement for testing.
+## For testing locally, you can import in a virtualenv
+## i.e.
+## virtualenv --python=python3 /path/topyenv-nexus3-oss
+## . /path/to/pyenv-nexus3-oss/bin/activate
+## pip install -r pyrequirements.txt
+## ./tests/run_all_tests.sh
+## deactivate
+##
+## Note: the virtualenv should be created outside of the
+## project index or it will interfere with linting the role
+## and produce unwanted errors.
+##################################
+
+# Latest ansible 2.3.x
+ansible>=2.3,<2.4
+# Latest molecule
+molecule
+# Latest docker-py
+docker-py
+# Python vagrant only needed for local test for selinux
+# python-vagrant

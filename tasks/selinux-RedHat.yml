@@ -1,0 +1,9 @@
+---
+
+- name: Make sure we have the necessary yum packages available for selinux
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libselinux-python
+    - libsemanage-python

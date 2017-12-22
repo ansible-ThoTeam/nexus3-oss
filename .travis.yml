@@ -2,14 +2,13 @@
 
 sudo: required
 language: python
+cache:
+  pip: true
+  directories:
+    - molecule/default/.molecule/nexus-downloads/
 services:
   - docker
-before_install:
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  - sudo apt-get -y install groovy
 install:
-  - pip install molecule
-  - pip install docker-py
+  - pip install -r requirements.txt
 script:
-  - ./tests/run_all_tests.sh
+  - ./tests/test_molecule.sh
