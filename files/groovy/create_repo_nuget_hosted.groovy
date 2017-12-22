@@ -11,7 +11,6 @@ if (existingRepository != null) {
 
     newConfig = existingRepository.configuration.copy()
     // We only update values we are allowed to change (cf. greyed out options in gui)
-    newConfig.attributes['group']['memberNames'] = parsed_args.member_repos
     newConfig.attributes['storage']['writePolicy'] = parsed_args.write_policy.toUpperCase()
     newConfig.attributes['storage']['strictContentTypeValidation'] = Boolean.valueOf(parsed_args.strict_content_validation)
 
