@@ -47,6 +47,7 @@
     - name: "{{ nexus_blob_names.nuget.blob }}"
     - name: "{{ nexus_blob_names.mvn.blob }}"
     - name: "{{ nexus_blob_names.gitlfs.blob }}"
+    - name: "{{ nexus_blob_names.yum.blob }}"
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_blobstore
 
 - include: setup_ldap_each.yml

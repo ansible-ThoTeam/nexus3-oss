@@ -12,9 +12,24 @@
     httpd_ssl_cert_file_location: "{{ default_cert }}"
     httpd_ssl_cert_key_location: "{{ default_key }}"
     public_hostname: localhost
+
     nexus_backup_configure: true
 
+    nexus_delete_default_repos: true
+    nexus_delete_default_blobstore: true
+
+    nexus_blob_split: false
+
+    nexus_config_pypi: true
+    nexus_config_docker: true
+    nexus_config_raw: true
+    nexus_config_rubygems: true
+    nexus_config_bower: true
+    nexus_config_npm: true
+    nexus_config_nuget: true
+    nexus_config_gitlfs: true
     nexus_config_yum: true
+
     nexus_repos_yum_proxy:
       - name: epel_centos_7_x86_64
         remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
