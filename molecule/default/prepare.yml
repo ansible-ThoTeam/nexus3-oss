@@ -1,0 +1,2 @@
+---
+- include: "../sync-nexus-package.yml"

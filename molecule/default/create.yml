@@ -8,13 +8,8 @@
   vars:
     molecule_file: "{{ lookup('env', 'MOLECULE_FILE') }}"
     molecule_yml: "{{ lookup('file', molecule_file) | from_yaml }}"
-    molecule_ephemeral_directory: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
 
   tasks:
-
-    - name: include variables from tested playbook
-      include_vars:
-        file: "{{ molecule_ephemeral_directory }}/../../../defaults/main.yml"
 
     - name: Create molecule instance(s)
       docker_container:
@@ -30,21 +25,4 @@
         volumes: "{{ item.volumes | default(omit) }}"
         capabilities: "{{ item.capabilities | default(omit) }}"
         ports: "{{ item.ports | default(omit) }}"
-      with_items: "{{ molecule_yml.platforms }}"
-
-    - name: create a dir in {{ molecule_ephemeral_directory }} for nexus package download
-      file:
-        path: "{{ molecule_ephemeral_directory }}/nexus-downloads"
-        state: directory
-
-    - name: get the current nexus version
-      get_url:
-        url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
-        dest: "{{ molecule_ephemeral_directory }}/nexus-downloads/{{ nexus_package }}"
-        force: no
-
-    - name: copy nexus package do default image location into images
-      shell: "docker cp \
-              {{ molecule_ephemeral_directory }}/nexus-downloads/{{ nexus_package }} \
-              {{ item.name }}:/tmp/{{ nexus_package }}"
       with_items: "{{ molecule_yml.platforms }}"

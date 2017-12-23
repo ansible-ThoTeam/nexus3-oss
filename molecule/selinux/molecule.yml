@@ -3,6 +3,8 @@ dependency:
   name: galaxy
 driver:
   name: vagrant
+  safe_files:
+    - nexus-downloads
   provider:
     name: virtualbox
 lint:

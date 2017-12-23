@@ -5,7 +5,7 @@ language: python
 cache:
   pip: true
   directories:
-    - molecule/default/.molecule/nexus-downloads/
+    - molecule/.nexus-downloads/
 services:
   - docker
 install:
