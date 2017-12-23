@@ -1,0 +1,45 @@
+---
+- name: "Prepare poststep 1/2: download nexus package locally"
+  hosts: localhost
+  vars:
+    molecule_scenario_directory: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}"
+    molecule_ephemeral_directory: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
+
+  tasks:
+
+    - name: include variables from tested playbook
+      include_vars:
+        file: "{{ molecule_scenario_directory }}/../../defaults/main.yml"
+
+    - name: Make sure we have a dir in molecule base path for nexus package download
+      # This one should exist from git checkout and is shared accross scenarios
+      file:
+        path: "{{ molecule_scenario_directory }}/../.nexus-downloads"
+        state: directory
+
+    - name: Symlink nexus download dir in scenario context
+      file:
+        path: "{{ molecule_ephemeral_directory }}/nexus-downloads"
+        src: "{{ molecule_scenario_directory }}/../.nexus-downloads"
+        state: link
+
+    - name: get the current nexus version
+      get_url:
+        url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
+        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/{{ nexus_package }}"
+        force: no
+
+
+- name: "Prepare posttep 2/2: sync nexus package to instances"
+  hosts: all
+  vars:
+    molecule_ephemeral_directory: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
+  tasks:
+
+    - name: copy nexus package(s) do default image location into images
+      synchronize:
+        src: "{{ molecule_ephemeral_directory }}/nexus-downloads/"
+        dest: "/tmp/"
+        checksum: yes
+        times: no
+        perms: no

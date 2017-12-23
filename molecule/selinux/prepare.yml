@@ -29,3 +29,5 @@
           shell: a2enmod ssl rewrite proxy proxy_http headers
 
       when: ansible_os_family == 'Debian'
+
+- include: "../sync-nexus-package.yml"
