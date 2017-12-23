@@ -2,7 +2,7 @@
 
 This role installs and configures Nexus Repository Manager OSS version 3.x.
 
-All configuration can be updated by re-running the role, except forthe [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
+All configuration can be updated by re-running the role, except for the [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
 
 ## Table of Contents
 (Toc created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))
@@ -67,7 +67,7 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 
 ### General variables
 ```yaml
-    nexus_version: '3.6.1-02'
+    nexus_version: '3.7.0-04'
     nexus_timezone: 'UTC'
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 ```
