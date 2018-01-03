@@ -67,7 +67,7 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 
 ### General variables
 ```yaml
-    nexus_version: '3.7.0-04'
+    nexus_version: '3.7.1-02'
     nexus_timezone: 'UTC'
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 ```
@@ -490,7 +490,7 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
   become: yes
 
   vars:
-    nexus_version: '3.1.0-04'
+    nexus_version: '3.7.1-02'
     nexus_timezone: 'Canada/Eastern'
     nexus_admin_password: "{{ vault_nexus_admin_password }}"
     httpd_server_name: 'nexus.vm'
