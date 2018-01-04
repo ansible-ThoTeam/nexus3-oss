@@ -23,7 +23,7 @@ nexusBackupLogFilePath = "{{ nexus_backup_log }}"
 nexusBackupDirPath = "{{ nexus_backup_dir }}"
 nexusDataDirPath = "{{ nexus_data_dir }}"
 
-backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('YY-MM-dd'))
+backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('YYYY-MM-dd-HH-mm-ss'))
 CurrentBackupDirPath = nexusBackupDirPath+'/blob-backup-'+backupDateString
 
 backupLog = new File(nexusBackupLogFilePath)
