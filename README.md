@@ -442,27 +442,20 @@ These are all false unless you override them from playbook / group_var / cli, th
 ```
 
 Backup will not be configured unless you switch `nexus_backup_configure` to `true`.
-In this case, a scheduled script task will be configured in nexus to run every day
-at time specified by `nexus_backup_cron` (defaults to 9pm).
+In this case, a scheduled script task will be configured in nexus to run
+at interval specified by `nexus_backup_cron` (defaults to 21:00 every day).
 See [the groovy template for this task](templates/backup.groovy.j2) for details.
 This scheduled task is independent from the other `nexus_scheduled_tasks` you
 declare in your playbook
 
-Note that `nexus_backup_log` must be writable by the nexus user or the backup
-task will fail
+Note that `nexus_backup_log` _must be writable_ by the nexus user or the **backup
+task will fail**
 
 #### Restore procedure
-
-Run your playbook with parameter `-e nexus_restore_point=<YY-MM-dd>`
-(e.g. 17-12-17 for 17th of December 2017)
+Run your playbook with parameter `-e nexus_restore_point=<YYYY-MM-dd-HH-mm-ss>`
+(e.g. 2017-12-17-21-00-00 for 17th of December 2017 at 21h00m00s)
 
 #### Current limitations
-* Due to the initial chosen naming convention for restore points,
-backups can only be ran once a day (this will be fixed in a future release - see #19).
-Running more than once a day will work without errors but will:
-    * overwrite the last blobstore copy in the current daily backup dir
-    * multiply the instances of nexus db backup files in the daily backup dir
-    which might later confuse the restore script.
 * There is no rotation for backups. All of them will be kept unless you implement
 a rotation/cleanup by yourself. This might be added as an enhancement in a future release
 * Blobstore copies are made directly from nexus by the script scheduled task.
