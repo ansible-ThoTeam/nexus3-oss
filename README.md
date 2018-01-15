@@ -343,7 +343,7 @@ Maven [proxy repositories](https://books.sonatype.com/nexus-book/3.0/reference/m
     nexus_repos_maven_hosted:
       - name: private-release
         version_policy: release
-        write_policy: allow_once
+        write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 ```
 
 Maven [hosted repositories](https://books.sonatype.com/nexus-book/3.0/reference/maven.html#_hosting_maven_repositories) configuration.
@@ -366,7 +366,7 @@ All three repository types are combined with the following default values :
       strict_content_validation: true
       version_policy: release # release, snapshot or mixed
       layout_policy: strict # strict or permissive
-      write_policy: allow_once # allow_once or allow
+      write_policy: allow_once # one of "allow", "allow_once" or "deny"
 ```
 
 Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
