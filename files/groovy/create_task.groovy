@@ -20,7 +20,6 @@ if (existingTask && existingTask.getCurrentState().getRunState() != null) {
 TaskConfiguration taskConfiguration = taskScheduler.createTaskConfigurationInstance(parsed_args.typeId)
 if (existingTask) { taskConfiguration.setId(existingTask.getId()) }
 taskConfiguration.setName(parsed_args.name)
-taskConfiguration.setEnabled(parsed_args.enabled)
 
 parsed_args.taskProperties.each { key, value -> taskConfiguration.setString(key, value) }
 
