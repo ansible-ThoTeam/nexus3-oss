@@ -12,11 +12,13 @@ TaskInfo existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
     taskInfo.name == parsed_args.name
 }
 
-if (existingTask && !existingTask.remove()) {
-    throw new RuntimeException("Could not remove currently running task : " + parsed_args.name)
+if (existingTask && existingTask.getCurrentState().getRunState() != null) {
+    log.info("Could not update currently running task : " + parsed_args.name)
+    return
 }
 
 TaskConfiguration taskConfiguration = taskScheduler.createTaskConfigurationInstance(parsed_args.typeId)
+if (existingTask) { taskConfiguration.setId(existingTask.getId()) }
 taskConfiguration.setName(parsed_args.name)
 
 parsed_args.taskProperties.each { key, value -> taskConfiguration.setString(key, value) }
