@@ -22,8 +22,8 @@ nexus_backup_configure: false
 nexus_backup_cron: "* 0 21 * * ?"  # See cron expression in nexus create task GUI
 
 # Nexus restore procedure:
-# run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %y-%m-%d #)"
-# nexus_restore_point: '17-02-22' # Example format
+# run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %Y-%m-%d-%H-%M-%S #)"
+# nexus_restore_point: '2017-02-22-01-30-32' # Example format
 
 # Nexus purge procedure:
 # run ansible-playbook example.yml -e "purge=true"
