@@ -12,3 +12,5 @@
     httpd_copy_ssl_files: false
     httpd_ssl_cert_file_location: "{{ default_cert }}"
     httpd_ssl_cert_key_location: "{{ default_key }}"
+
+    nexus_backup_configure: true

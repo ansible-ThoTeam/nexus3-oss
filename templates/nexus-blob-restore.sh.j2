@@ -1,19 +1,25 @@
 #! /bin/bash
-
+#{{ansible_managed}}
 set -x
 
-if [ "x$1" = "x" ]; then  MDATE='$(date +%y-%m-%d)'; else MDATE =$1; fi
+if [ "x$1" = "x" ]; then
+    echo "Restore script is expecting a restore point as parameter"
+    echo "None provided. exiting"
+    exit 1
+fi
 
 # Generated with Ansible vars
-MDATE=$1 ## Should be %y-%m-%d format
+MDATE=$1 ## Should be %Y-%m-%d-%H-%M-%S format
 blob_dir="blob-backup-${MDATE}"
 backup_dir={{ nexus_backup_dir }}
 data_dir={{ nexus_data_dir }}
 blob_prefix={{ nexus_blob_prefix |d('blob-') }}
 
 systemctl stop nexus
-if [ $? != 0 ]; then
-  echo "Error code: $? Failed to stop nexus service"
+return_status=$?
+if [ $return_status != 0 ]; then
+  echo "Error code: $return_status Failed to stop nexus service"
+  exit $return_status
 else
   rm -rf ${data_dir}/db/*
   rm -rf ${data_dir}/blobs/*
