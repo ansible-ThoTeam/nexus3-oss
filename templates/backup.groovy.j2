@@ -7,6 +7,7 @@ import org.sonatype.nexus.scheduling.TaskInfo
 import org.sonatype.nexus.scheduling.schedule.Schedule
 import java.util.concurrent.TimeUnit
 
+
 /**
  * This groovy script is meant to be included in a schedulled task in nexus.
  * It will perform a full backup of your installation with the following steps.
@@ -16,12 +17,15 @@ import java.util.concurrent.TimeUnit
  * 4- Copy all blobstores from <nexusDataDirPath>/blobs to <nexusBackupDirPath>/blob-backup-<YY-MM-dd>
  * 5- Eventually wait for the nexus temporary db-backup task to complete
  * 6- Delete the nexus temporary db-backup task
+ * 7- If <nexusBackupRotation> is true, rotate backup dirs keeping last <nexusBackupKeepRotations> backups
  */
 
 
 nexusBackupLogFilePath = "{{ nexus_backup_log }}"
 nexusBackupDirPath = "{{ nexus_backup_dir }}"
 nexusDataDirPath = "{{ nexus_data_dir }}"
+nexusBackupRotate = Boolean.valueOf("{{ nexus_backup_rotate }}")
+nexusBackupKeepRotations = "{{ nexus_backup_keep_rotations }}".toInteger()
 
 backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('YYYY-MM-dd-HH-mm-ss'))
 CurrentBackupDirPath = nexusBackupDirPath+'/blob-backup-'+backupDateString
@@ -53,6 +57,29 @@ try {
     }
     backupLog << "Remove temporary task\n"
     tempBackupTask.remove()
+
+    if (nexusBackupRotate) {
+        backupLog << "Rotating backups keeping last "+nexusBackupKeepRotations.toString()+" Backups\n"
+        backupDirs = []
+        backupCounter = 0
+        backupPattern = ~/blob-backup-.*/
+        new File(nexusBackupDirPath).eachDirMatch(backupPattern) { dir ->
+            backupDirs << dir
+        }
+        backupDirs.sort{ it.name }.reverse().each { dir ->
+            backupCounter++
+            if (backupCounter > nexusBackupKeepRotations) {
+                backupLog << "Deleting backup "+ dir.name.toString() + "\n"
+                dir.deleteDir()
+            }
+        }
+        if (backupCounter > nexusBackupKeepRotations) {
+            backupDeleted =  backupCounter - nexusBackupKeepRotations
+            backupLog << "Deleted a total of "+ backupDeleted + " backup directories\n"
+        } else {
+            backupLog << "There where no backup directories to delete\n"
+        }
+    }
 } catch (Exception e) {
     backupLog << e.toString()
 }
