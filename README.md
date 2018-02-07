@@ -5,38 +5,42 @@ This role installs and configures Nexus Repository Manager OSS version 3.x.
 All configuration can be updated by re-running the role, except for the [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
 
 ## Table of Contents
-(Toc created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))
 
-* [History / Credits](#history--credits)
-* [Requirements](#requirements)
-* [Role Variables](#role-variables)
-   * [General variables](#general-variables)
-   * [Download dir for nexus package](#download-dir-for-nexus-package)
-   * [Nexus port and context path](#nexus-port-and-context-path)
-   * [Nexus OS user and group](#nexus-os-user-and-group)
-   * [Nexus instance directories](#nexus-instance-directories)
-   * [Admin password](#admin-password)
-   * [Default anonymous access](#default-anonymous-access)
-   * [Public hostname](#public-hostname)
-   * [Branding capabalities](#branding-capabalities)
-   * [Reverse proxy setup](#reverse-proxy-setup)
-   * [LDAP configuration](#ldap-configuration)
-   * [Privileges, roles and users](#privileges-roles-and-users)
-   * [Blobstores and repositories](#blobstores-and-repositories)
-   * [Scheduled tasks](#scheduled-tasks)
-   * [Backups](#backups)
-      * [Restore procedure](#restore-procedure)
-      * [Current limitations:](#current-limitations)
-* [Dependencies](#dependencies)
-* [Example Playbook](#example-playbook)
-* [Development, Contribution and Testing](#development-contribution-and-testing)
-   * [Contributions](#contributions)
-   * [Testing](#testing)
-      * [Groovy syntax](#groovy-syntax)
-      * [Full role testing with molecule](#full-role-testing-with-molecule)
-      * [Testing everything](#testing-everything)
-* [License](#license)
-* [Author Information](#author-information)
+   * [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
+      * [Table of Contents](#table-of-contents)
+      * [History / Credits](#history--credits)
+      * [Requirements](#requirements)
+      * [Role Variables](#role-variables)
+         * [General variables](#general-variables)
+         * [Download dir for nexus package](#download-dir-for-nexus-package)
+         * [Nexus port and context path](#nexus-port-and-context-path)
+         * [Nexus OS user and group](#nexus-os-user-and-group)
+         * [Nexus instance directories](#nexus-instance-directories)
+         * [Admin password](#admin-password)
+         * [Default anonymous access](#default-anonymous-access)
+         * [Public hostname](#public-hostname)
+         * [Branding capabalities](#branding-capabalities)
+         * [Reverse proxy setup](#reverse-proxy-setup)
+         * [LDAP configuration](#ldap-configuration)
+         * [Privileges, roles and users](#privileges-roles-and-users)
+         * [Blobstores and repositories](#blobstores-and-repositories)
+         * [Scheduled tasks](#scheduled-tasks)
+         * [Backups](#backups)
+            * [Restore procedure](#restore-procedure)
+            * [Possible limitations](#possible-limitations)
+      * [Dependencies](#dependencies)
+      * [Example Playbook](#example-playbook)
+      * [Development, Contribution and Testing](#development-contribution-and-testing)
+         * [Contributions](#contributions)
+         * [Testing](#testing)
+            * [Groovy syntax](#groovy-syntax)
+            * [Molecule default scenario](#molecule-default-scenario)
+            * [Testing everything](#testing-everything)
+               * [Molecule selinux scenario](#molecule-selinux-scenario)
+      * [License](#license)
+      * [Author Information](#author-information)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)git s
 
 ## History / Credits
 
@@ -594,9 +598,10 @@ All contributions to this role are welcome, either for bugfixes, new features or
 
 If you wish to contribute:
 - Fork the repo under your own name/organisation through github interface
-- Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
+- Create a branch **from the dev branch** in your own repo with a meaningfull name. We suggest the following naming convention:
   - feature_<someFeature> for features
   - fix_<someBugFix> for bug fixes
+  - docfix_<someDocFix> for documentation only fixes
 - If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
@@ -605,7 +610,7 @@ Moreover, if you have time to devote for code review, merge for realeases, etc..
 
 ### Testing
 
-This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only molecule deployment tests are ran automatically on every merge request creation/upate.
+This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only default molecule deployment tests are ran automatically on every merge request creation/upate.
 
 #### Groovy syntax
 
@@ -618,7 +623,7 @@ If you submit changes to groovy files, please run the groovy syntax check locall
 
 You will need the groovy package installed locally to run this test.
 
-#### Full role testing with molecule
+#### Molecule default scenario
 
 The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
 ```bash
@@ -631,14 +636,39 @@ deactivate
 ```
 
 To speed up tests, molecule uses automated docker build images on docker hub:
-- https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
-- https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
 
 #### Testing everything
-As a convenience, we provide a script to run all test as once:
+As a convenience, we provide a script to run all test at once (including the default molecule scenario)
 ```bash
 ./tests/test_all.sh
 ```
+
+##### Molecule selinux scenario
+
+We included a second molecule `selinux` scenario. This one is not run on travis but can be used locally to:
+* test selinux integration (on centos).
+* run test and access the running vms under VirtualBox on you local machine.
+
+If you which to use this scenario you will need
+* VirtualBox
+* Vagrant
+* molecule
+
+A typical workflow runs like this:
+* `molecule create -s selinux`. Once this is complete, you will see two vagrant vms (centos7 and debian-stretch) in your VirtualBox console.
+These Vagrant box are taken from http://vagrant.thoteam.com
+* `molecule converge -s selinux` will run the [scenario test playbook](molecule/selinux/playbook.yml) against the two vms.
+You can pass additionnal variables to ansible on the command line to override playbook or default vars
+(e.g. `molecule converge -s selinux -- -e nexus_backup_rotate=true`). You can converge as many times as you want.
+* To access the nexus gui on each machine, right click the vm in VirtualBox console, click settings. In the Network settings
+for Adapter 1, click advanced, then Port Forwarding. Choose an available Host Port linked to Host IP 127.0.0.1 forwarding 
+to port 443 on the guest.
+* You can now access the gui with https://localhost:<chosenPort>. You will need to add a security exception for the
+self signed ssl certificate. If you did not change it with a command line var above, the default role admin password is "changeme"
+* When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
+
 
 ## License
 
