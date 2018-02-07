@@ -57,7 +57,7 @@ We would like to thank the original authors for the work done.
     - For more information see [nexus3 system requirements](https://help.sonatype.com/display/NXRM3/System+Requirements)
 - Apache HTTPD (optional)
     - Used to setup a SSL reverse-proxy
-    - The following modules must be enabled in your configuration: mod_ssl, mod_rewrite, mod_proxy, mod_headers.
+    - The following modules must be enabled in your configuration: mod_ssl, mod_rewrite, mod_proxy, mod_proxy_http, mod_headers.
 
 (see [Dependencies](#dependencies) section below for matching roles on galaxy)
 
