@@ -26,7 +26,7 @@ All configuration can be updated by re-running the role, except for the [blobsto
    * [Scheduled tasks](#scheduled-tasks)
    * [Backups](#backups)
       * [Restore procedure](#restore-procedure)
-      * [Current limitations:](#current-limitations)
+      * [Possible limitations](#possible-limitations)
 * [Dependencies](#dependencies)
 * [Example Playbook](#example-playbook)
 * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -34,6 +34,8 @@ All configuration can be updated by re-running the role, except for the [blobsto
    * [Testing](#testing)
       * [Groovy syntax](#groovy-syntax)
       * [Full role testing with molecule](#full-role-testing-with-molecule)
+         * [Molecule default scenario](#molecule-default-scenario)
+         * [Molecule selinux scenario](#molecule-selinux-scenario)
       * [Testing everything](#testing-everything)
 * [License](#license)
 * [Author Information](#author-information)
@@ -597,6 +599,7 @@ If you wish to contribute:
 - Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
   - feature_<someFeature> for features
   - fix_<someBugFix> for bug fixes
+  - docfix_<someDocFix> for documentation only fixes
 - If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
@@ -620,6 +623,8 @@ You will need the groovy package installed locally to run this test.
 
 #### Full role testing with molecule
 
+##### Molecule default scenario
+
 The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
 ```bash
 # Note: the following path should be outside the working dir
@@ -633,6 +638,8 @@ deactivate
 To speed up tests, molecule uses automated docker build images on docker hub:
 - https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
 - https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+
+##### Molecule selinux scenario
 
 #### Testing everything
 As a convenience, we provide a script to run all test as once:
