@@ -1,5 +1,5 @@
 ---
-nexus_version: '3.7.1-02'
+nexus_version: '3.8.0-02'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 nexus_download_dir: '/tmp'
 nexus_os_group: 'nexus'
