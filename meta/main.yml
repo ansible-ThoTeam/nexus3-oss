@@ -16,11 +16,17 @@ galaxy_info:
         - 7
     - name: Ubuntu
       versions:
-        - all
+        - xenial
+        - artful
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
 
   galaxy_tags:
     - nexus
     - nexus3
+    - sonatype
     - java
     - maven
     - npm
