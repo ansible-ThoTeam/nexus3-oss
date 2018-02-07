@@ -166,13 +166,18 @@ Use already existing SSL certificates on the server file system for the https re
 Set httpd default admin email address
 
 ### LDAP configuration
+
+Ldap connections and security realm are disabled by default
+
 ```yaml
+    nexus_ldap_realm: false
     ldap_connections: []
 ```
 
 [LDAP connection(s)](https://books.sonatype.com/nexus-book/3.0/reference/security.html#ldap) setup, each item goes as follow :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'My Company LDAP' # used as a key to update the ldap config
     ldap_protocol: 'ldaps' # ldap or ldaps
     ldap_hostname: 'ldap.mycompany.com'
@@ -200,6 +205,7 @@ Set httpd default admin email address
 Example LDAP config for anonymous authentication (anonymous bind), this is also the "minimal" config :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'Simplest LDAP config'
     ldap_protocol: 'ldaps'
     ldap_hostname: 'annuaire.mycompany.com'
@@ -214,6 +220,7 @@ Example LDAP config for anonymous authentication (anonymous bind), this is also 
 Example LDAP config for simple authentication (using a DSA account) :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'LDAP config with DSA'
     ldap_protocol: 'ldaps'
     ldap_hostname: 'annuaire.mycompany.com'
@@ -233,6 +240,7 @@ Example LDAP config for simple authentication (using a DSA account) :
 Example LDAP config for simple authentication (using a DSA account) + groups mapped as roles :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'LDAP config with DSA'
     ldap_protocol: 'ldaps'
     ldap_hostname: 'annuaire.mycompany.com'
@@ -388,6 +396,15 @@ see `defaults/main.yml` for these options:
 ```
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.
+
+Note that you might need to enable certain security realms if you want to use other repository types than maven. These are
+false by default
+
+```yaml
+nexus_nuget_api_key_realm: false
+nexus_npm_bearer_token_realm: false
+nexus_docker_bearer_token_realm: false  # required for docker anonymous access
+```
 
 ### Scheduled tasks
 ```yaml
