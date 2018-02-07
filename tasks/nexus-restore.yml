@@ -1,4 +1,13 @@
 ---
+- name: Make sure nexus is stopped
+  debug:
+    msg: "trigger nexus stop"
+  changed_when: true
+  notify:
+    - nexus-service-stop
+
+- meta: flush_handlers
+
 - name: "Run restoration script"
   shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a {{ nexus_restore_log }}"
   tags:

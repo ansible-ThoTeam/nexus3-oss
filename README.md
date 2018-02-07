@@ -5,38 +5,42 @@ This role installs and configures Nexus Repository Manager OSS version 3.x.
 All configuration can be updated by re-running the role, except for the [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
 
 ## Table of Contents
-(Toc created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))
 
-* [History / Credits](#history--credits)
-* [Requirements](#requirements)
-* [Role Variables](#role-variables)
-   * [General variables](#general-variables)
-   * [Download dir for nexus package](#download-dir-for-nexus-package)
-   * [Nexus port and context path](#nexus-port-and-context-path)
-   * [Nexus OS user and group](#nexus-os-user-and-group)
-   * [Nexus instance directories](#nexus-instance-directories)
-   * [Admin password](#admin-password)
-   * [Default anonymous access](#default-anonymous-access)
-   * [Public hostname](#public-hostname)
-   * [Branding capabalities](#branding-capabalities)
-   * [Reverse proxy setup](#reverse-proxy-setup)
-   * [LDAP configuration](#ldap-configuration)
-   * [Privileges, roles and users](#privileges-roles-and-users)
-   * [Blobstores and repositories](#blobstores-and-repositories)
-   * [Scheduled tasks](#scheduled-tasks)
-   * [Backups](#backups)
-      * [Restore procedure](#restore-procedure)
-      * [Current limitations:](#current-limitations)
-* [Dependencies](#dependencies)
-* [Example Playbook](#example-playbook)
-* [Development, Contribution and Testing](#development-contribution-and-testing)
-   * [Contributions](#contributions)
-   * [Testing](#testing)
-      * [Groovy syntax](#groovy-syntax)
-      * [Full role testing with molecule](#full-role-testing-with-molecule)
-      * [Testing everything](#testing-everything)
-* [License](#license)
-* [Author Information](#author-information)
+   * [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
+      * [Table of Contents](#table-of-contents)
+      * [History / Credits](#history--credits)
+      * [Requirements](#requirements)
+      * [Role Variables](#role-variables)
+         * [General variables](#general-variables)
+         * [Download dir for nexus package](#download-dir-for-nexus-package)
+         * [Nexus port and context path](#nexus-port-and-context-path)
+         * [Nexus OS user and group](#nexus-os-user-and-group)
+         * [Nexus instance directories](#nexus-instance-directories)
+         * [Admin password](#admin-password)
+         * [Default anonymous access](#default-anonymous-access)
+         * [Public hostname](#public-hostname)
+         * [Branding capabalities](#branding-capabalities)
+         * [Reverse proxy setup](#reverse-proxy-setup)
+         * [LDAP configuration](#ldap-configuration)
+         * [Privileges, roles and users](#privileges-roles-and-users)
+         * [Blobstores and repositories](#blobstores-and-repositories)
+         * [Scheduled tasks](#scheduled-tasks)
+         * [Backups](#backups)
+            * [Restore procedure](#restore-procedure)
+            * [Possible limitations](#possible-limitations)
+      * [Dependencies](#dependencies)
+      * [Example Playbook](#example-playbook)
+      * [Development, Contribution and Testing](#development-contribution-and-testing)
+         * [Contributions](#contributions)
+         * [Testing](#testing)
+            * [Groovy syntax](#groovy-syntax)
+            * [Molecule default scenario](#molecule-default-scenario)
+            * [Testing everything](#testing-everything)
+               * [Molecule selinux scenario](#molecule-selinux-scenario)
+      * [License](#license)
+      * [Author Information](#author-information)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)git s
 
 ## History / Credits
 
@@ -57,7 +61,7 @@ We would like to thank the original authors for the work done.
     - For more information see [nexus3 system requirements](https://help.sonatype.com/display/NXRM3/System+Requirements)
 - Apache HTTPD (optional)
     - Used to setup a SSL reverse-proxy
-    - The following modules must be enabled in your configuration: mod_ssl, mod_rewrite, mod_proxy, mod_headers.
+    - The following modules must be enabled in your configuration: mod_ssl, mod_rewrite, mod_proxy, mod_proxy_http, mod_headers.
 
 (see [Dependencies](#dependencies) section below for matching roles on galaxy)
 
@@ -162,13 +166,18 @@ Use already existing SSL certificates on the server file system for the https re
 Set httpd default admin email address
 
 ### LDAP configuration
+
+Ldap connections and security realm are disabled by default
+
 ```yaml
+    nexus_ldap_realm: false
     ldap_connections: []
 ```
 
 [LDAP connection(s)](https://books.sonatype.com/nexus-book/3.0/reference/security.html#ldap) setup, each item goes as follow :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'My Company LDAP' # used as a key to update the ldap config
     ldap_protocol: 'ldaps' # ldap or ldaps
     ldap_hostname: 'ldap.mycompany.com'
@@ -196,6 +205,7 @@ Set httpd default admin email address
 Example LDAP config for anonymous authentication (anonymous bind), this is also the "minimal" config :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'Simplest LDAP config'
     ldap_protocol: 'ldaps'
     ldap_hostname: 'annuaire.mycompany.com'
@@ -210,6 +220,7 @@ Example LDAP config for anonymous authentication (anonymous bind), this is also 
 Example LDAP config for simple authentication (using a DSA account) :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'LDAP config with DSA'
     ldap_protocol: 'ldaps'
     ldap_hostname: 'annuaire.mycompany.com'
@@ -229,6 +240,7 @@ Example LDAP config for simple authentication (using a DSA account) :
 Example LDAP config for simple authentication (using a DSA account) + groups mapped as roles :
 
 ```yaml
+    nexus_ldap_realm: true
   - ldap_name: 'LDAP config with DSA'
     ldap_protocol: 'ldaps'
     ldap_hostname: 'annuaire.mycompany.com'
@@ -343,7 +355,7 @@ Maven [proxy repositories](https://books.sonatype.com/nexus-book/3.0/reference/m
     nexus_repos_maven_hosted:
       - name: private-release
         version_policy: release
-        write_policy: allow_once
+        write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 ```
 
 Maven [hosted repositories](https://books.sonatype.com/nexus-book/3.0/reference/maven.html#_hosting_maven_repositories) configuration.
@@ -366,7 +378,7 @@ All three repository types are combined with the following default values :
       strict_content_validation: true
       version_policy: release # release, snapshot or mixed
       layout_policy: strict # strict or permissive
-      write_policy: allow_once # allow_once or allow
+      write_policy: allow_once # one of "allow", "allow_once" or "deny"
 ```
 
 Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
@@ -384,6 +396,15 @@ see `defaults/main.yml` for these options:
 ```
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.
+
+Note that you might need to enable certain security realms if you want to use other repository types than maven. These are
+false by default
+
+```yaml
+nexus_nuget_api_key_realm: false
+nexus_npm_bearer_token_realm: false
+nexus_docker_bearer_token_realm: false  # required for docker anonymous access
+```
 
 ### Scheduled tasks
 ```yaml
@@ -439,33 +460,30 @@ These are all false unless you override them from playbook / group_var / cli, th
       nexus_backup_dir: '/var/nexus-backup'
       nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
+      nexus_backup_rotate: false
+      nexus_backup_keep_rotations: 4  # Keep 4 backup rotation by default (current + last 3)
 ```
 
-Backup will not be configured unless you switch `nexus_backup_configure` to `true`.
-In this case, a scheduled script task will be configured in nexus to run every day
-at time specified by `nexus_backup_cron` (defaults to 9pm).
+Backup will not be configured unless you switch `nexus_backup_configure: true`.
+In this case, a scheduled script task will be configured in nexus to run
+at interval specified by `nexus_backup_cron` (defaults to 21:00 every day).
 See [the groovy template for this task](templates/backup.groovy.j2) for details.
 This scheduled task is independent from the other `nexus_scheduled_tasks` you
 declare in your playbook
 
-Note that `nexus_backup_log` must be writable by the nexus user or the backup
-task will fail
+If you want to rotate backups, set `nexus_backup_rotate: true` and adjust
+the number of rotations you would like to keep with `nexus_backup_keep_rotations`
+(defaults to 4)
+
+Note that `nexus_backup_log` _must be writable_ by the nexus user or the **backup
+task will fail**
 
 #### Restore procedure
+Run your playbook with parameter `-e nexus_restore_point=<YYYY-MM-dd-HH-mm-ss>`
+(e.g. 2017-12-17-21-00-00 for 17th of December 2017 at 21h00m00s)
 
-Run your playbook with parameter `-e nexus_restore_point=<YY-MM-dd>`
-(e.g. 17-12-17 for 17th of December 2017)
-
-#### Current limitations
-* Due to the initial chosen naming convention for restore points,
-backups can only be ran once a day (this will be fixed in a future release - see #19).
-Running more than once a day will work without errors but will:
-    * overwrite the last blobstore copy in the current daily backup dir
-    * multiply the instances of nexus db backup files in the daily backup dir
-    which might later confuse the restore script.
-* There is no rotation for backups. All of them will be kept unless you implement
-a rotation/cleanup by yourself. This might be added as an enhancement in a future release
-* Blobstore copies are made directly from nexus by the script scheduled task.
+#### Possible limitations
+Blobstore copies are made directly from nexus by the script scheduled task.
 This has only been tested on rather small blobstores (less than 50Go) and should
 be used with caution and tested carefully on larger installations before moving
 to production. In any case, you are free to implement your own backup scenario
@@ -597,9 +615,10 @@ All contributions to this role are welcome, either for bugfixes, new features or
 
 If you wish to contribute:
 - Fork the repo under your own name/organisation through github interface
-- Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
+- Create a branch **from the dev branch** in your own repo with a meaningfull name. We suggest the following naming convention:
   - feature_<someFeature> for features
   - fix_<someBugFix> for bug fixes
+  - docfix_<someDocFix> for documentation only fixes
 - If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
@@ -608,7 +627,7 @@ Moreover, if you have time to devote for code review, merge for realeases, etc..
 
 ### Testing
 
-This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only molecule deployment tests are ran automatically on every merge request creation/upate.
+This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only default molecule deployment tests are ran automatically on every merge request creation/upate.
 
 #### Groovy syntax
 
@@ -621,7 +640,7 @@ If you submit changes to groovy files, please run the groovy syntax check locall
 
 You will need the groovy package installed locally to run this test.
 
-#### Full role testing with molecule
+#### Molecule default scenario
 
 The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
 ```bash
@@ -634,14 +653,39 @@ deactivate
 ```
 
 To speed up tests, molecule uses automated docker build images on docker hub:
-- https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
-- https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
 
 #### Testing everything
-As a convenience, we provide a script to run all test as once:
+As a convenience, we provide a script to run all test at once (including the default molecule scenario)
 ```bash
 ./tests/test_all.sh
 ```
+
+##### Molecule selinux scenario
+
+We included a second molecule `selinux` scenario. This one is not run on travis but can be used locally to:
+* test selinux integration (on centos).
+* run test and access the running vms under VirtualBox on you local machine.
+
+If you which to use this scenario you will need
+* VirtualBox
+* Vagrant
+* molecule
+
+A typical workflow runs like this:
+* `molecule create -s selinux`. Once this is complete, you will see two vagrant vms (centos7 and debian-stretch) in your VirtualBox console.
+These Vagrant box are taken from http://vagrant.thoteam.com
+* `molecule converge -s selinux` will run the [scenario test playbook](molecule/selinux/playbook.yml) against the two vms.
+You can pass additionnal variables to ansible on the command line to override playbook or default vars
+(e.g. `molecule converge -s selinux -- -e nexus_backup_rotate=true`). You can converge as many times as you want.
+* To access the nexus gui on each machine, right click the vm in VirtualBox console, click settings. In the Network settings
+for Adapter 1, click advanced, then Port Forwarding. Choose an available Host Port linked to Host IP 127.0.0.1 forwarding 
+to port 443 on the guest.
+* You can now access the gui with https://localhost:<chosenPort>. You will need to add a security exception for the
+self signed ssl certificate. If you did not change it with a command line var above, the default role admin password is "changeme"
+* When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
+
 
 ## License
 
