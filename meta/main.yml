@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: ansible-ThoTeam
-  description: Sonatype Nexus Repository Manager 3.x
+  description: Nexus Repository Manager 3.x (Sonatype)
   company: ThoTeam
 
   license: license (GPLv3)
@@ -26,7 +26,6 @@ galaxy_info:
   galaxy_tags:
     - nexus
     - nexus3
-    - sonatype
     - java
     - maven
     - npm
