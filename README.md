@@ -2,7 +2,7 @@
 
 This role installs and configures Nexus Repository Manager OSS version 3.x.
 
-All configuration can be updated by re-running the role, except for the [blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores)-related settings, which are immutable in nexus.
+All configuration can be updated by re-running the role, except for the [blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) related settings, which are immutable in nexus.
 
 ## Table of Contents
 
@@ -40,7 +40,7 @@ All configuration can be updated by re-running the role, except for the [blobsto
       * [License](#license)
       * [Author Information](#author-information)
 
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)git s
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 ## History / Credits
 
@@ -123,7 +123,7 @@ The 'admin' account password to setup. Note : admin password change subsequent t
     nexus_anonymous_access: false
 ```
 
-Allow [anonymous access](https://books.sonatype.com/nexus-book/3.0/reference/security.html#anonymous) to nexus.
+Allow [anonymous access](https://help.sonatype.com/display/NXRM3/Anonymous+Access) to nexus.
 
 ### Public hostname
 ```yaml
@@ -147,7 +147,7 @@ Header and footer branding, those can contain HTML.
     httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 ```
 
-Setup an [SSL Reverse-proxy](https://books.sonatype.com/nexus-book/3.0/reference/install.html#_example_reverse_proxy_ssl_termination_at_base_path), this needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
+Setup an [SSL Reverse-proxy](https://help.sonatype.com/display/NXRM3/Run+Behind+a+Reverse+Proxy#RunBehindaReverseProxy-Example:ReverseProxySSLTerminationatBasePath), this needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
 
 ```yaml
     httpd_copy_ssl_files: true  # Default is false
@@ -174,7 +174,7 @@ Ldap connections and security realm are disabled by default
     ldap_connections: []
 ```
 
-[LDAP connection(s)](https://books.sonatype.com/nexus-book/3.0/reference/security.html#ldap) setup, each item goes as follow :
+[LDAP connection(s)](https://help.sonatype.com/display/NXRM3/LDAP) setup, each item goes as follow :
 
 ```yaml
     nexus_ldap_realm: true
@@ -274,7 +274,7 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
           - browse
 ```
 
-List of the [privileges](https://books.sonatype.com/nexus-book/3.0/reference/security.html#privilegeshttps://books.sonatype.com/nexus-book/3.0/reference/security.html#privileges) to setup. Those items are combined with the following default values :
+List of the [privileges](https://help.sonatype.com/display/NXRM3/Privileges) to setup. Those items are combined with the following default values :
 
 ```yaml
     _nexus_privilege_defaults:
@@ -295,7 +295,7 @@ List of the [privileges](https://books.sonatype.com/nexus-book/3.0/reference/sec
         roles: [] # references to other role names
 ```
 
-List of the [roles](https://books.sonatype.com/nexus-book/3.0/reference/security.html#roles) to setup.
+List of the [roles](https://help.sonatype.com/display/NXRM3/Roles) to setup.
 
 ```yaml
     nexus_local_users: []
@@ -333,7 +333,7 @@ Delete the default blobstore from the nexus install initial default configuratio
     #   path: /mnt/custom/path
 ```
 
-[Blobstores](https://books.sonatype.com/nexus-book/3.0/reference/admin.html#admin-repository-blobstores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
+[Blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
 
 ```yaml
     nexus_repos_maven_proxy:
@@ -349,7 +349,7 @@ Delete the default blobstore from the nexus install initial default configuratio
     #   remote_password: 'secret'
 ```
 
-Maven [proxy repositories](https://books.sonatype.com/nexus-book/3.0/reference/maven.html#_proxying_maven_repositories) configuration.
+Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-ProxyRepository) configuration.
 
 ```yaml
     nexus_repos_maven_hosted:
@@ -358,7 +358,7 @@ Maven [proxy repositories](https://books.sonatype.com/nexus-book/3.0/reference/m
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 ```
 
-Maven [hosted repositories](https://books.sonatype.com/nexus-book/3.0/reference/maven.html#_hosting_maven_repositories) configuration.
+Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration.
 
 ```yaml
     nexus_repos_maven_group:
@@ -368,7 +368,7 @@ Maven [hosted repositories](https://books.sonatype.com/nexus-book/3.0/reference/
           - jboss
 ```
 
-Maven [group repositories](https://books.sonatype.com/nexus-book/3.0/reference/maven.html#_grouping_maven_repositories) configuration.
+Maven [group repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-RepositoryGroup) configuration.
 
 All three repository types are combined with the following default values :
 
@@ -444,7 +444,7 @@ nexus_docker_bearer_token_realm: false  # required for docker anonymous access
     #      age: "24"
 ```
 
-[Scheduled tasks](https://books.sonatype.com/nexus-book/reference3/admin.html#admin-system-tasks) to setup. `typeId` and task-specific `taskProperties`/`booleanTaskProperties` can be guessed either:
+[Scheduled tasks](https://help.sonatype.com/display/NXRM3/System+Configuration#SystemConfiguration-ConfiguringandExecutingTasks) to setup. `typeId` and task-specific `taskProperties`/`booleanTaskProperties` can be guessed either:
 * from the java type hierarchy of `org.sonatype.nexus.scheduling.TaskDescriptorSupport`
 * by inspecting the task creation html form in your browser
 * from peeking at the browser AJAX requests while manually configuring a task.
