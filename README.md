@@ -489,6 +489,8 @@ be used with caution and tested carefully on larger installations before moving
 to production. In any case, you are free to implement your own backup scenario
 outside of this role.
 
+### NPM scoped packages support
+If you want to download NPM scoped packages though your nexus switch `httpd_allow_encoded_slashes: true`.
 
 ## Dependencies
 
