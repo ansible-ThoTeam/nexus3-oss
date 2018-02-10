@@ -18,7 +18,7 @@
     nexus_delete_default_repos: true
     nexus_delete_default_blobstore: true
 
-    nexus_blob_split: false
+    nexus_blob_split: true
 
     nexus_config_pypi: true
     nexus_config_docker: true
@@ -29,6 +29,17 @@
     nexus_config_nuget: true
     nexus_config_gitlfs: true
     nexus_config_yum: true
+
+    nexus_anonymous_access: true
+
+    nexus_repos_npm_hosted: []
+    nexus_repos_npm_group:
+      - name: npm-public
+        member_repos:
+          - npm-registry
+    nexus_repos_npm_proxy:
+      - name: npm-registry
+        remote_url: https://registry.npmjs.org/
 
     nexus_repos_yum_proxy:
       - name: epel_centos_7_x86_64
