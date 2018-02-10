@@ -21,4 +21,4 @@ def test_npm_scoped_package_download(host):
                )
 
     assert download["status_code"] == 200
-    assert download["state"] == file
+    assert download["state"] == 'file'
