@@ -53,7 +53,7 @@ scenario:
     - converge
     - idempotence
     - check
-    # - verify
+    - verify
     - destroy
 
 verifier:
