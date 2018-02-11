@@ -11,7 +11,7 @@ nexus_backup_configure: true
 nexus_delete_default_repos: true
 nexus_delete_default_blobstore: true
 
-nexus_blob_split: false
+nexus_blob_split: true
 
 nexus_config_pypi: true
 nexus_config_docker: true
