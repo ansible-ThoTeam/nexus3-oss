@@ -3,6 +3,6 @@
   hosts: all
   roles:
     - role: nexus3-oss
-  vars_file:
+  vars_files:
     - ../ssl-{{ ansible_os_family }}.yml
     - ../nexus_test_vars.yml
