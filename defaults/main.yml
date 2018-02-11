@@ -443,6 +443,7 @@ nexus_repos_gitlfs_hosted:
     blob_store: "{{ nexus_blob_names.gitlfs.blob }}"
 
 # yum support ...
+nexus_repos_yum_hosted: []
 nexus_repos_yum_proxy: []
 # Example for epel centos-7 x86_64
 # - name: epel_centos_7_x86_64
@@ -450,4 +451,8 @@ nexus_repos_yum_proxy: []
 
 _nexus_repos_yum_defaults:
   blob_store: "{{ nexus_blob_names.yum.blob }}"
+  repodata_depth: 0  # from 0 to 5
   strict_content_validation: true
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+

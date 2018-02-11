@@ -23,6 +23,9 @@ nexus_config_nuget: true
 nexus_config_gitlfs: true
 nexus_config_yum: true
 
+nexus_repos_yum_hosted:
+  - name: private_yum_centos_7
+    repodata_depth: 1
 nexus_repos_yum_proxy:
   - name: epel_centos_7_x86_64
     remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
