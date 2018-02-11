@@ -23,6 +23,17 @@ nexus_config_nuget: true
 nexus_config_gitlfs: true
 nexus_config_yum: true
 
+nexus_anonymous_access: true
+
+nexus_repos_npm_hosted: []
+nexus_repos_npm_group:
+  - name: npm-public
+    member_repos:
+      - npm-registry
+nexus_repos_npm_proxy:
+  - name: npm-registry
+    remote_url: https://registry.npmjs.org/
+
 nexus_repos_yum_hosted:
   - name: private_yum_centos_7
     repodata_depth: 1
