@@ -455,4 +455,3 @@ _nexus_repos_yum_defaults:
   strict_content_validation: true
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-

@@ -6,4 +6,3 @@
   vars_file:
     - ../ssl-{{ ansible_os_family }}.yml
     - ../nexus_test_vars.yml
-
