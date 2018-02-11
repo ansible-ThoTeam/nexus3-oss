@@ -615,7 +615,7 @@ All contributions to this role are welcome, either for bugfixes, new features or
 
 If you wish to contribute:
 - Fork the repo under your own name/organisation through github interface
-- Create a branch **from the dev branch** in your own repo with a meaningfull name. We suggest the following naming convention:
+- Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
   - feature_<someFeature> for features
   - fix_<someBugFix> for bug fixes
   - docfix_<someDocFix> for documentation only fixes
