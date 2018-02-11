@@ -163,8 +163,11 @@
   with_items: "{{ nexus_repos_gitlfs_hosted }}"
   when: nexus_config_gitlfs
 
-- include: create_repo_yum_proxy_each.yml
-  with_items: "{{ nexus_repos_yum_proxy }}"
+- block:
+    - include: create_repo_yum_hosted_each.yml
+      with_items: "{{ nexus_repos_yum_hosted }}"
+    - include: create_repo_yum_proxy_each.yml
+      with_items: "{{ nexus_repos_yum_proxy }}"
   when: nexus_config_yum
 
 - include: call_script.yml
