@@ -2,15 +2,8 @@
 - name: Converge
   hosts: all
   become: yes
-  pre_tasks:
-    - name: configure default ssl key and cert based on OS
-      include_vars: "../ssl-{{ ansible_os_family }}.yml"
   roles:
     - role: nexus3-oss
-  vars:
-    httpd_setup_enable: true
-    httpd_copy_ssl_files: false
-    httpd_ssl_cert_file_location: "{{ default_cert }}"
-    httpd_ssl_cert_key_location: "{{ default_key }}"
-
-    nexus_backup_configure: true
+  vars_files:
+    - ../ssl-{{ ansible_os_family }}.yml
+    - ../nexus_test_vars.yml

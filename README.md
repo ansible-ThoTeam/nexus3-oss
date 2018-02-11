@@ -679,11 +679,9 @@ These Vagrant box are taken from http://vagrant.thoteam.com
 * `molecule converge -s selinux` will run the [scenario test playbook](molecule/selinux/playbook.yml) against the two vms.
 You can pass additionnal variables to ansible on the command line to override playbook or default vars
 (e.g. `molecule converge -s selinux -- -e nexus_backup_rotate=true`). You can converge as many times as you want.
-* To access the nexus gui on each machine, right click the vm in VirtualBox console, click settings. In the Network settings
-for Adapter 1, click advanced, then Port Forwarding. Choose an available Host Port linked to Host IP 127.0.0.1 forwarding 
-to port 443 on the guest.
-* You can now access the gui with https://localhost:<chosenPort>. You will need to add a security exception for the
-self signed ssl certificate. If you did not change it with a command line var above, the default role admin password is "changeme"
+* You can now access the gui with https://localhost:9101 (centos7) or https://localhost:9102 (debian-stretch).
+You will need to add a security exception for the self signed ssl certificate. If you did not change it with a
+command line var above, the default role admin password is "changeme"
 * When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
 
 
