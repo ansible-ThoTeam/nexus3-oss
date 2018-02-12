@@ -71,12 +71,15 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 
 ### General variables
 ```yaml
-    nexus_version: '3.7.1-02'
+    nexus_version: '3.8.0-02'
     nexus_timezone: 'UTC'
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 ```
 
-The nexus version and package to install, see available versions at https://www.sonatype.com/download-oss-sonatype . `nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
+The nexus version and package to install, see available versions at https://www.sonatype.com/download-oss-sonatype .
+`nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
+
+Note that if you use a version version different from the default, you should make sure you do not use features which are not available for your version (e.g. yum hosted repositories for nexus < 3.8.0 or git lfs repo for nexus < 3.3.0)
 
 ### Download dir for nexus package
 ```yaml
