@@ -269,6 +269,7 @@
     recursive: yes
     delete: yes
     mode: push
+    use_ssh_args: yes
     src: "files/groovy/"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
 
