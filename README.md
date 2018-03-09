@@ -316,6 +316,12 @@ Local (non-LDAP) users/accounts to create in nexus, items go as follow :
       - developers # role ID
 ```
 
+If you want to remove old account, provide only username and set state to absent :
+```yaml
+ - username: olduser
+   state: absent
+```
+
 ### Blobstores and repositories
 ```yaml
     nexus_delete_default_repos: false

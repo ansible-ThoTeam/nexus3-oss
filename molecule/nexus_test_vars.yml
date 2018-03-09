@@ -54,3 +54,14 @@ nexus_scheduled_tasks:
       gracePeriodInDays: "2"
     booleanTaskProperties:
       removeIfReleased: true
+
+nexus_local_users:
+  - username: jenkins
+    first_name: Jenkins
+    last_name: CI
+    email: support@company.com
+    password: "s3cr3t"
+    roles:
+      - developers
+  - username: olduser  # make sure this old account is removed
+    state: absent
