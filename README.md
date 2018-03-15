@@ -678,7 +678,7 @@ deactivate
 ```
 
 To speed up tests, molecule uses automated docker build images on docker hub:
-* https://hub.docker.com/r/thoteam/ansible-ubuntu16.04-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
 * https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
 
 #### Testing everything
