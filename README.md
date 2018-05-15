@@ -409,6 +409,18 @@ nexus_npm_bearer_token_realm: false
 nexus_docker_bearer_token_realm: false  # required for docker anonymous access
 ```
 
+The Remote User Realm can also be enabled with 
+
+```yaml
+nexus_rut_auth_realm: true
+```
+
+and the header can be configured by defining
+
+```yaml
+nexus_rut_auth_header: "CUSTOM_HEADER"
+```
+
 ### Scheduled tasks
 ```yaml
     nexus_scheduled_tasks: []
