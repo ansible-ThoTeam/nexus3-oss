@@ -53,18 +53,18 @@
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
-  when: nexus_version < '3.1.0'
+  when: nexus_version is version_compare('3.1.0', '<')
 
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
-  when: nexus_version >= '3.1.0'
+  when: nexus_version is version_compare('3.1.0', '>=')
 
 - name: Get application settings directories
   set_fact:
     nexus_app_dir_settings_dirs:
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
-  when: nexus_version < '3.1.0'
+  when: nexus_version is version_compare('3.1.0', '<')
 
 - name: Get application settings directories
   set_fact:
@@ -75,17 +75,17 @@
       - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
-  when: nexus_version >= '3.1.0'
+  when: nexus_version is version_compare('3.1.0', '>=')
 
 - name: Get rest API endpoint (v < 3.8.0)
   set_fact:
     nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
-  when: nexus_version < '3.8.0'
+  when: nexus_version is version_compare('3.8.0', '<')
 
 - name: Get rest API endpoint (v >= 3.8.0)
   set_fact:
     nexus_rest_api_endpoint: "service/rest/v1/script"
-  when: nexus_version >='3.8.0'
+  when: nexus_version is version_compare('3.8.0', '>=')
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
