@@ -208,6 +208,16 @@
       ldap_realm: "{{ nexus_ldap_realm }}"
       docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
 
+- name: Configure RUT Auth header
+  include: call_script.yml
+  vars:
+    script_name: setup_capability
+    args:
+      capability_typeId: "rutauth"
+      capability_properties:
+        httpHeader: "{{ nexus_rut_auth_header }}"
+  when: nexus_rut_auth_header is defined
+
 - include: call_script.yml
   vars:
     script_name: setup_email
