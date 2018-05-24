@@ -18,6 +18,8 @@
       user_real_name_attribute: "{{ item.ldap_user_real_name_attribute }}"
       user_email_attribute: "{{ item.ldap_user_email_attribute }}"
       map_groups_as_roles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
+      map_groups_as_roles_type: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
+      user_memberof_attribute: "{{ item.ldap_user_memberof_attribute | default('memberOf') }}"
       group_base_dn: "{{ item.ldap_group_base_dn | default('ou=groups') }}"
       group_object_class: "{{ item.ldap_group_object_class | default('groupOfNames') }}"
       group_id_attribute: "{{ item.ldap_group_id_attribute | default('cn') }}"

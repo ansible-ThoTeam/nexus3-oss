@@ -266,6 +266,28 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
     ldap_group_subtree: false
 ```
 
+Example LDAP config for simple authentication (using a DSA account) + groups mapped as roles dynamically :
+
+```yaml
+    nexus_ldap_realm: true
+  - ldap_name: 'LDAP config with DSA'
+    ldap_protocol: 'ldaps'
+    ldap_hostname: 'annuaire.mycompany.com'
+    ldap_port: 636
+    ldap_auth: 'simple'
+    ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
+    ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
+    ldap_search_base: 'dc=mycompany,dc=net'
+    ldap_user_base_dn: 'ou=users'
+    ldap_user_object_class: 'inetOrgPerson'
+    ldap_user_id_attribute: 'uid'
+    ldap_user_real_name_attribute: 'cn'
+    ldap_user_email_attribute: 'mail'
+    ldap_map_groups_as_roles: true
+    ldap_map_groups_as_roles_type: 'dynamic'
+    ldap_user_memberof_attribute: 'memberOf'
+```
+
 ### Privileges, roles and users
 ```yaml
     nexus_privileges:
