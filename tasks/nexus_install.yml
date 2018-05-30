@@ -87,6 +87,16 @@
     nexus_rest_api_endpoint: "service/rest/v1/script"
   when: nexus_version is version_compare('3.8.0', '>=')
 
+- name: Get path to database restore dir (v < 3.11.0)
+  set_fact:
+    nexus_db_restore_dir: "{{ nexus_data_dir }}/backup"
+  when: nexus_version is version_compare('3.11.0', '<')
+
+- name: Get path to database restore dir (v >= 3.11.0)
+  set_fact:
+    nexus_db_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
+  when: nexus_version is version_compare('3.11.0', '>=')
+
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
     path: "{{ item }}"
