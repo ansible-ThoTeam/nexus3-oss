@@ -71,7 +71,7 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 
 ### General variables
 ```yaml
-    nexus_version: '3.9.0-01'
+    nexus_version: '3.12.0-01'
     nexus_timezone: 'UTC'
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
     nexus_download_url: "http://download.sonatype.com/nexus/3"
