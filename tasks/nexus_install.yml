@@ -1,7 +1,7 @@
 ---
 - name: Download nexus_package
   get_url:
-    url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
+    url: "{{ nexus_download_url }}/{{ nexus_package }}"
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
     force: no
   notify:
