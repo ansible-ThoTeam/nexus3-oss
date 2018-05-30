@@ -13,6 +13,7 @@ MDATE=$1 ## Should be %Y-%m-%d-%H-%M-%S format
 blob_dir="blob-backup-${MDATE}"
 backup_dir={{ nexus_backup_dir }}
 data_dir={{ nexus_data_dir }}
+db_restore_dir={{ nexus_db_restore_dir }}
 blob_prefix={{ nexus_blob_prefix |d('blob-') }}
 
 systemctl stop nexus
@@ -23,6 +24,6 @@ if [ $return_status != 0 ]; then
 else
   rm -rf ${data_dir}/db/*
   rm -rf ${data_dir}/blobs/*
-  sudo -u {{ nexus_os_user }} cp ${backup_dir}/${blob_dir}/db/* ${data_dir}/backup/
+  sudo -u {{ nexus_os_user }} cp ${backup_dir}/${blob_dir}/db/* ${db_restore_dir}
   sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/{${blob_prefix}*,default} ${data_dir}/blobs/
 fi
