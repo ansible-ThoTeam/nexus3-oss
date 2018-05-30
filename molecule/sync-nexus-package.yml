@@ -25,7 +25,7 @@
 
     - name: get the current nexus version
       get_url:
-        url: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
+        url: "{{ nexus_download_url }}/{{ nexus_package }}"
         dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/{{ nexus_package }}"
         force: no
 
