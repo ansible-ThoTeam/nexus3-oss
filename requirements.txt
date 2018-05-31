@@ -14,7 +14,7 @@
 ##################################
 
 # Latest ansible
-ansible
+ansible==2.5.2
 # Latest molecule
 molecule
 # Latest docker-py
