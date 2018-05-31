@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -ev
-molecule test
+molecule --debug test
