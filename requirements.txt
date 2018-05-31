@@ -13,8 +13,8 @@
 ## and produce unwanted errors.
 ##################################
 
-# Latest ansible 2.3.x
-ansible>=2.3,<2.4
+# Latest ansible
+ansible
 # Latest molecule
 molecule
 # Latest docker-py

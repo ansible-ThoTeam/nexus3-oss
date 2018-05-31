@@ -9,7 +9,7 @@ cache:
 services:
   - docker
 install:
-  - pip install -r requirements.txt
+  - pip install --upgrade --upgrade-strategy eager -r requirements.txt
 script:
   - ./tests/test_molecule.sh
 notifications:
