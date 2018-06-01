@@ -14,7 +14,8 @@
 ##################################
 
 # Latest ansible
-ansible==2.5.2
+# Make sure we skip ansible 2.5.3 which contains a bug in synchronize module
+ansible>2.5.3
 # Latest molecule
 molecule
 # Latest docker-py
