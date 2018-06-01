@@ -19,13 +19,21 @@ platforms:
     ports:
       - 8090:443
 
+  - name: nexus3-oss-ubuntu-18.04
+    image: thoteam/ansible-ubuntu18_04-apache-java
+    image_version: latest
+    command: /lib/systemd/systemd
+    privileged: true
+    ports:
+      - 8091:443
+
   - name: nexus3-oss-centos-7
     image: thoteam/ansible-centos7-apache-java
     image_version: latest
     command: /usr/sbin/init
     privileged: true
     ports:
-      - 8091:443
+      - 8092:443
 
 provisioner:
   name: ansible
