@@ -1,2 +1,2 @@
 ---
-- include: "../sync-nexus-package.yml"
+- import_playbook: "../sync-nexus-package.yml"

@@ -30,4 +30,4 @@
 
       when: ansible_os_family == 'Debian'
 
-- include: "../sync-nexus-package.yml"
+- import_playbook: "../sync-nexus-package.yml"
