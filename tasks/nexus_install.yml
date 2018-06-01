@@ -43,6 +43,7 @@
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     state: link
+    follow: false
   register: nexus_latest_version
 
 - name: Delete unpacked data directory
@@ -226,6 +227,7 @@
     name: nexus.service
     enabled: yes
     state: started
+    no_block: yes
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
@@ -294,5 +296,5 @@
     warn: false
 
 - name: Declare new or changed groovy scripts in nexus
-  include: declare_script_each.yml
+  include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"

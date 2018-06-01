@@ -5,7 +5,9 @@ This role installs and configures Nexus Repository Manager OSS version 3.x.
 All configuration can be updated by re-running the role, except for the [blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) related settings, which are immutable in nexus.
 
 ## Table of Contents
-
+_(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
+<!-- Run gh-md-toc --insert README.md to update -->
+<!--ts-->
    * [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
       * [Table of Contents](#table-of-contents)
       * [History / Credits](#history--credits)
@@ -40,7 +42,9 @@ All configuration can be updated by re-running the role, except for the [blobsto
       * [License](#license)
       * [Author Information](#author-information)
 
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+<!-- Added by: olcla, at: 2018-06-01T15:49+02:00 -->
+
+<!--te-->
 
 ## History / Credits
 
@@ -53,8 +57,8 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- Minimum ansible version 2.2 (see meta/main.yml). Due to the use of the ansible [synchronize module](http://docs.ansible.com/ansible/latest/synchronize_module.html) you will need _version 2.3 for tests with molecule (using docker containers)_.
-- This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
+- You will need an up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage of new features if needed (and update meta/main.yml for minimum version)
+- Compatible OS. Although this role should work on recent debian (jessie, stretch), and on the latests ubuntu (bionic), it is only tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being.
 - Java 8 (mandatory)
     - Oracle Java 8 is the official supported platform by Sonatype
     - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
@@ -539,11 +543,11 @@ outside of this role.
 
 ## Dependencies
 
-This role requires Ansible 2.2 or higher.
-
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
   - [ansiblebit.oracle-java](https://galaxy.ansible.com/ansiblebit/oracle-java/)
   - [geerlingguy.apache](https://galaxy.ansible.com/geerlingguy/apache/)
+
+Feel free to use them or implement your own install scenario at your convenience.
 
 ## Example Playbook
 
