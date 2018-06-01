@@ -11,14 +11,15 @@ lint:
   name: yamllint
 
 platforms:
-  - name: ubuntu-16.04
+  - name: nexus3-oss-ubuntu-16.04
     image: thoteam/ansible-ubuntu16_04-apache-java
     image_version: latest
     command: /lib/systemd/systemd
     privileged: true
     ports:
       - 8090:443
-  - name: centos-7
+
+  - name: nexus3-oss-centos-7
     image: thoteam/ansible-centos7-apache-java
     image_version: latest
     command: /usr/sbin/init
