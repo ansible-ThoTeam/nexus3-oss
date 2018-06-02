@@ -9,6 +9,8 @@
         method: CONNECT
         status_code: 302
       register: nexus_latest_uri_call
+      # No changes made, we only need the target uri. Safe for check mode and needed for next operations
+      check_mode: no
 
     - name: Register latest nexus version from redirection
       set_fact:
