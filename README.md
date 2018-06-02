@@ -75,19 +75,18 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 
 ### General variables
 ```yaml
-    nexus_version: '3.12.0-01'
+    nexus_version: ''
     nexus_timezone: 'UTC'
-    nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
     nexus_download_url: "http://download.sonatype.com/nexus/3"
 ```
 
-The nexus version and package to install, see available versions at https://www.sonatype.com/download-oss-sonatype .
-You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...)
+The role will install/upgrade-to latest nexus available version by default. You may fix the version by tuning the `nexus_version` variable. See available versions at https://www.sonatype.com/download-oss-sonatype.
+
+If you use an older version of nexus, you should make sure you do not use features which are not available (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
 
 `nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
 
-Note that if you use a version version different from the default, you should make sure you do not use features which are not available for your version (e.g. yum hosted repositories for nexus < 3.8.0 or git lfs repo for nexus < 3.3.0)
-
+You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail and you will have to set the version to download.** If you still want to take advantage of automatic latest version detection, a call to `<your_custom_location>/latest-unix.tar.gz` must return and HTTP 302 redirect to the latest available version in your cache/proxy.
 
 ### Download dir for nexus package
 ```yaml
@@ -559,7 +558,6 @@ Feel free to use them or implement your own install scenario at your convenience
   become: yes
 
   vars:
-    nexus_version: '3.7.1-02'
     nexus_timezone: 'Canada/Eastern'
     nexus_admin_password: "{{ vault_nexus_admin_password }}"
     httpd_server_name: 'nexus.vm'
