@@ -1,0 +1,53 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+  safe_files:
+    - nexus-downloads
+
+lint:
+  name: yamllint
+
+platforms:
+  - name: nexus3-oss-centos-7
+    image: thoteam/ansible-centos7-apache-java
+    image_version: latest
+    command: /usr/sbin/init
+    privileged: true
+    ports:
+      - 8090:443
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+
+scenario:
+  name: default-centos7
+  check_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  test_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - check
+    - verify
+    - destroy
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
