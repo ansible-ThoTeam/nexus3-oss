@@ -25,8 +25,8 @@
 
     - name: get the current nexus version
       get_url:
-        url: "{{ nexus_download_url }}/{{ nexus_package }}"
-        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/{{ nexus_package }}"
+        url: "{{ nexus_download_url }}/latest-unix.tar.gz"
+        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/"
         force: no
 
 
