@@ -1,0 +1,53 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+  safe_files:
+    - nexus-downloads
+
+lint:
+  name: yamllint
+
+platforms:
+  - name: nexus3-oss-debian-jessie
+    image: thoteam/ansible-debian_jessie-apache-java
+    image_version: latest
+    command: /lib/systemd/systemd
+    privileged: true
+    ports:
+      - 8091:443
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+
+scenario:
+  name: default-centos7
+  check_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  test_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - check
+    - verify
+    - destroy
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
