@@ -19,7 +19,6 @@ env:
   - SCENARIO=default-ubuntu_18.04
 script: |
   if [ "${SCENARIO}" == "default" ]; then
-    apt-get install -y groovy
     ./tests/test_groovySyntax.sh
     molecule test
   else
