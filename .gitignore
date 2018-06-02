@@ -6,3 +6,4 @@ molecule/**/.cache
 molecule/**/.pytest_cache
 README.md.orig.*
 README.md.toc.*
+*.pyc
