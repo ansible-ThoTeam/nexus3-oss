@@ -11,11 +11,13 @@ lint:
   name: yamllint
 
 platforms:
-  - name: nexus3-oss-default
-    image: thoteam/ansible-centos7-apache-java
+  - name: nexus3-oss-ubuntu-18.04
+    image: thoteam/ansible-ubuntu18_04-apache-java
     image_version: latest
-    command: /usr/sbin/init
+    command: /lib/systemd/systemd
     privileged: true
+    ports:
+      - 8094:443
 
 provisioner:
   name: ansible
@@ -23,7 +25,7 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: default
+  name: default-ubuntu_18.04
   check_sequence:
     - destroy
     - create
@@ -36,7 +38,14 @@ scenario:
     - prepare
     - converge
   test_sequence:
-    - lint
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - check
+    - verify
+    - destroy
 
 verifier:
   name: testinfra

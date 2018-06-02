@@ -10,7 +10,19 @@ services:
   - docker
 install:
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
-script:
-  - ./tests/test_molecule.sh
+env:
+  - SCENARIO=default
+  - SCENARIO=default-centos7
+  - SCENARIO=default-debian_jessie
+  - SCENARIO=default-debian_stretch
+  - SCENARIO=default-ubuntu_16.04
+  - SCENARIO=default-ubuntu_18.04
+script: |
+  if [ "${SCENARIO}" == "default" ]; then
+    ./tests/test_groovySyntax.sh
+    molecule test
+  else
+    molecule test -s "${SCENARIO}"
+  fi
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
