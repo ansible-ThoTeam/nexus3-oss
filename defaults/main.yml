@@ -1,6 +1,5 @@
 ---
-nexus_version: '3.12.0-01'
-nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+nexus_version: ''
 nexus_download_dir: '/tmp'
 nexus_download_url: 'https://download.sonatype.com/nexus/3'
 nexus_os_group: 'nexus'

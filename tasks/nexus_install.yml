@@ -1,4 +1,34 @@
 ---
+
+- name: No version given =>> calculate latest available nexus version
+  block:
+
+    - name: Call latest nexus uri to get redirection
+      uri:
+        url: "{{ nexus_download_url }}/latest-unix.tar.gz"
+        method: CONNECT
+        status_code: 302
+      register: nexus_latest_uri_call
+
+    - name: Register latest nexus version from redirection
+      set_fact:
+        nexus_version: "{{ nexus_latest_uri_call.location | regex_replace('^https://.*nexus-(\\d*\\.\\d*\\.\\d*-\\d*)-unix.tar.gz', '\\1') }}"
+
+  when: nexus_version == ''
+
+- name: Broken compatibility => nexus_package is now dynamically calculated
+  fail:
+    msg: >-
+      You have set the variable nexus_package in your playbook.
+      Starting from version 2.2.0 of this role, this is not compatible
+      with the new nexus latest version detection feature and is not
+      supported anymore. Please use the nexus_version variable only.
+  when: nexus_package is defined
+
+- name: Register nexus package name
+  set_fact:
+    nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+
 - name: Download nexus_package
   get_url:
     url: "{{ nexus_download_url }}/{{ nexus_package }}"
