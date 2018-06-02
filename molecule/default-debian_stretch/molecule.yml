@@ -11,13 +11,13 @@ lint:
   name: yamllint
 
 platforms:
-  - name: nexus3-oss-ubuntu-18.04
-    image: thoteam/ansible-ubuntu18_04-apache-java
+  - name: nexus3-oss-debian-stretch
+    image: thoteam/ansible-debian_stretch-apache-java
     image_version: latest
     command: /lib/systemd/systemd
     privileged: true
     ports:
-      - 8094:443
+      - 8092:443
 
 provisioner:
   name: ansible
