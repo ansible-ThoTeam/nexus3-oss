@@ -58,7 +58,7 @@ We would like to thank the original authors for the work done.
 ## Requirements
 
 - Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage of new features if needed (and update meta/main.yml for minimum version)
-- Compatible OS. Although this role should work on recent debian (jessie, stretch), it is only tested through travis CI only on CentOS 7 + Ubuntu 16.04 Xenial and 18.04 Bionic) for time being.
+- Compatible OS. Although this role should also work on debian stretch, it is only tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04), and Debian Jessie for time being.
 - Java 8 (mandatory)
     - Oracle Java 8 is the official supported platform by Sonatype
     - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
@@ -704,8 +704,10 @@ deactivate
 ```
 
 To speed up tests, molecule uses automated docker build images on docker hub:
-* https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
 * https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-debian_jessie-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu18_04-apache-java/
 
 #### Testing everything
 As a convenience, we provide a script to run all test at once (including the default molecule scenario)
