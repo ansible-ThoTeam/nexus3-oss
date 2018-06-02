@@ -63,15 +63,6 @@ scenario:
     - converge
   test_sequence:
     - lint
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - check
-    - verify
-    - destroy
 
 verifier:
   name: testinfra
