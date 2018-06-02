@@ -25,7 +25,7 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: default-centos7
+  name: default-ubuntu_18.04
   check_sequence:
     - destroy
     - create
