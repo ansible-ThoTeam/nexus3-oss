@@ -8,13 +8,20 @@
 
 - meta: flush_handlers
 
+- name: get target path of current installed nexus version
+  command: 'readlink {{ nexus_installation_dir }}/nexus-latest'
+  register: nexus_readlink_latest_call
+  failed_when: false
+  changed_when: false
+  check_mode: no
+
 - name: "Purge Nexus"
   file:
     path: "{{ item }}"
     state: absent
   with_items:
     - "{{ nexus_data_dir }}"
-    - "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+    - "{{ nexus_readlink_latest_call.stdout | default(omit) }}"
     - "{{ nexus_restore_log }}"
     - "{{ nexus_installation_dir }}/nexus-latest"
     # - "{{ nexus_backup_dir }}" # Optional
