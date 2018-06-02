@@ -4,7 +4,7 @@ extends: default
 rules:
   indentation:
     spaces: 2
-    check-multi-line-strings: true
+    check-multi-line-strings: false
   line-length:
     max: 250
     level: warning
