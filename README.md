@@ -25,6 +25,7 @@ _(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
          * [Reverse proxy setup](#reverse-proxy-setup)
          * [LDAP configuration](#ldap-configuration)
          * [Privileges, roles and users](#privileges-roles-and-users)
+         * [Content selectors](#content-selectors)
          * [Blobstores and repositories](#blobstores-and-repositories)
          * [Scheduled tasks](#scheduled-tasks)
          * [Backups](#backups)
@@ -349,6 +350,28 @@ If you want to remove old account, provide only username and set state to absent
 ```yaml
  - username: olduser
    state: absent
+```
+
+### Content selectors
+```yaml
+  nexus_content_selectors:
+  - name: docker-login
+    description: Selector for docker login privilege
+    search_expression: format=="docker" and path=~"/v2/"
+```
+
+For more info on Content selector see [documentation](https://help.sonatype.com/repomanager3/configuration/repository-management#RepositoryManagement-ContentSelectors)
+
+To use content selector add new privilege with `type: repository-content-selector` and proper `contentSelector` 
+```yaml
+- name: docker-login-privilege
+  type: repository-content-selector
+  contentSelector: docker-login
+  description: 'Login to Docker registry'
+  repository: '*'
+  actions:
+  - read
+  - browse
 ```
 
 ### Blobstores and repositories
