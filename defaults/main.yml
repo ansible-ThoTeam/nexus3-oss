@@ -129,6 +129,12 @@ nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
 
+nexus_content_selectors: []
+# example selector item :
+#  - name: docker-login
+#    description: Selector for docker login privilege
+#    search_expression: format=="docker" and path=~"/v2/"
+
 # also see _nexus_privilege_defaults below
 nexus_privileges:
   - name: all-repos-read  # used as key to update a privilege

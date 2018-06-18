@@ -53,6 +53,9 @@
 - include_tasks: setup_ldap_each.yml
   with_items: "{{ ldap_connections }}"
 
+- include_tasks: create_content_selector_each.yml
+  with_items: "{{ nexus_content_selectors }}"
+
 - include_tasks: setup_privilege_each.yml
   with_items: "{{ nexus_privileges }}"
 
