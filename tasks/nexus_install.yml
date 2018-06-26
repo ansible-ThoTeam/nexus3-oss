@@ -39,8 +39,6 @@
 - name: Ensure proper ownership of nexus installation directory
   file:
     path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
     recurse: yes
     mode: "0755"
 
