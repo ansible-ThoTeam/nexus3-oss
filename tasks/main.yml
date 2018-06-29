@@ -168,6 +168,8 @@
       with_items: "{{ nexus_repos_yum_hosted }}"
     - include_tasks: create_repo_yum_proxy_each.yml
       with_items: "{{ nexus_repos_yum_proxy }}"
+    - include_tasks: create_repo_yum_group_each.yml
+      with_items: "{{ nexus_repos_yum_group }}"
   when: nexus_config_yum
 
 - include_tasks: call_script.yml

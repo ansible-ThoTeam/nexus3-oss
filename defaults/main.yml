@@ -449,6 +449,7 @@ nexus_repos_yum_proxy: []
 # Example for epel centos-7 x86_64
 # - name: epel_centos_7_x86_64
 #   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+nexus_repos_yum_group: []
 
 _nexus_repos_yum_defaults:
   blob_store: "{{ nexus_blob_names.yum.blob }}"
