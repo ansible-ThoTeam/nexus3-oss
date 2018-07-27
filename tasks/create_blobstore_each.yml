@@ -6,6 +6,7 @@
     group: "{{ nexus_os_group }}"
     state: directory
     recurse: true
+  when: item.path is defined
 
 - include: call_script.yml
   vars:
