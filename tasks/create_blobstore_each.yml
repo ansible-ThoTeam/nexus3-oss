@@ -6,6 +6,7 @@
     group: "{{ nexus_os_group }}"
     state: directory
     recurse: true
+  when: item.type == "file"
 
 - include: call_script.yml
   vars:
