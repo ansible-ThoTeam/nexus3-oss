@@ -129,6 +129,7 @@ nexus_config_npm: false
 nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
+nexus_config_apt: false
 
 # also see _nexus_privilege_defaults below
 nexus_privileges:
@@ -185,6 +186,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
   gitlfs:
     blob: 'default'
   yum:
+    blob: 'default'
+  apt:
     blob: 'default'
 
 
@@ -457,3 +460,12 @@ _nexus_repos_yum_defaults:
   strict_content_validation: true
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+
+nexus_repos_apt_hosted: []
+
+_nexus_repos_apt_defaults:
+  blob_store: "{{ nexus_blob_names.apt.blob }}"
+  strict_content_validation: true
+  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+
+nexus_apt_repository_build_path: '/tmp/nexus_repository_apt'

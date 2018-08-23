@@ -17,6 +17,8 @@
 
 - include: nexus_install.yml
 
+- include: install_repository_apt_plugin.yml
+
 - include: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable
 
@@ -66,8 +68,12 @@
   include_vars: blob_vars.yml
   when: nexus_blob_split
 
-- include: create_blobstore_each.yml
-  with_items: "{{ nexus_blobstores }}"
+- include: create_file_blobstore_each.yml
+  with_items: "{{ nexus_file_blobstores }}"
+  when: nexus_restore_point is undefined
+
+- include: create_s3_blobstore_each.yml
+  with_items: "{{ nexus_s3_blobstores }}"
   when: nexus_restore_point is undefined
 
 - name: "Restore nexus backup"
@@ -169,6 +175,10 @@
     - include: create_repo_yum_proxy_each.yml
       with_items: "{{ nexus_repos_yum_proxy }}"
   when: nexus_config_yum
+
+- include: create_repo_apt_hosted_each.yml
+  with_items: "{{ nexus_repos_apt_hosted }}"
+  when: nexus_config_apt
 
 - include: call_script.yml
   vars:
