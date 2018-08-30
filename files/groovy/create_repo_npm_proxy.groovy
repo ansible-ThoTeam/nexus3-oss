@@ -48,7 +48,7 @@ if (existingRepository != null) {
                             strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
                     ],
                     negativeCache: [
-                            enabled: true,
+                            enabled: parsed_args.negative_cache == null ? true : Boolean.valueOf(parsed_args.negative_cache),
                             timeToLive: 1440.0
                     ]
             ]

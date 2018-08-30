@@ -191,7 +191,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
     blob: 'default'
 
 
-nexus_blobstores: []
+nexus_file_blobstores: []
+nexus_s3_blobstores: []
 # example blobstore item :
 # - name: separate-storage
 #   path: /mnt/custom/path
