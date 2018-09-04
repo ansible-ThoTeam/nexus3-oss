@@ -665,9 +665,9 @@ All contributions to this role are welcome, either for bugfixes, new features or
 If you wish to contribute:
 - Fork the repo under your own name/organisation through github interface
 - Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
-  - feature_<someFeature> for features
-  - fix_<someBugFix> for bug fixes
-  - docfix_<someDocFix> for documentation only fixes
+  - `feature_<someFeature>` for features
+  - `fix_<someBugFix>` for bug fixes
+  - `docfix_<someDocFix>` for documentation only fixes
 - If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
