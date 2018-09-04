@@ -40,7 +40,7 @@
   file:
     path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     recurse: yes
-    mode: "0755"
+    mode: "u=rwX,g=rX,o=rX"
 
 - name: Update symlink nexus-latest
   file:
