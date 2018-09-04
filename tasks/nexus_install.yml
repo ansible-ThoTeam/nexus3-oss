@@ -36,6 +36,12 @@
 
 - meta: flush_handlers
 
+- name: Ensure proper ownership of nexus installation directory
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+    recurse: yes
+    mode: "u=rwX,g=rX,o=rX"
+
 - name: Update symlink nexus-latest
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
