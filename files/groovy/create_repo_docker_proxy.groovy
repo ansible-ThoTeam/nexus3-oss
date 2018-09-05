@@ -65,6 +65,10 @@ if (existingRepository != null) {
                             writePolicy: parsed_args.write_policy.toUpperCase(),
                             blobStoreName: parsed_args.blob_store,
                             strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
+                    ],
+                    negativeCache: [
+                        enabled: parsed_args.get("negativeCacheEnabled", true),
+                        timeToLive: parsed_args.get("negativeCacheTTL", 1440.0)
                     ]
             ]
     )
