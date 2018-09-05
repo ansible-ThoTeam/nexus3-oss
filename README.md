@@ -121,6 +121,17 @@ User and group used to own the nexus files and run the service, those will be cr
 
 Nexus directories, `nexus_installation_dir` contains the installed executable(s), `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Note: custom blobstores paths outside of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
 
+### Nexus JVM Ram setting
+```yaml
+    nexus_min_heap_size: "1200M"
+    nexus_max_heap_size: "{{ nexus_min_heap_size }}"
+    nexus_max_direct_memory: "2G"
+```
+These are the defaults for Nexus. **Please do not modify those values** _unless you have read [the memory section of nexus system requirements](https://help.sonatype.com/repomanager3/system-requirements#SystemRequirements-Memory)_ and you understand what you are doing.
+
+As a second warning, here is an extract from the above document:
+> Increasing the JVM heap memory larger than recommended values in an attempt to improve performance is not recommended. This actually can have the opposite effect, causing the operating system to thrash needlessly.
+
 ### Admin password
 ```yaml
     nexus_admin_password: 'changeme'

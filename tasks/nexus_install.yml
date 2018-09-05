@@ -170,6 +170,27 @@
     regexp: "^-Duser.timezone=.*"
     line: "-Duser.timezone={{ nexus_timezone }}"
 
+- name: Setup Nexus JVM min heap size
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Xms.*"
+    line: "-Xms{{ nexus_min_heap_size }}"
+  notify: nexus-service-stop
+
+- name: Setup Nexus JVM max heap size
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Xmx.*"
+    line: "-Xmx{{ nexus_max_heap_size }}"
+  notify: nexus-service-stop
+
+- name: Setup Nexus JVM max direct memory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-XX:MaxDirectMemorySize=.*"
+    line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
+  notify: nexus-service-stop
+
 - name: Create Nexus tmp/backup directory
   file:
     path: "{{ item }}"
