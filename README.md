@@ -18,6 +18,7 @@ _(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
          * [Nexus port and context path](#nexus-port-and-context-path)
          * [Nexus OS user and group](#nexus-os-user-and-group)
          * [Nexus instance directories](#nexus-instance-directories)
+         * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
          * [Admin password](#admin-password)
          * [Default anonymous access](#default-anonymous-access)
          * [Public hostname](#public-hostname)
@@ -43,7 +44,7 @@ _(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-06-01T15:49+02:00 -->
+<!-- Added by: olcla, at: 2018-09-05T16:15+02:00 -->
 
 <!--te-->
 
