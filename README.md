@@ -751,7 +751,7 @@ We included a second molecule `selinux` scenario. This one is not run on travis 
 * test selinux integration (on centos).
 * run test and access the running vms under VirtualBox on you local machine.
 
-If you which to use this scenario you will need
+If you wish to use this scenario you will need
 * VirtualBox
 * Vagrant
 * molecule
