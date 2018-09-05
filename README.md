@@ -391,10 +391,19 @@ Delete the default blobstore from the nexus install initial default configuratio
     nexus_blobstores: []
     # example blobstore item :
     # - name: separate-storage
+    #   type: file
     #   path: /mnt/custom/path
+    # - name: s3-blobstore
+    #   type: S3
+    #   config:
+    #     bucket: s3-blobstore
+    #     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
+    #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 ```
 
 [Blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
+
+Configuring blobstore on S3 is provided as a convenience and is not part of the automated tests we run on travis. Please note that storing on S3 is only recommended for instances deployed on AWS.
 
 ```yaml
     nexus_repos_maven_proxy:
@@ -742,7 +751,7 @@ We included a second molecule `selinux` scenario. This one is not run on travis 
 * test selinux integration (on centos).
 * run test and access the running vms under VirtualBox on you local machine.
 
-If you which to use this scenario you will need
+If you wish to use this scenario you will need
 * VirtualBox
 * Vagrant
 * molecule
