@@ -5,13 +5,12 @@
   tasks:
     - name: Install needed dependencies for role testing (redhat)
       yum:
-        name: "{{ item }}"
+        name:
+          - java-1.8.0-openjdk-headless
+          - httpd
+          - mod_ssl
+          - rsync
         state: present
-      with_items:
-        - java-1.8.0-openjdk-headless
-        - httpd
-        - mod_ssl
-        - rsync
       when: ansible_os_family == 'RedHat'
 
     - block:
