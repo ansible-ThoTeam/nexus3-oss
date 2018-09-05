@@ -397,8 +397,8 @@ Delete the default blobstore from the nexus install initial default configuratio
     #   type: S3
     #   config:
     #     bucket: s3-blobstore
-    #     accessKeyId: VAULT_ENCRYPTED_KEY_ID
-    #     secretAccessKey: VAULT_ENCRYPTED_ACCESS_KEY
+    #     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
+    #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 ```
 
 [Blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).

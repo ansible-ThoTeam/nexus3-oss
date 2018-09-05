@@ -202,8 +202,8 @@ nexus_blobstores: []
 #   type: S3
 #   config:
 #     bucket: s3-blobstore
-#     accessKeyId: VAULT_ENCRYPTED_KEY_ID
-#     secretAccessKey: VAULT_ENCRYPTED_ACCESS_KEY
+#     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
+#     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 
 
 # also see _nexus_repos_maven_defaults below
