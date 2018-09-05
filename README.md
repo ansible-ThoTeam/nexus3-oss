@@ -426,9 +426,11 @@ Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Ma
       - name: private-release
         version_policy: release
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+        # negativeCacheEnabled: true
+        # timeToLive: 1440
 ```
 
-Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration.
+Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration. Negative cache config is optionnal and will default to the above values if omitted.
 
 ```yaml
     nexus_repos_maven_group:
