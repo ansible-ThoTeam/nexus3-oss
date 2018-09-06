@@ -43,6 +43,8 @@ nexus_repos_yum_hosted:
 nexus_repos_yum_proxy:
   - name: epel_centos_7_x86_64
     remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+    maximum_component_age: -1
+    maximum_metadata_age: -1
 nexus_repos_yum_group:
   - name: yum_all
     member_repos:
