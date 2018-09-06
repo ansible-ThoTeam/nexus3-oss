@@ -38,8 +38,8 @@ if (existingRepository != null) {
                     ],
                     proxy  : [
                             remoteUrl: parsed_args.remote_url,
-                            contentMaxAge: 1440.0,
-                            metadataMaxAge: 1440.0
+                            contentMaxAge: parsed_args.get('content_max_age', -1),
+                            metadataMaxAge: parsed_args.get('metadata_max_age', 1440.0)
                     ],
                     httpclient: [
                             blocked: false,
@@ -54,8 +54,8 @@ if (existingRepository != null) {
                             strictContentTypeValidation: Boolean.valueOf(parsed_args.strict_content_validation)
                     ],
                     negativeCache: [
-                            enabled: true,
-                            timeToLive: 1440.0
+                            enabled: parsed_args.get("negativeCacheEnabled", true),
+                            timeToLive: parsed_args.get("negativeCacheTTL", 1440.0)
                     ]
             ]
     )

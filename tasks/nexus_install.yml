@@ -1,4 +1,36 @@
 ---
+
+- name: No version given =>> calculate latest available nexus version
+  block:
+
+    - name: Call latest nexus uri to get redirection
+      uri:
+        url: "{{ nexus_download_url }}/latest-unix.tar.gz"
+        method: CONNECT
+        status_code: 302
+      register: nexus_latest_uri_call
+      # No changes made, we only need the target uri. Safe for check mode and needed for next operations
+      check_mode: no
+
+    - name: Register latest nexus version from redirection
+      set_fact:
+        nexus_version: "{{ nexus_latest_uri_call.location | regex_replace('^https://.*nexus-(\\d*\\.\\d*\\.\\d*-\\d*)-unix.tar.gz', '\\1') }}"
+
+  when: nexus_version == ''
+
+- name: Broken compatibility => nexus_package is now dynamically calculated
+  fail:
+    msg: >-
+      You have set the variable nexus_package in your playbook.
+      Starting from version 2.2.0 of this role, this is not compatible
+      with the new nexus latest version detection feature and is not
+      supported anymore. Please use the nexus_version variable only.
+  when: nexus_package is defined
+
+- name: Register nexus package name
+  set_fact:
+    nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+
 - name: Download nexus_package
   get_url:
     url: "{{ nexus_download_url }}/{{ nexus_package }}"
@@ -34,8 +66,6 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
-
 - name: Update symlink nexus-latest
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
@@ -43,7 +73,12 @@
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     state: link
+    follow: false
   register: nexus_latest_version
+  notify:
+    - nexus-service-stop
+
+- meta: flush_handlers
 
 - name: Delete unpacked data directory
   file:
@@ -124,18 +159,45 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Dkaraf.data=.*"
     line: "-Dkaraf.data={{ nexus_data_dir }}"
+  notify:
+    - nexus-service-stop
 
 - name: Setup JVM logfile directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:LogFile=.*"
     line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
+  notify:
+    - nexus-service-stop
 
 - name: Setup Nexus default timezone
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Duser.timezone=.*"
     line: "-Duser.timezone={{ nexus_timezone }}"
+  notify:
+    - nexus-service-stop
+
+- name: Setup Nexus JVM min heap size
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Xms.*"
+    line: "-Xms{{ nexus_min_heap_size }}"
+  notify: nexus-service-stop
+
+- name: Setup Nexus JVM max heap size
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Xmx.*"
+    line: "-Xmx{{ nexus_max_heap_size }}"
+  notify: nexus-service-stop
+
+- name: Setup Nexus JVM max direct memory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-XX:MaxDirectMemorySize=.*"
+    line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
+  notify: nexus-service-stop
 
 - name: Create Nexus tmp/backup directory
   file:
@@ -152,30 +214,40 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Djava.io.tmpdir=.*"
     line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
+  notify:
+    - nexus-service-stop
 
 - name: Set NEXUS_HOME for the service user
   lineinfile:
     dest: "/home/{{ nexus_os_user }}/.bashrc"
     regexp: "^export NEXUS_HOME=.*"
     line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
+  notify:
+    - nexus-service-stop
 
 - name: Set nexus user
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc"
     regexp: ".*run_as_user=.*"
     line: "run_as_user=\"{{ nexus_os_user }}\""
+  notify:
+    - nexus-service-stop
 
 - name: Set nexus port
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-port=.*"
     line: "application-port={{ nexus_default_port }}"
+  notify:
+    - nexus-service-stop
 
 - name: Set nexus context path
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^nexus-context-path=.*"
     line: "nexus-context-path={{ nexus_default_context_path }}"
+  notify:
+    - nexus-service-stop
 
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
@@ -183,6 +255,8 @@
     regexp: "^application-host=.*"
     line: "application-host=127.0.0.1"
   when: httpd_setup_enable
+  notify:
+    - nexus-service-stop
 
 - name: Create systemd service configuration
   template:
@@ -226,6 +300,7 @@
     name: nexus.service
     enabled: yes
     state: started
+    no_block: yes
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
@@ -294,5 +369,5 @@
     warn: false
 
 - name: Declare new or changed groovy scripts in nexus
-  include: declare_script_each.yml
+  include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"

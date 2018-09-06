@@ -11,20 +11,11 @@ lint:
   name: yamllint
 
 platforms:
-  - name: ubuntu-16.04
-    image: thoteam/ansible-ubuntu16_04-apache-java
-    image_version: latest
-    command: /lib/systemd/systemd
-    privileged: true
-    ports:
-      - 8090:443
-  - name: centos-7
+  - name: nexus3-oss-default
     image: thoteam/ansible-centos7-apache-java
     image_version: latest
     command: /usr/sbin/init
     privileged: true
-    ports:
-      - 8091:443
 
 provisioner:
   name: ansible
@@ -46,15 +37,6 @@ scenario:
     - converge
   test_sequence:
     - lint
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - check
-    - verify
-    - destroy
 
 verifier:
   name: testinfra

@@ -13,8 +13,9 @@
 ## and produce unwanted errors.
 ##################################
 
-# Latest ansible 2.3.x
-ansible>=2.3,<2.4
+# Latest ansible
+# Make sure we skip ansible 2.5.3 which contains a bug in synchronize module
+ansible>2.5.3
 # Latest molecule
 molecule
 # Latest docker-py

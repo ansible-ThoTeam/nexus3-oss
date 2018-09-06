@@ -5,7 +5,9 @@ This role installs and configures Nexus Repository Manager OSS version 3.x.
 All configuration can be updated by re-running the role, except for the [blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) related settings, which are immutable in nexus.
 
 ## Table of Contents
-
+_(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
+<!-- Run gh-md-toc --insert README.md to update -->
+<!--ts-->
    * [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
       * [Table of Contents](#table-of-contents)
       * [History / Credits](#history--credits)
@@ -16,6 +18,7 @@ All configuration can be updated by re-running the role, except for the [blobsto
          * [Nexus port and context path](#nexus-port-and-context-path)
          * [Nexus OS user and group](#nexus-os-user-and-group)
          * [Nexus instance directories](#nexus-instance-directories)
+         * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
          * [Admin password](#admin-password)
          * [Default anonymous access](#default-anonymous-access)
          * [Public hostname](#public-hostname)
@@ -23,6 +26,7 @@ All configuration can be updated by re-running the role, except for the [blobsto
          * [Reverse proxy setup](#reverse-proxy-setup)
          * [LDAP configuration](#ldap-configuration)
          * [Privileges, roles and users](#privileges-roles-and-users)
+         * [Content selectors](#content-selectors)
          * [Blobstores and repositories](#blobstores-and-repositories)
          * [Scheduled tasks](#scheduled-tasks)
          * [Backups](#backups)
@@ -40,7 +44,9 @@ All configuration can be updated by re-running the role, except for the [blobsto
       * [License](#license)
       * [Author Information](#author-information)
 
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+<!-- Added by: olcla, at: 2018-09-05T16:15+02:00 -->
+
+<!--te-->
 
 ## History / Credits
 
@@ -53,8 +59,8 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- Minimum ansible version 2.2 (see meta/main.yml). Due to the use of the ansible [synchronize module](http://docs.ansible.com/ansible/latest/synchronize_module.html) you will need _version 2.3 for tests with molecule (using docker containers)_.
-- This role is tested through travis CI only on CentOS 7 + Ubuntu 16.04 (Xenial) for time being
+- Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage of new features if needed (and update meta/main.yml for minimum version)
+- Compatible OS. Although this role should also work on debian stretch, it is only tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04), and Debian Jessie for time being.
 - Java 8 (mandatory)
     - Oracle Java 8 is the official supported platform by Sonatype
     - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
@@ -71,19 +77,18 @@ Ansible variables, along with the default values (see `default/main.yml`) :
 
 ### General variables
 ```yaml
-    nexus_version: '3.12.0-01'
+    nexus_version: ''
     nexus_timezone: 'UTC'
-    nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
     nexus_download_url: "http://download.sonatype.com/nexus/3"
 ```
 
-The nexus version and package to install, see available versions at https://www.sonatype.com/download-oss-sonatype .
-You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...)
+The role will install/upgrade-to latest nexus available version by default. You may fix the version by tuning the `nexus_version` variable. See available versions at https://www.sonatype.com/download-oss-sonatype.
+
+If you use an older version of nexus, you should make sure you do not use features which are not available (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
 
 `nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
 
-Note that if you use a version version different from the default, you should make sure you do not use features which are not available for your version (e.g. yum hosted repositories for nexus < 3.8.0 or git lfs repo for nexus < 3.3.0)
-
+You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail and you will have to set the version to download.** If you still want to take advantage of automatic latest version detection, a call to `<your_custom_location>/latest-unix.tar.gz` must return and HTTP 302 redirect to the latest available version in your cache/proxy.
 
 ### Download dir for nexus package
 ```yaml
@@ -116,6 +121,17 @@ User and group used to own the nexus files and run the service, those will be cr
 ```
 
 Nexus directories, `nexus_installation_dir` contains the installed executable(s), `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Note: custom blobstores paths outside of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
+
+### Nexus JVM Ram setting
+```yaml
+    nexus_min_heap_size: "1200M"
+    nexus_max_heap_size: "{{ nexus_min_heap_size }}"
+    nexus_max_direct_memory: "2G"
+```
+These are the defaults for Nexus. **Please do not modify those values** _unless you have read [the memory section of nexus system requirements](https://help.sonatype.com/repomanager3/system-requirements#SystemRequirements-Memory)_ and you understand what you are doing.
+
+As a second warning, here is an extract from the above document:
+> Increasing the JVM heap memory larger than recommended values in an attempt to improve performance is not recommended. This actually can have the opposite effect, causing the operating system to thrash needlessly.
 
 ### Admin password
 ```yaml
@@ -348,6 +364,28 @@ If you want to remove old account, provide only username and set state to absent
    state: absent
 ```
 
+### Content selectors
+```yaml
+  nexus_content_selectors:
+  - name: docker-login
+    description: Selector for docker login privilege
+    search_expression: format=="docker" and path=~"/v2/"
+```
+
+For more info on Content selector see [documentation](https://help.sonatype.com/repomanager3/configuration/repository-management#RepositoryManagement-ContentSelectors)
+
+To use content selector add new privilege with `type: repository-content-selector` and proper `contentSelector` 
+```yaml
+- name: docker-login-privilege
+  type: repository-content-selector
+  contentSelector: docker-login
+  description: 'Login to Docker registry'
+  repository: '*'
+  actions:
+  - read
+  - browse
+```
+
 ### Blobstores and repositories
 ```yaml
     nexus_delete_default_repos: false
@@ -365,23 +403,38 @@ Delete the default blobstore from the nexus install initial default configuratio
     nexus_blobstores: []
     # example blobstore item :
     # - name: separate-storage
+    #   type: file
     #   path: /mnt/custom/path
+    # - name: s3-blobstore
+    #   type: S3
+    #   config:
+    #     bucket: s3-blobstore
+    #     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
+    #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 ```
 
 [Blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
+
+Configuring blobstore on S3 is provided as a convenience and is not part of the automated tests we run on travis. Please note that storing on S3 is only recommended for instances deployed on AWS.
 
 ```yaml
     nexus_repos_maven_proxy:
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'
         layout_policy: permissive
+        # maximum_component_age: -1
+        # maximum_metadata_age: 1440
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+        # maximum_component_age: -1
+        # maximum_metadata_age: 1440
     # example with a login/password :
     # - name: secret-remote-repo
     #   remote_url: 'https://company.com/repo/secure/private/go/away'
     #   remote_username: 'username'
     #   remote_password: 'secret'
+    #   # maximum_component_age: -1
+    #   # maximum_metadata_age: 1440
 ```
 
 Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-ProxyRepository) configuration.
@@ -391,9 +444,11 @@ Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Ma
       - name: private-release
         version_policy: release
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+        # negativeCacheEnabled: true
+        # timeToLive: 1440
 ```
 
-Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration.
+Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration. Negative cache config is optionnal and will default to the above values if omitted.
 
 ```yaml
     nexus_repos_maven_group:
@@ -414,6 +469,8 @@ All three repository types are combined with the following default values :
       version_policy: release # release, snapshot or mixed
       layout_policy: strict # strict or permissive
       write_policy: allow_once # one of "allow", "allow_once" or "deny"
+      maximum_component_age: -1  # Nexus gui default. For proxies only
+      maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 ```
 
 Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
@@ -539,11 +596,11 @@ outside of this role.
 
 ## Dependencies
 
-This role requires Ansible 2.2 or higher.
-
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
   - [ansiblebit.oracle-java](https://galaxy.ansible.com/ansiblebit/oracle-java/)
   - [geerlingguy.apache](https://galaxy.ansible.com/geerlingguy/apache/)
+
+Feel free to use them or implement your own install scenario at your convenience.
 
 ## Example Playbook
 
@@ -555,7 +612,6 @@ The java and httpd requirements /can/ be fulfilled with the following galaxy rol
   become: yes
 
   vars:
-    nexus_version: '3.7.1-02'
     nexus_timezone: 'Canada/Eastern'
     nexus_admin_password: "{{ vault_nexus_admin_password }}"
     httpd_server_name: 'nexus.vm'
@@ -663,9 +719,9 @@ All contributions to this role are welcome, either for bugfixes, new features or
 If you wish to contribute:
 - Fork the repo under your own name/organisation through github interface
 - Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
-  - feature_<someFeature> for features
-  - fix_<someBugFix> for bug fixes
-  - docfix_<someDocFix> for documentation only fixes
+  - `feature_<someFeature>` for features
+  - `fix_<someBugFix>` for bug fixes
+  - `docfix_<someDocFix>` for documentation only fixes
 - If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
@@ -700,8 +756,10 @@ deactivate
 ```
 
 To speed up tests, molecule uses automated docker build images on docker hub:
-* https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
 * https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-debian_jessie-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-ubuntu18_04-apache-java/
 
 #### Testing everything
 As a convenience, we provide a script to run all test at once (including the default molecule scenario)
@@ -715,7 +773,7 @@ We included a second molecule `selinux` scenario. This one is not run on travis 
 * test selinux integration (on centos).
 * run test and access the running vms under VirtualBox on you local machine.
 
-If you which to use this scenario you will need
+If you wish to use this scenario you will need
 * VirtualBox
 * Vagrant
 * molecule

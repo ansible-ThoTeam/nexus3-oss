@@ -1,6 +1,5 @@
 ---
-nexus_version: '3.12.0-01'
-nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+nexus_version: ''
 nexus_download_dir: '/tmp'
 nexus_download_url: 'https://download.sonatype.com/nexus/3'
 nexus_os_group: 'nexus'
@@ -12,6 +11,14 @@ nexus_timezone: 'UTC'  # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
 
+# These are the default values for JVM Ram
+# don't touch those unless you have read
+# https://help.sonatype.com/repomanager3/system-requirements#SystemRequirements-Memory
+# and you know what you are doing
+# Note: those values probably belong to a host_vars files...
+nexus_min_heap_size: "1200M"
+nexus_max_heap_size: "{{ nexus_min_heap_size }}"
+nexus_max_direct_memory: "2G"
 
 # Nexus Backup
 nexus_backup_dir: '/var/nexus-backup'
@@ -130,6 +137,12 @@ nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
 
+nexus_content_selectors: []
+# example selector item :
+#  - name: docker-login
+#    description: Selector for docker login privilege
+#    search_expression: format=="docker" and path=~"/v2/"
+
 # also see _nexus_privilege_defaults below
 nexus_privileges:
   - name: all-repos-read  # used as key to update a privilege
@@ -191,21 +204,35 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
 nexus_blobstores: []
 # example blobstore item :
 # - name: separate-storage
+#   type: file
 #   path: /mnt/custom/path
+# - name: s3-blobstore
+#   type: S3
+#   config:
+#     bucket: s3-blobstore
+#     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
+#     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
+
 
 # also see _nexus_repos_maven_defaults below
 nexus_repos_maven_proxy:
   - name: central
     remote_url: 'https://repo1.maven.org/maven2/'
     layout_policy: permissive
+    # maximum_component_age: -1
+    # maximum_metadata_age: 1440
   - name: jboss
     remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+    # maximum_component_age: -1
+    # maximum_metadata_age: 1440
 
 # example with a login/password :
 # - name: secret-remote-repo
 #   remote_url: 'https://company.com/repo/secure/private/go/away'
 #   remote_username: 'username'
 #   remote_password: 'secret'
+#   # maximum_component_age: -1
+#   # maximum_metadata_age: 1440
 
 nexus_repos_maven_hosted:
   - name: private-release
@@ -269,6 +296,8 @@ _nexus_repos_maven_defaults:
   version_policy: release  # release, snapshot or mixed
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: -1  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -277,6 +306,8 @@ _nexus_repos_pypi_defaults:
   version_policy: release  # release, snapshot or mixed
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_pypi_hosted:
   - name: pypi-internal
@@ -292,6 +323,8 @@ nexus_repos_pypi_group:
 nexus_repos_pypi_proxy:
   - name: pypi
     remote_url: 'https://pypi.python.org/'
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 # raw repo support
 
@@ -301,10 +334,14 @@ _nexus_repos_raw_defaults:
   version_policy: release  # release, snapshot or mixed
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
     remote_url: 'http://archive.ubuntu.com/ubuntu/'
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 nexus_repos_raw_hosted:
   - name: raw-internal
@@ -325,6 +362,8 @@ _nexus_repos_docker_defaults:
   version_policy: release  # release, snapshot or mixed
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
@@ -338,6 +377,8 @@ nexus_repos_docker_proxy:
     index_type: "HUB"
     proxy_url: "https://registry-1.docker.io"
     use_nexus_certificates_to_access_index: false
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 nexus_repos_docker_group:
   - name: docker-group
@@ -352,6 +393,8 @@ _nexus_repos_rubygems_defaults:
   blob_store: "{{ nexus_blob_names.ruby.blob }}"
   strict_content_validation: true
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
@@ -368,12 +411,16 @@ nexus_repos_rubygems_proxy:
   - name: rubygems-proxy
     blob_store: "{{ nexus_blob_names.ruby.blob }}"
     remote_url: https://rubygems.org
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 # Bower support
 _nexus_repos_bower_defaults:
   blob_store: "{{ nexus_blob_names.bower.blob }}"
   strict_content_validation: true
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_bower_hosted:
   - name: bower-internal
@@ -390,12 +437,16 @@ nexus_repos_bower_proxy:
   - name: bower-proxy
     blob_store: "{{ nexus_blob_names.bower.blob }}"
     remote_url: http://bower.herokuapp.com
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 # npm support
 _nexus_repos_npm_defaults:
   blob_store: "{{ nexus_blob_names.npm.blob }}"
   strict_content_validation: true
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_npm_hosted:
   - name: npm-internal
@@ -412,11 +463,15 @@ nexus_repos_npm_proxy:
   - name: npm-proxy
     blob_store: "{{ nexus_blob_names.npm.blob }}"
     remote_url: https://registry.npmjs.org
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 _nexus_repos_nuget_defaults:
   blob_store: "{{ nexus_blob_names.nuget.blob }}"
   strict_content_validation: true
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -433,6 +488,8 @@ nexus_repos_nuget_proxy:
   - name: nuget-proxy
     blob_store: "{{ nexus_blob_names.nuget.blob }}"
     remote_url: http://www.nuget.org/api/v2
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
 
 # gitlfs support
 _nexus_repos_gitlfs_defaults:
@@ -450,6 +507,9 @@ nexus_repos_yum_proxy: []
 # Example for epel centos-7 x86_64
 # - name: epel_centos_7_x86_64
 #   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+#   # maximum_component_age: 1440
+#   # maximum_metadata_age: 1440
+nexus_repos_yum_group: []
 
 _nexus_repos_yum_defaults:
   blob_store: "{{ nexus_blob_names.yum.blob }}"
@@ -457,3 +517,5 @@ _nexus_repos_yum_defaults:
   strict_content_validation: true
   layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only

@@ -6,7 +6,7 @@ galaxy_info:
 
   license: license (GPLv3)
 
-  min_ansible_version: 2.2
+  min_ansible_version: 2.5.4
 
   github_branch: master
 
@@ -17,7 +17,7 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - xenial
-        - artful
+        - bionic
     - name: Debian
       versions:
         - jessie

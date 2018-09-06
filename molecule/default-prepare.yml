@@ -1,0 +1,2 @@
+---
+- import_playbook: "sync-nexus-package.yml"

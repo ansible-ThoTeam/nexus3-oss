@@ -4,7 +4,7 @@
   include_vars: "configure-{{ ansible_os_family }}.yml"
 
 - name: Include OS specific selinux libs and utils if needed
-  include: "selinux-{{ ansible_os_family }}.yml"
+  include_tasks: "selinux-{{ ansible_os_family }}.yml"
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - name: Check if SystemD service is installed
@@ -12,18 +12,18 @@
     path: /etc/systemd/system/nexus.service
   register: nexus_systemd_service_file
 
-- include: nexus_purge.yml
+- include_tasks: nexus_purge.yml
   when: ((purge is defined) and (purge | bool))
 
-- include: nexus_install.yml
+- import_tasks: nexus_install.yml
 
-- include: httpd_reverse_proxy_config.yml
+- include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable
 
-- include: admin_password_setup.yml
+- import_tasks: admin_password_setup.yml
 
 - name: Deleting default repositories
-  include: delete_repo_each.yml
+  include_tasks: delete_repo_each.yml
   with_items:
     - maven-central
     - maven-public
@@ -35,7 +35,7 @@
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_repos
 
 - name: Deleting default blobstore
-  include: delete_blobstore_each.yml
+  include_tasks: delete_blobstore_each.yml
   with_items:
     - name: default
     - name: "{{ nexus_blob_names.raw.blob }}"
@@ -50,139 +50,144 @@
     - name: "{{ nexus_blob_names.yum.blob }}"
   when: nexus_data_dir_contents.stdout == "" and nexus_delete_default_blobstore
 
-- include: setup_ldap_each.yml
+- include_tasks: setup_ldap_each.yml
   with_items: "{{ ldap_connections }}"
 
-- include: setup_privilege_each.yml
+- include_tasks: create_content_selector_each.yml
+  with_items: "{{ nexus_content_selectors }}"
+
+- include_tasks: setup_privilege_each.yml
   with_items: "{{ nexus_privileges }}"
 
-- include: setup_role_each.yml
+- include_tasks: setup_role_each.yml
   with_items: "{{ nexus_roles }}"
 
-- include: setup_user_each.yml
+- include_tasks: setup_user_each.yml
   with_items: "{{ nexus_local_users }}"
 
 - name: "Digest splited blob list var"
   include_vars: blob_vars.yml
   when: nexus_blob_split
 
-- include: create_blobstore_each.yml
+- include_tasks: create_blobstore_each.yml
   with_items: "{{ nexus_blobstores }}"
   when: nexus_restore_point is undefined
 
 - name: "Restore nexus backup"
-  include: nexus-restore.yml
+  include_tasks: nexus-restore.yml
   when: nexus_restore_point is defined
 
-- include: create_repo_maven_proxy_each.yml
+- include_tasks: create_repo_maven_proxy_each.yml
   with_items: "{{ nexus_repos_maven_proxy }}"
 
-- include: create_repo_maven_hosted_each.yml
+- include_tasks: create_repo_maven_hosted_each.yml
   with_items: "{{ nexus_repos_maven_hosted }}"
 
-- include: create_repo_maven_group_each.yml
+- include_tasks: create_repo_maven_group_each.yml
   with_items: "{{ nexus_repos_maven_group }}"
 
 - block:
-    - include: create_repo_docker_hosted_each.yml
+    - include_tasks: create_repo_docker_hosted_each.yml
       with_items: "{{ nexus_repos_docker_hosted }}"
 
-    - include: create_repo_docker_proxy_each.yml
+    - include_tasks: create_repo_docker_proxy_each.yml
       with_items: "{{ nexus_repos_docker_proxy }}"
 
-    - include: create_repo_docker_group_each.yml
+    - include_tasks: create_repo_docker_group_each.yml
       with_items: "{{ nexus_repos_docker_group }}"
   when: nexus_config_docker
 
 - block:
-    - include: create_repo_pypi_proxy_each.yml
+    - include_tasks: create_repo_pypi_proxy_each.yml
       with_items: "{{ nexus_repos_pypi_proxy }}"
 
-    - include: create_repo_pypi_hosted_each.yml
+    - include_tasks: create_repo_pypi_hosted_each.yml
       with_items: "{{ nexus_repos_pypi_hosted }}"
 
-    - include: create_repo_pypi_group_each.yml
+    - include_tasks: create_repo_pypi_group_each.yml
       with_items: "{{ nexus_repos_pypi_group }}"
   when: nexus_config_pypi
 
 - block:
-    - include: create_repo_raw_proxy_each.yml
+    - include_tasks: create_repo_raw_proxy_each.yml
       with_items: "{{ nexus_repos_raw_proxy }}"
 
-    - include: create_repo_raw_hosted_each.yml
+    - include_tasks: create_repo_raw_hosted_each.yml
       with_items: "{{ nexus_repos_raw_hosted }}"
 
-    - include: create_repo_raw_group_each.yml
+    - include_tasks: create_repo_raw_group_each.yml
       with_items: "{{ nexus_repos_raw_group }}"
   when: nexus_config_raw
 
 - block:
-    - include: create_repo_rubygems_proxy_each.yml
+    - include_tasks: create_repo_rubygems_proxy_each.yml
       with_items: "{{ nexus_repos_rubygems_proxy }}"
 
-    - include: create_repo_rubygems_hosted_each.yml
+    - include_tasks: create_repo_rubygems_hosted_each.yml
       with_items: "{{ nexus_repos_rubygems_hosted }}"
 
-    - include: create_repo_rubygems_group_each.yml
+    - include_tasks: create_repo_rubygems_group_each.yml
       with_items: "{{ nexus_repos_rubygems_group }}"
   when: nexus_config_rubygems
 
 - block:
-    - include: create_repo_bower_proxy_each.yml
+    - include_tasks: create_repo_bower_proxy_each.yml
       with_items: "{{ nexus_repos_bower_proxy }}"
 
-    - include: create_repo_bower_hosted_each.yml
+    - include_tasks: create_repo_bower_hosted_each.yml
       with_items: "{{ nexus_repos_bower_hosted }}"
 
-    - include: create_repo_bower_group_each.yml
+    - include_tasks: create_repo_bower_group_each.yml
       with_items: "{{ nexus_repos_bower_group }}"
   when: nexus_config_bower
 
 - block:
-    - include: create_repo_npm_proxy_each.yml
+    - include_tasks: create_repo_npm_proxy_each.yml
       with_items: "{{ nexus_repos_npm_proxy }}"
 
-    - include: create_repo_npm_hosted_each.yml
+    - include_tasks: create_repo_npm_hosted_each.yml
       with_items: "{{ nexus_repos_npm_hosted }}"
 
-    - include: create_repo_npm_group_each.yml
+    - include_tasks: create_repo_npm_group_each.yml
       with_items: "{{ nexus_repos_npm_group }}"
   when: nexus_config_npm
 
 - block:
-    - include: create_repo_nuget_proxy_each.yml
+    - include_tasks: create_repo_nuget_proxy_each.yml
       with_items: "{{ nexus_repos_nuget_proxy }}"
-    - include: create_repo_nuget_hosted_each.yml
+    - include_tasks: create_repo_nuget_hosted_each.yml
       with_items: "{{ nexus_repos_nuget_hosted }}"
-    - include: create_repo_nuget_group_each.yml
+    - include_tasks: create_repo_nuget_group_each.yml
       with_items: "{{ nexus_repos_nuget_group }}"
   when: nexus_config_nuget
 
 
-- include: create_repo_gitlfs_hosted_each.yml
+- include_tasks: create_repo_gitlfs_hosted_each.yml
   with_items: "{{ nexus_repos_gitlfs_hosted }}"
   when: nexus_config_gitlfs
 
 - block:
-    - include: create_repo_yum_hosted_each.yml
+    - include_tasks: create_repo_yum_hosted_each.yml
       with_items: "{{ nexus_repos_yum_hosted }}"
-    - include: create_repo_yum_proxy_each.yml
+    - include_tasks: create_repo_yum_proxy_each.yml
       with_items: "{{ nexus_repos_yum_proxy }}"
+    - include_tasks: create_repo_yum_group_each.yml
+      with_items: "{{ nexus_repos_yum_group }}"
   when: nexus_config_yum
 
-- include: call_script.yml
+- include_tasks: call_script.yml
   vars:
     script_name: setup_anonymous_access
     args:
       anonymous_access: "{{ nexus_anonymous_access }}"
 
-- include: call_script.yml
+- include_tasks: call_script.yml
   vars:
     script_name: setup_base_url
     args:
       base_url: "https://{{ public_hostname }}/"
 
-- include: call_script.yml
+- include_tasks: call_script.yml
   vars:
     script_name: setup_http_proxy
     args:
@@ -198,7 +203,7 @@
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
 
-- include: call_script.yml
+- include_tasks: call_script.yml
   vars:
     script_name: setup_realms
     args:
@@ -209,7 +214,7 @@
       docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
 
 - name: Configure RUT Auth header
-  include: call_script.yml
+  include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
@@ -218,7 +223,7 @@
         httpHeader: "{{ nexus_rut_auth_header }}"
   when: nexus_rut_auth_header is defined
 
-- include: call_script.yml
+- include_tasks: call_script.yml
   vars:
     script_name: setup_email
     args:
@@ -236,7 +241,7 @@
       email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
 
 - name: Configure branding capability
-  include: call_script.yml
+  include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
@@ -247,11 +252,11 @@
         footerEnabled: "{{ nexus_branding_footer != '' }}"
         headerEnabled: "{{ nexus_branding_header != '' }}"
 
-- include: create_task_each.yml
+- include_tasks: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks }}"
 
 - name: Configure nexus backup task
-  include: call_script.yml
+  include_tasks: call_script.yml
   vars:
     script_name: create_task
     args:

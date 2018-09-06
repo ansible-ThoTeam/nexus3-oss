@@ -8,6 +8,7 @@
   systemd:
     name: nexus.service
     state: restarted
+    no_block: yes
 
 - name: nexus-service-stop
   systemd:
@@ -31,6 +32,7 @@
     name: "{{ httpd_package_name }}.service"
     state: reloaded
     enabled: yes
+    no_block: yes
 
 - name: wait-for-httpd
   wait_for:

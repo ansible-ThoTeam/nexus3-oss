@@ -25,6 +25,7 @@ privilege.setDescription(parsed_args.description)
 privilege.setType(parsed_args.type)
 privilege.setProperties([
         'format': parsed_args.format,
+        'contentSelector': parsed_args.contentSelector,
         'repository': parsed_args.repository,
         'actions': parsed_args.actions.join(',')
 ] as Map<String, String>)
