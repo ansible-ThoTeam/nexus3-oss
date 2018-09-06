@@ -38,13 +38,12 @@ _(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
          * [Contributions](#contributions)
          * [Testing](#testing)
             * [Groovy syntax](#groovy-syntax)
-            * [Molecule default scenario](#molecule-default-scenario)
-            * [Testing everything](#testing-everything)
-               * [Molecule selinux scenario](#molecule-selinux-scenario)
+            * [Molecule default-xxxx scenarii](#molecule-default-xxxx-scenarii)
+            * [Molecule selinux scenario](#molecule-selinux-scenario)
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-09-05T16:15+02:00 -->
+<!-- Added by: olcla, at: 2018-09-06T16:28+02:00 -->
 
 <!--te-->
 
@@ -730,20 +729,30 @@ Moreover, if you have time to devote for code review, merge for realeases, etc..
 
 ### Testing
 
-This role includes tests and CI integration through travis. For build time sake, not all tests are run on travis. Currently, only default molecule deployment tests are ran automatically on every merge request creation/upate.
+This role includes tests and CI integration through travis. At time being, we test:
+* groovy scripts syntax
+* yaml syntax and coding standard (yamllint)
+* ansible good practices (ansible lint)
+* a set of basic deployments on 5 different linux platforms
+    * centos7
+    * debian jessie
+    * debian stretch
+    * ubuntu xenial (16.04)
+    * ubuntu bionic (18.04)
 
 #### Groovy syntax
 
-This role contains a set of groovy files used to provision nexus. Those files seldom change and tests on travis require a lot of time for setup/run. So they are not run automatically.
+This role contains a set of groovy files used to provision nexus.
 
 If you submit changes to groovy files, please run the groovy syntax check locally before pushing your changes
 ```bash
 ./tests/test_groovySyntax.sh
 ```
+This will ensure you push groovy files with correct syntax limiting the number of check errors on travis.
 
 You will need the groovy package installed locally to run this test.
 
-#### Molecule default scenario
+#### Molecule default-xxxx scenarii
 
 The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
 ```bash
@@ -751,23 +760,27 @@ The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecu
 virtualenv /path/to/some/pyenv
 . /path/to/some/pyenv/bin/activate
 pip install -r requirements.txt
-./tests/test_molecule.sh
+molecule [create|converge|destroy|test] -s <scenario name>
 deactivate
 ```
+Please have a look at molecule documentation (a good start is `molecule --help`) for further usage.
+
+The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
+* default-centos7 => https://localhost:8090
+* default-debian_jessie => https://localhost:8091
+* default-debian_stretch => https://localhost:8092
+* default-ubuntu_16.04 => https://localhost:8093
+* default-ubuntu_18.04 => https://localhost:8094
 
 To speed up tests, molecule uses automated docker build images on docker hub:
 * https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
 * https://hub.docker.com/r/thoteam/ansible-debian_jessie-apache-java/
+* https://hub.docker.com/r/thoteam/ansible-debian_stretch-apache-java/
 * https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
 * https://hub.docker.com/r/thoteam/ansible-ubuntu18_04-apache-java/
 
-#### Testing everything
-As a convenience, we provide a script to run all test at once (including the default molecule scenario)
-```bash
-./tests/test_all.sh
-```
 
-##### Molecule selinux scenario
+#### Molecule selinux scenario
 
 We included a second molecule `selinux` scenario. This one is not run on travis but can be used locally to:
 * test selinux integration (on centos).
