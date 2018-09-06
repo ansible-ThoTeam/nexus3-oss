@@ -5,7 +5,7 @@ This role installs and configures Nexus Repository Manager OSS version 3.x.
 All configuration can be updated by re-running the role, except for the [blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) related settings, which are immutable in nexus.
 
 ## Table of Contents
-_(Created with [gh-md-toc](https://github).com/ekalinin/github-markdown-toc)_
+_(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)_
 <!-- Run gh-md-toc --insert README.md to update -->
 <!--ts-->
    * [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
