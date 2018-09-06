@@ -23,10 +23,17 @@
         src: "{{ molecule_scenario_directory }}/../.nexus-downloads"
         state: link
 
+    - name: Get link to current nexus version
+      uri:
+        url: "{{ nexus_download_url }}/latest-unix.tar.gz"
+        method: CONNECT
+        status_code: 302
+      register: nexus_latest_uri_call
+
     - name: get the current nexus version
       get_url:
-        url: "{{ nexus_download_url }}/latest-unix.tar.gz"
-        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/"
+        url: "{{ nexus_latest_uri_call.location }}"
+        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/{{ nexus_latest_uri_call.location | urlsplit('path') | basename}}"
         force: no
 
 
