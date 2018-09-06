@@ -422,13 +422,19 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'
         layout_policy: permissive
+        # maximum_component_age: -1
+        # maximum_metadata_age: 1440
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+        # maximum_component_age: -1
+        # maximum_metadata_age: 1440
     # example with a login/password :
     # - name: secret-remote-repo
     #   remote_url: 'https://company.com/repo/secure/private/go/away'
     #   remote_username: 'username'
     #   remote_password: 'secret'
+    #   # maximum_component_age: -1
+    #   # maximum_metadata_age: 1440
 ```
 
 Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-ProxyRepository) configuration.
@@ -463,6 +469,8 @@ All three repository types are combined with the following default values :
       version_policy: release # release, snapshot or mixed
       layout_policy: strict # strict or permissive
       write_policy: allow_once # one of "allow", "allow_once" or "deny"
+      maximum_component_age: -1  # Nexus gui default. For proxies only
+      maximum_metadata_age: 1440  # Nexus gui default. For proxies only
 ```
 
 Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
