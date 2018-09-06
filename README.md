@@ -59,7 +59,7 @@ We would like to thank the original authors for the work done.
 ## Requirements
 
 - Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage of new features if needed (and update meta/main.yml for minimum version)
-- Compatible OS. Although this role should also work on debian stretch, it is only tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04), and Debian Jessie for time being.
+- Compatible OS. This role is tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04), Debian Jessie and stretch for time being.
 - Java 8 (mandatory)
     - Oracle Java 8 is the official supported platform by Sonatype
     - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
