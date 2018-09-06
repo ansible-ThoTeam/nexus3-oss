@@ -46,8 +46,8 @@ if (existingRepository != null) {
                     ],
                     proxy: [
                             remoteUrl: parsed_args.proxy_url,
-                            contentMaxAge: 1440,
-                            metadataMaxAge: 1440
+                            contentMaxAge: parsed_args.get('content_max_age', 1440.0),
+                            metadataMaxAge: parsed_args.get('metadata_max_age', 1440.0)
                     ],
                     dockerProxy: [
                             indexType: parsed_args.index_type,
