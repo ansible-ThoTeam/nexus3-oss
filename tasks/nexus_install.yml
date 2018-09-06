@@ -66,8 +66,6 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
-
 - name: Update symlink nexus-latest
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
@@ -77,6 +75,10 @@
     state: link
     follow: false
   register: nexus_latest_version
+  notify:
+    - nexus-service-stop
+
+- meta: flush_handlers
 
 - name: Delete unpacked data directory
   file:
@@ -157,18 +159,24 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Dkaraf.data=.*"
     line: "-Dkaraf.data={{ nexus_data_dir }}"
+  notify:
+    - nexus-service-stop
 
 - name: Setup JVM logfile directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:LogFile=.*"
     line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
+  notify:
+    - nexus-service-stop
 
 - name: Setup Nexus default timezone
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Duser.timezone=.*"
     line: "-Duser.timezone={{ nexus_timezone }}"
+  notify:
+    - nexus-service-stop
 
 - name: Setup Nexus JVM min heap size
   lineinfile:
@@ -206,30 +214,40 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Djava.io.tmpdir=.*"
     line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
+  notify:
+    - nexus-service-stop
 
 - name: Set NEXUS_HOME for the service user
   lineinfile:
     dest: "/home/{{ nexus_os_user }}/.bashrc"
     regexp: "^export NEXUS_HOME=.*"
     line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
+  notify:
+    - nexus-service-stop
 
 - name: Set nexus user
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc"
     regexp: ".*run_as_user=.*"
     line: "run_as_user=\"{{ nexus_os_user }}\""
+  notify:
+    - nexus-service-stop
 
 - name: Set nexus port
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-port=.*"
     line: "application-port={{ nexus_default_port }}"
+  notify:
+    - nexus-service-stop
 
 - name: Set nexus context path
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^nexus-context-path=.*"
     line: "nexus-context-path={{ nexus_default_context_path }}"
+  notify:
+    - nexus-service-stop
 
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
@@ -237,6 +255,8 @@
     regexp: "^application-host=.*"
     line: "application-host=127.0.0.1"
   when: httpd_setup_enable
+  notify:
+    - nexus-service-stop
 
 - name: Create systemd service configuration
   template:
