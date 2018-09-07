@@ -221,10 +221,14 @@ nexus_repos_maven_proxy:
     layout_policy: permissive
     # maximum_component_age: -1
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
   - name: jboss
     remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
     # maximum_component_age: -1
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 # example with a login/password :
 # - name: secret-remote-repo
@@ -233,6 +237,8 @@ nexus_repos_maven_proxy:
 #   remote_password: 'secret'
 #   # maximum_component_age: -1
 #   # maximum_metadata_age: 1440
+#   # negative_cache_enabled: true
+#   # negative_cache_ttl: 1440
 
 nexus_repos_maven_hosted:
   - name: private-release
@@ -298,6 +304,8 @@ _nexus_repos_maven_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: -1  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -308,6 +316,8 @@ _nexus_repos_pypi_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_pypi_hosted:
   - name: pypi-internal
@@ -325,6 +335,8 @@ nexus_repos_pypi_proxy:
     remote_url: 'https://pypi.python.org/'
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 # raw repo support
 
@@ -336,12 +348,16 @@ _nexus_repos_raw_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
     remote_url: 'http://archive.ubuntu.com/ubuntu/'
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 nexus_repos_raw_hosted:
   - name: raw-internal
@@ -364,6 +380,8 @@ _nexus_repos_docker_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
@@ -379,6 +397,8 @@ nexus_repos_docker_proxy:
     use_nexus_certificates_to_access_index: false
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 nexus_repos_docker_group:
   - name: docker-group
@@ -395,6 +415,8 @@ _nexus_repos_rubygems_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
@@ -413,6 +435,8 @@ nexus_repos_rubygems_proxy:
     remote_url: https://rubygems.org
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 # Bower support
 _nexus_repos_bower_defaults:
@@ -421,6 +445,8 @@ _nexus_repos_bower_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_bower_hosted:
   - name: bower-internal
@@ -439,6 +465,8 @@ nexus_repos_bower_proxy:
     remote_url: http://bower.herokuapp.com
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 # npm support
 _nexus_repos_npm_defaults:
@@ -447,6 +475,8 @@ _nexus_repos_npm_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_npm_hosted:
   - name: npm-internal
@@ -465,6 +495,8 @@ nexus_repos_npm_proxy:
     remote_url: https://registry.npmjs.org
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 _nexus_repos_nuget_defaults:
   blob_store: "{{ nexus_blob_names.nuget.blob }}"
@@ -472,6 +504,8 @@ _nexus_repos_nuget_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -490,6 +524,8 @@ nexus_repos_nuget_proxy:
     remote_url: http://www.nuget.org/api/v2
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
 
 # gitlfs support
 _nexus_repos_gitlfs_defaults:
@@ -509,6 +545,8 @@ nexus_repos_yum_proxy: []
 #   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
 #   # maximum_component_age: 1440
 #   # maximum_metadata_age: 1440
+#   # negative_cache_enabled: true
+#   # negative_cache_ttl: 1440
 nexus_repos_yum_group: []
 
 _nexus_repos_yum_defaults:
@@ -519,3 +557,5 @@ _nexus_repos_yum_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only

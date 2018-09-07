@@ -423,10 +423,14 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         layout_policy: permissive
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
+        # negative_cache_enabled: true
+        # negative_cache_ttl: 1440
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
+        # negative_cache_enabled: true
+        # negative_cache_ttl: 1440
     # example with a login/password :
     # - name: secret-remote-repo
     #   remote_url: 'https://company.com/repo/secure/private/go/away'
@@ -434,6 +438,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
     #   remote_password: 'secret'
     #   # maximum_component_age: -1
     #   # maximum_metadata_age: 1440
+    #   # negative_cache_enabled: true
+    #   # negative_cache_ttl: 1440
 ```
 
 Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-ProxyRepository) configuration.
@@ -443,8 +449,6 @@ Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Ma
       - name: private-release
         version_policy: release
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-        # negativeCacheEnabled: true
-        # timeToLive: 1440
 ```
 
 Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration. Negative cache config is optionnal and will default to the above values if omitted.
@@ -470,6 +474,8 @@ All three repository types are combined with the following default values :
       write_policy: allow_once # one of "allow", "allow_once" or "deny"
       maximum_component_age: -1  # Nexus gui default. For proxies only
       maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+      negative_cache_enabled: true # Nexus gui default. For proxies only
+      negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 ```
 
 Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS and yum repository types:
