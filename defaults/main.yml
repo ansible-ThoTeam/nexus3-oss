@@ -304,8 +304,8 @@ _nexus_repos_maven_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: -1  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -316,8 +316,8 @@ _nexus_repos_pypi_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_pypi_hosted:
   - name: pypi-internal
@@ -348,8 +348,8 @@ _nexus_repos_raw_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
@@ -380,8 +380,8 @@ _nexus_repos_docker_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
@@ -415,8 +415,8 @@ _nexus_repos_rubygems_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
@@ -445,8 +445,8 @@ _nexus_repos_bower_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_bower_hosted:
   - name: bower-internal
@@ -475,8 +475,8 @@ _nexus_repos_npm_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_npm_hosted:
   - name: npm-internal
@@ -504,8 +504,8 @@ _nexus_repos_nuget_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -557,5 +557,5 @@ _nexus_repos_yum_defaults:
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
