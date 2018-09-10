@@ -246,6 +246,7 @@
     script_name: setup_capability
     args:
       capability_typeId: "rapture.branding"
+      capability_enabled: "{{ nexus_branding_footer != '' and nexus_branding_header != '' }}"
       capability_properties:
         footerHtml: "{{ nexus_branding_footer }}"
         headerHtml: "{{ nexus_branding_header }}"
