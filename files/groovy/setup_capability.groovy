@@ -18,11 +18,11 @@ DefaultCapabilityReference existing = capabilityRegistry.all.find { CapabilityRe
 
 if (existing) {
     log.info(parsed_args.typeId + ' capability updated to: {}',
-            capabilityRegistry.update(existing.id(), existing.active, existing.notes(), parsed_args.capability_properties).toString()
+            capabilityRegistry.update(existing.id(), Boolean.valueOf(parsed_args.get('capability_enabled', true)), existing.notes(), parsed_args.capability_properties).toString()
     )
 }
 else {
     log.info(parsed_args.typeId + ' capability created as: {}', capabilityRegistry.
-            add(capabilityType, true, 'configured through api', parsed_args.capability_properties).toString()
+            add(capabilityType, Boolean.valueOf(parsed_args.get('capability_enabled', true)), 'configured through api', parsed_args.capability_properties).toString()
     )
 }
