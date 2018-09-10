@@ -59,6 +59,9 @@ nexus_rut_auth_realm: false
 nexus_ldap_realm: false
 nexus_docker_bearer_token_realm: false
 
+# Enable/disable audit capability
+nexus_audit_enabled: false
+
 # email server
 nexus_email_server_enabled: false
 nexus_email_server_host: "localhost"

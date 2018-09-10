@@ -219,6 +219,7 @@
     script_name: setup_capability
     args:
       capability_typeId: "rutauth"
+      capability_enabled: true
       capability_properties:
         httpHeader: "{{ nexus_rut_auth_header }}"
   when: nexus_rut_auth_header is defined
@@ -246,11 +247,21 @@
     script_name: setup_capability
     args:
       capability_typeId: "rapture.branding"
+      capability_enabled: "{{ nexus_branding_footer != '' and nexus_branding_header != '' }}"
       capability_properties:
         footerHtml: "{{ nexus_branding_footer }}"
         headerHtml: "{{ nexus_branding_header }}"
         footerEnabled: "{{ nexus_branding_footer != '' }}"
         headerEnabled: "{{ nexus_branding_header != '' }}"
+
+- name: Configure audit capability
+  include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    args:
+      capability_typeId: "audit"
+      capability_enabled: "{{ nexus_audit_enabled | bool }}"
+      capability_properties: {}
 
 - include_tasks: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks }}"

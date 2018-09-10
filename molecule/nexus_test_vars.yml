@@ -25,6 +25,8 @@ nexus_config_yum: true
 
 nexus_anonymous_access: true
 
+nexus_audit_enabled: true
+
 nexus_rut_auth_realm: false
 nexus_rut_auth_header: "CUSTOM_RUT_HEADER"
 
