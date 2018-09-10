@@ -162,6 +162,13 @@ The fully qualified domain name under which the nexus instance will be accessibl
 
 Header and footer branding, those can contain HTML.
 
+### Audit capability
+```yaml
+    nexus_audit_enabled: false
+```
+
+The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/security/auditing) is off by default. You can turn it on by switching this to `true`. Please note that the audit data is stored in nexus db, persits accross reboots and is not automatically rotated/cleared.
+
 ### Reverse proxy setup
 ```yaml
     httpd_setup_enable: false
