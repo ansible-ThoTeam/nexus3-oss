@@ -23,6 +23,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Default anonymous access](#default-anonymous-access)
          * [Public hostname](#public-hostname)
          * [Branding capabalities](#branding-capabalities)
+         * [Audit capability](#audit-capability)
          * [Reverse proxy setup](#reverse-proxy-setup)
          * [LDAP configuration](#ldap-configuration)
          * [Privileges, roles and users](#privileges-roles-and-users)
@@ -43,7 +44,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-09-06T16:28+02:00 -->
+<!-- Added by: olcla, at: 2018-09-10T16:10+02:00 -->
 
 <!--te-->
 
