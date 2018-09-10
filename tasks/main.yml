@@ -219,6 +219,7 @@
     script_name: setup_capability
     args:
       capability_typeId: "rutauth"
+      capability_enabled: true
       capability_properties:
         httpHeader: "{{ nexus_rut_auth_header }}"
   when: nexus_rut_auth_header is defined
