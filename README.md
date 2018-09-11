@@ -33,6 +33,8 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Backups](#backups)
             * [Restore procedure](#restore-procedure)
             * [Possible limitations](#possible-limitations)
+         * [Special maintenance/debug variables](#special-maintenancedebug-variables)
+            * [Purge nexus](#purge-nexus)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -44,7 +46,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-09-10T16:10+02:00 -->
+<!-- Added by: olcla, at: 2018-09-11T11:07+02:00 -->
 
 <!--te-->
 
@@ -606,6 +608,19 @@ be used with caution and tested carefully on larger installations before moving
 to production. In any case, you are free to implement your own backup scenario
 outside of this role.
 
+### Special maintenance/debug variables
+
+These are not present in `defaults/main.yml` and are meant to be used on the command line only for maintenance/debug reasons.
+
+#### Purge nexus
+
+** Warning: this will completely erase the current data. Make sure to backup previously if needed **
+
+Use the `purge` variable if you need to restart from scratch and re-install a blank instance of nexus. 
+
+```bash
+ansible-playbook -i your/inventory.ini your_nexus_playbook.yml -e purge=true
+```
 
 ## Dependencies
 
