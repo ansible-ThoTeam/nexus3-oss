@@ -37,7 +37,7 @@ nexus_backup_keep_rotations: 4  # Keep 4 backup rotation by default (current + l
 # nexus_restore_point: '2017-02-22-01-30-32' # Example format
 
 # Nexus purge procedure:
-# run ansible-playbook example.yml -e "purge=true"
+# run ansible-playbook example.yml -e "nexus_purge=true"
 
 # Nexus default properties
 nexus_default_port: 8081

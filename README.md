@@ -617,10 +617,10 @@ These are not present in `defaults/main.yml` and are meant to be used on the com
 
 ** Warning: this will completely erase the current data. Make sure to backup previously if needed **
 
-Use the `purge` variable if you need to restart from scratch and re-install a blank instance of nexus. 
+Use the `nexus_purge` variable if you need to restart from scratch and re-install a blank instance of nexus. 
 
 ```bash
-ansible-playbook -i your/inventory.ini your_nexus_playbook.yml -e purge=true
+ansible-playbook -i your/inventory.ini your_nexus_playbook.yml -e nexus_purge=true
 ```
 
 #### Force groovy scripts registration

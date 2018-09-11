@@ -13,7 +13,7 @@
   register: nexus_systemd_service_file
 
 - include_tasks: nexus_purge.yml
-  when: ((purge is defined) and (purge | bool))
+  when: ((nexus_purge is defined) and (nexus_purge | bool))
 
 - import_tasks: nexus_install.yml
 
