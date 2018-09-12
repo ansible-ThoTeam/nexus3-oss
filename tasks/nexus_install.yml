@@ -346,6 +346,12 @@
   when: nexus_data_dir_contents.stdout != ""
   no_log: true
 
+- name: Force (re-)registration of groovy scripts (purge reference dir)
+  file:
+    path: "{{ nexus_data_dir }}/groovy-raw-scripts"
+    state: absent
+  when: nexus_force_groovy_scripts_registration | default(false)
+
 - name: Create directory to hold current groovy scripts for reference
   file:
     path: "{{ nexus_data_dir }}/groovy-raw-scripts/current"

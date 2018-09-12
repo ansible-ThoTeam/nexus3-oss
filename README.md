@@ -33,6 +33,9 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Backups](#backups)
             * [Restore procedure](#restore-procedure)
             * [Possible limitations](#possible-limitations)
+         * [Special maintenance/debug variables](#special-maintenancedebug-variables)
+            * [Purge nexus](#purge-nexus)
+            * [Force groovy scripts registration](#force-groovy-scripts-registration)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -44,7 +47,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-09-10T16:10+02:00 -->
+<!-- Added by: olcla, at: 2018-09-11T11:37+02:00 -->
 
 <!--te-->
 
@@ -606,6 +609,36 @@ be used with caution and tested carefully on larger installations before moving
 to production. In any case, you are free to implement your own backup scenario
 outside of this role.
 
+### Special maintenance/debug variables
+
+These are not present in `defaults/main.yml` and are meant to be used on the command line only for maintenance/debug reasons.
+
+#### Purge nexus
+
+** Warning: this will completely erase the current data. Make sure to backup previously if needed **
+
+Use the `nexus_purge` variable if you need to restart from scratch and re-install a blank instance of nexus. 
+
+```bash
+ansible-playbook -i your/inventory.ini your_nexus_playbook.yml -e nexus_purge=true
+```
+
+#### Force groovy scripts registration
+
+_This one is safe and will only make the playbook run longer if it wasn't needed_
+
+For performance sake, we use a little trick with several rsync to detect which maintenance groovy scripts need to be registered in Nexus. On some occasions (e.g. bad admin password, recovering a backup from a previous nexus instance with unregistered scripts...), this can lead to situation where the role will fail when attempting to run the needed groovy scripts.
+
+The symptom: you get HTTP 404 errors when the role tries to run scripts like in the following example (use `-v` option for ansible playbook):
+
+```bash
+fatal: [nexus3-oss]: FAILED! => {"changed": false, "connection": "close", "content": "", "date": "Tue, 11 Sep 2018 07:57:44 GMT", "msg": "Status code was 404 and not [200, 204]: HTTP Error 404: Not Found", "redirected": false, "server": "Nexus/3.13.0-01 (OSS)", "status": 404, "url": "http://localhost:8081/service/rest/v1/script/update_admin_password/run", "x_content_type_options": "nosniff", "x_siesta_faultid": "914acef2-f644-4bd6-9a7d-ce19255ea3dd"}
+```
+
+In such cases, you can force the (re-)registration of the groovy scripts with the `nexus_force_groovy_scripts_registration` variable:
+```yaml
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_force_groovy_scripts_registration=true
+```
 
 ## Dependencies
 
