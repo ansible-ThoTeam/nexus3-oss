@@ -10,3 +10,14 @@
       with the new nexus latest version detection feature and is not
       supported anymore. Please use the nexus_version variable only.
   when: nexus_package is defined
+
+# @deprecated: purge was refactored to nexus_purge
+# @version: 2.2.3
+- name: Broken compatibility => purge var moved to nexus_purge
+  fail:
+    msg: >-
+      You have set the purge variable to reset nexus.
+      Starting from version 2.2.3 of this role, this variable
+      has been renamed nexus_purge. Please fix the var name accordingly
+      on you command line call.
+  when: purge is defined
