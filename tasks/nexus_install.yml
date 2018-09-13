@@ -18,15 +18,6 @@
 
   when: nexus_version == ''
 
-- name: Broken compatibility => nexus_package is now dynamically calculated
-  fail:
-    msg: >-
-      You have set the variable nexus_package in your playbook.
-      Starting from version 2.2.0 of this role, this is not compatible
-      with the new nexus latest version detection feature and is not
-      supported anymore. Please use the nexus_version variable only.
-  when: nexus_package is defined
-
 - name: Register nexus package name
   set_fact:
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"

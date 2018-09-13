@@ -1,4 +1,6 @@
 ---
+- name: check deprecated vars and features
+  import_tasks: "check_deprecated.yml"
 
 - name: Include OS specific variables.
   include_vars: "configure-{{ ansible_os_family }}.yml"
