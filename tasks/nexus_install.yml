@@ -326,16 +326,41 @@
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
 
+- name: Access scripts API endpoint with default admin password
+  uri:
+    url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
+    method: 'HEAD'
+    user: 'admin'
+    password: 'admin123'
+    force_basic_auth: yes
+    status_code: 200, 401
+  register: nexus_api_head_with_default_password
+
+- name: Access scripts API endpoint with defined admin password
+  uri:
+    url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
+    method: 'HEAD'
+    user: 'admin'
+    password: "{{ nexus_admin_password }}"
+    force_basic_auth: yes
+    status_code: 200, 401
+  register: nexus_api_head_with_defined_password
+
 - name: First-time install admin password
   set_fact:
     current_nexus_admin_password: 'admin123'
-  when: nexus_data_dir_contents.stdout == ""
+  when: nexus_api_head_with_default_password.status == 200
 
 - name: Subsequent re-provision admin password
   set_fact:
     current_nexus_admin_password: "{{ nexus_admin_password }}"
-  when: nexus_data_dir_contents.stdout != ""
+  when: nexus_api_head_with_defined_password.status == 200
   no_log: true
+
+- name: Ensure current Nexus password is known
+  fail:
+    msg: "Failed to determine current Nexus password (it is neither the default nor the defined password)"
+  when: current_nexus_admin_password is not defined
 
 - name: Force (re-)registration of groovy scripts (purge reference dir)
   file:
