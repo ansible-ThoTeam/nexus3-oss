@@ -22,8 +22,6 @@
 - include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable
 
-- import_tasks: admin_password_setup.yml
-
 - name: Deleting default repositories
   include_tasks: delete_repo_each.yml
   with_items:
