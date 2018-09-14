@@ -46,7 +46,18 @@ nexus_docker_proxy_port: 9081
 nexus_docker_group_port: 9082
 nexus_default_context_path: '/'
 
-nexus_admin_password: 'changeme'  # Note : admin password change subsequent to first-time install is *not implemented* yet
+# Nexus default admin password on first time install.
+# This should not be set in your playbook.
+# You can use your old password on the command line if
+# you want to change your admin password after first install
+# i.e.
+# - Set your new password in nexus_admin_password
+# - Run `ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_default_admin_password=oldpassword`
+nexus_default_admin_password: 'admin123'
+# Nexus admin password to set and use.
+# Note: this should be vault encrypted in your playbook.
+nexus_admin_password: 'changeme'
+
 nexus_anonymous_access: false
 
 public_hostname: 'nexus.vm'

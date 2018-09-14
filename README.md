@@ -36,6 +36,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Special maintenance/debug variables](#special-maintenancedebug-variables)
             * [Purge nexus](#purge-nexus)
             * [Force groovy scripts registration](#force-groovy-scripts-registration)
+            * [Change admin password after first install](#change-admin-password-after-first-install)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -47,7 +48,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-09-11T11:37+02:00 -->
+<!-- Added by: olcla, at: 2018-09-14T15:30+02:00 -->
 
 <!--te-->
 
@@ -140,9 +141,10 @@ As a second warning, here is an extract from the above document:
 ```yaml
     nexus_admin_password: 'changeme'
 ```
+The 'admin' account password to setup. _This works only on first time install by default_. Please see [Change admin password after first install](#change-admin-password-after-first-install) if you want to change it later with the role.
 
-The 'admin' account password to setup. Note : admin password change subsequent to first-time provisioning/install is *not implemented* by this role yet.
-**It is strongly advised that you do not keep your password in clear text in you playbook and include it from a separate ansible-vault encrypted files (loaded with include_vars for example)**
+**It is strongly advised that you do not keep your password in clear text in you playbook and use [ansible-vault encryption](https://docs.ansible.com/ansible/latest/user_guide/vault.html) (either inline or in a separate file loaded with include_vars for example)**
+
 
 ### Default anonymous access
 ```yaml
@@ -636,8 +638,21 @@ fatal: [nexus3-oss]: FAILED! => {"changed": false, "connection": "close", "conte
 ```
 
 In such cases, you can force the (re-)registration of the groovy scripts with the `nexus_force_groovy_scripts_registration` variable:
-```yaml
+```bash
 ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_force_groovy_scripts_registration=true
+```
+
+#### Change admin password after first install
+
+```yaml
+    nexus_default_admin_password: 'admin123'
+```
+**This should not be changed in your playbook**. This var is filled with the default nexus admin password on first install and ensures we can change the admin password to `nexus_admin_password`.
+
+If you want to change your admin password after first install, you can temporarily change this to your old password from the command line. After changing `nexus_admin_password` in your playbook, you can run:
+
+```bash
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_default_admin_password=oldPassword
 ```
 
 ## Dependencies
