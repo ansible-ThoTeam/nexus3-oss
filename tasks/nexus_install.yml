@@ -361,7 +361,13 @@
 
 - name: Ensure current Nexus password is known
   fail:
-    msg: "Failed to determine current Nexus password (it is neither the default nor the defined password)"
+    msg: >-
+      Failed to determine current Nexus password
+      (it is neither the default nor the defined password).
+      If you are trying to change nexus_admin_password after first
+      install, please set `-e nexus_default_admin_password=oldPassword`
+      on the ansible-playbook command line.
+      See https://github.com/ansible-ThoTeam/nexus3-oss/blob/master/README.md#change-admin-password-after-first-install
   when: current_nexus_admin_password is not defined
 
 - name: Force (re-)registration of groovy scripts (purge reference dir)
