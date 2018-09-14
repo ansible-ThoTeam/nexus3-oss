@@ -348,7 +348,7 @@
     url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
     method: 'HEAD'
     user: 'admin'
-    password: 'admin123'
+    password: "{{ nexus_default_admin_password }}"
     force_basic_auth: yes
     status_code: 200, 401
   register: nexus_api_head_with_default_password
@@ -356,7 +356,7 @@
 
 - name: Register default admin password for next operations
   set_fact:
-    current_nexus_admin_password: 'admin123'
+    current_nexus_admin_password: "{{ nexus_default_admin_password }}"
   when: (nexus_api_head_with_default_password.status | default(false)) == 200
 
 - name: Ensure current Nexus password is known
