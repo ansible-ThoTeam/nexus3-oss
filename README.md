@@ -583,6 +583,7 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
       nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
       nexus_backup_rotate: false
+      nexus_backup_rotate_first: false
       nexus_backup_keep_rotations: 4  # Keep 4 backup rotation by default (current + last 3)
 ```
 
@@ -595,10 +596,14 @@ declare in your playbook
 
 If you want to rotate backups, set `nexus_backup_rotate: true` and adjust
 the number of rotations you would like to keep with `nexus_backup_keep_rotations`
-(defaults to 4)
+(defaults to 4).
 
-Note that `nexus_backup_log` _must be writable_ by the nexus user or the **backup
-task will fail**
+When using rotation, if you want to save extra disk space during the backup process,
+you can set `nexus_backup_rotate_first: true`. This will configure a pre-rotation
+rather than the default post-rotation. Please note than in this case, old backup(s)
+is/are removed before the current one is done and successful.
+
+Note that `nexus_backup_log` _must be writable_ by the nexus user or the **backup task will fail**
 
 #### Restore procedure
 Run your playbook with parameter `-e nexus_restore_point=<YYYY-MM-dd-HH-mm-ss>`

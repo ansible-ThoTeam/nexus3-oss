@@ -24,13 +24,11 @@ nexus_max_direct_memory: "2G"
 nexus_backup_dir: '/var/nexus-backup'
 nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
 nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
-# Shall we configure backup ?
-nexus_backup_configure: false
-# Backup time cron expression
+nexus_backup_configure: false  # Shall we configure backup ?
 nexus_backup_cron: "* 0 21 * * ?"  # See cron expression in nexus create task GUI
-# Shall we rotate backups ? No effect if nexus_backup_configure is false
-nexus_backup_rotate: false
-nexus_backup_keep_rotations: 4  # Keep 4 backup rotation by default (current + last 3)
+nexus_backup_rotate: false  # Shall we rotate backups
+nexus_backup_rotate_first: false  # Shall we rotate before making the current backup ?
+nexus_backup_keep_rotations: 4  # Keep 4 backup rotations by default (current + last 3)
 
 # Nexus restore procedure:
 # run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %Y-%m-%d-%H-%M-%S #)"
