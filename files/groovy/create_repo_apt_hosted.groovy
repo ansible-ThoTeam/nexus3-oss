@@ -31,7 +31,7 @@ if (existingRepository != null) {
             ],
             aptSigning: [
                 keypair: parsed_args.keypair,
-                passphrase: parsed_args.passphrase        
+                passphrase: parsed_args.passphrase
             ],
             storage: [
                 writePolicy: parsed_args.write_policy.toUpperCase(),

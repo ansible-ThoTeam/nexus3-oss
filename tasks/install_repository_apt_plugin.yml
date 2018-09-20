@@ -42,7 +42,7 @@
     src: add_apt_repository.aug.j2
     dest: /tmp/add_apt_repository.aug
     mode: 0755
-    
+
 - name: Load apt repostory bundle in Nexus
   become: yes
   command: /tmp/add_apt_repository.aug
