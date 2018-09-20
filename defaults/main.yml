@@ -469,4 +469,5 @@ _nexus_repos_apt_defaults:
   strict_content_validation: true
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 
-nexus_apt_repository_build_path: '/tmp/nexus_repository_apt'
+nexus_apt_repository_version: 1.0.7
+
