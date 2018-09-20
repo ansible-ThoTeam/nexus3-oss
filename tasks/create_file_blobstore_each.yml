@@ -9,5 +9,5 @@
 
 - include: call_script.yml
   vars:
-    script_name: create_blobstore
+    script_name: create_file_blobstore
     args: "{{ item }}"

@@ -1,0 +1,52 @@
+---
+
+- name: Install required packages for apt repository plugin in Debian
+  apt: name={{ item }} state=present
+  with_items:
+    - maven
+    - git
+    - augeas-tools
+  when: ansible_os_family|lower == 'debian'
+
+- name: Clone apt plugin git repository
+  git:
+    repo: 'https://github.com/sonatype-nexus-community/nexus-repository-apt'
+    dest: '{{ nexus_apt_repository_build_path }}'
+
+- name: Build apt plugin with maven
+  command: mvn
+  args:
+    chdir: '{{ nexus_apt_repository_build_path }}'
+    creates: '{{ nexus_apt_repository_build_path }}/target'
+
+- name: Get plugin version
+  command: "awk '/Bundle-Version/ {print $2}' MANIFEST.MF"
+  args:
+    chdir: '{{ nexus_apt_repository_build_path }}/target/classes/META-INF'
+  register: nexus_apt_repository_version
+
+- name: Create bundle destination directory
+  file:
+    path: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/system/net/staticsnow/nexus-repository-apt/{{ nexus_apt_repository_version.stdout }}'
+    state: directory
+    mode: 0755
+
+- name: Copy plugin bundle to nexus
+  copy:
+    remote_src: yes
+    src: '{{ nexus_apt_repository_build_path }}/target/nexus-repository-apt-{{ nexus_apt_repository_version.stdout }}.jar'
+    dest: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/system/net/staticsnow/nexus-repository-apt/{{ nexus_apt_repository_version.stdout }}/nexus-repository-apt-{{ nexus_apt_repository_version.stdout }}.jar'
+
+- name: Copy template script to load bundle
+  template:
+    src: add_apt_repository.aug.j2
+    dest: /tmp/add_apt_repository.aug
+    mode: 0755
+
+- name: Load apt repostory bundle in Nexus
+  become: yes
+  command: /tmp/add_apt_repository.aug
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port

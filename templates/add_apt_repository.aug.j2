@@ -1,0 +1,24 @@
+#!/usr/bin/augtool -Af
+
+set /augeas/load/Xml/lens "Xml.lns"
+set /augeas/load/Xml/incl "/opt/nexus-{{ nexus_version }}/system/org/sonatype/nexus/assemblies/nexus-core-feature/{{ nexus_version }}/nexus-core-feature-{{ nexus_version }}-features.xml"
+load
+
+defvar path /files/opt/nexus-{{ nexus_version }}/system/org/sonatype/nexus/assemblies/nexus-core-feature/{{ nexus_version }}/nexus-core-feature-{{ nexus_version }}-features.xml/features
+
+defnode newfeature $path/feature[feature/#text="nexus-repository-raw"]/feature[last()+1]
+set $newfeature/#attribute/version "{{ nexus_apt_repository_version.stdout }}"
+set $newfeature/#attribute/prerequisite "false"
+set $newfeature/#attribute/dependency "false"
+set $newfeature/#text "nexus-repository-apt"
+
+defnode newbundle $path/feature[last()+1]
+set $newbundle/#attribute/name "nexus-repository-apt"
+set $newbundle/#attribute/description "net.staticsnow:nexus-repository-apt"
+set $newbundle/#attribute/version "{{ nexus_apt_repository_version.stdout }}"
+set $newbundle/details/#text "net.staticsnow:nexus-repository-apt"
+set $newbundle/bundle/#text "mvn:net.staticsnow/nexus-repository-apt/{{ nexus_apt_repository_version.stdout }}"
+set $newbundle/bundle[last()+1]/#text "mvn:org.apache.commons/commons-compress/1.16.1"
+set $newbundle/bundle[last()+1]/#text "mvn:org.tukaani/xz/1.8"
+
+save
