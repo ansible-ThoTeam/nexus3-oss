@@ -205,7 +205,8 @@
   when: nexus_backup_configure | bool
 
 - name: 'Check if data directory is empty (first-time install)'
-  command: "ls {{ nexus_data_dir }}"
+  find:
+    paths: "{{ nexus_data_dir }}"
   register: nexus_data_dir_contents
   check_mode: no
   changed_when: false
@@ -214,7 +215,7 @@
   file:
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
-  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout != ""
+  when: nexus_latest_version.changed and nexus_data_dir_contents.matched
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
@@ -257,12 +258,12 @@
 - name: First-time install admin password
   set_fact:
     current_nexus_admin_password: 'admin123'
-  when: nexus_data_dir_contents.stdout == ""
+  when: not nexus_data_dir_contents.matched
 
 - name: Subsequent re-provision admin password
   set_fact:
     current_nexus_admin_password: "{{ nexus_admin_password }}"
-  when: nexus_data_dir_contents.stdout != ""
+  when: nexus_data_dir_contents.matched
   no_log: true
 
 - name: Create directory to hold current groovy scripts for reference
