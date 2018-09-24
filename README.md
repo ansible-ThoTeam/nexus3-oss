@@ -578,7 +578,7 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
 ### Backups
 ```yaml
       nexus_backup_configure: false
-      nexus_backup_cron: '* 0 21 * * ?'  # See cron expressions definition in nexus create task gui
+      nexus_backup_cron: '0 0 21 * * ?'  # See cron expressions definition in nexus create task gui
       nexus_backup_dir: '/var/nexus-backup'
       nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
