@@ -376,22 +376,26 @@
     state: absent
   when: nexus_force_groovy_scripts_registration | default(false)
 
-- name: Create directory to hold current groovy scripts for reference
+- name: Create directories to hold current groovy scripts for reference
   file:
-    path: "{{ nexus_data_dir }}/groovy-raw-scripts/current"
+    path: "{{ item }}"
     state: directory
     owner: root
     group: root
+  with_items:
+    - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
+    - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
+
+- name: Archive scripts
+  local_action:
+    module: archive
+    path: "{{ role_path }}/files/groovy/*"
+    dest: "{{ role_path }}/groovy-scripts.tar.gz"
+  run_once: true
 
 - name: Upload new scripts
-  synchronize:
-    archive: no
-    checksum: yes
-    recursive: yes
-    delete: yes
-    mode: push
-    use_ssh_args: yes
-    src: "files/groovy/"
+  unarchive:
+    src: "{{ role_path }}/groovy-scripts.tar.gz"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
 
 - name: Sync new scripts to old and get differences
