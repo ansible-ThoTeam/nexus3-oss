@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit
  * 7- If <nexusBackupRotate> is true and <nexusBackupRotateFirst> is false, post-rotate backup dirs keeping last <nexusBackupKeepRotations> backups
  */
 
-
-nexusBackupLogFilePath = "{{ nexus_backup_log }}"
 nexusBackupDirPath = "{{ nexus_backup_dir }}"
 nexusDataDirPath = "{{ nexus_data_dir }}"
 nexusBackupRotate = Boolean.valueOf("{{ nexus_backup_rotate }}")
@@ -30,11 +28,6 @@ nexusBackupKeepRotations = "{{ nexus_backup_keep_rotations }}".toInteger()
 
 backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('YYYY-MM-dd-HH-mm-ss'))
 CurrentBackupDirPath = nexusBackupDirPath+'/blob-backup-'+backupDateString
-
-backupLog = new File(nexusBackupLogFilePath)
-
-/** Clear log from previous backup */
-backupLog.text = ""
 
 /** Helper function to rotate backups */
 def rotateBackup() {
@@ -46,7 +39,7 @@ def rotateBackup() {
         rotateMsg = "Post-rotating"
     }
 
-    backupLog << rotateMsg + " backups to keep only last "+nexusBackupKeepRotations.toString()+" Backups\n"
+    log.info(rotateMsg + " backups to keep only last "+nexusBackupKeepRotations.toString()+" Backups")
     backupDirs = []
     backupCounter = 0
     backupPattern = ~/blob-backup-.*/
@@ -56,27 +49,27 @@ def rotateBackup() {
     backupDirs.sort{ it.name }.reverse().each { dir ->
         backupCounter++
         if (backupCounter > realKeep) {
-            backupLog << "Deleting backup "+ dir.name.toString() + "\n"
+            log.info("Deleting backup "+ dir.name.toString())
             dir.deleteDir()
         }
     }
     if (backupCounter > realKeep) {
         backupDeleted =  backupCounter - realKeep
-        backupLog << "Deleted a total of "+ backupDeleted + " backup directories\n"
+        log.info("Deleted a total of "+ backupDeleted + " backup directories")
     } else {
-        backupLog << "There where no backup directories to delete\n"
+        log.info("There were no backup directories to delete")
     }
 }
 
 try {
-    backupLog << "Backup directory is "+CurrentBackupDirPath+"\n"
+    log.info("Backup directory is "+CurrentBackupDirPath)
 
     /** pre backup rotation */
     if (nexusBackupRotate && nexusBackupRotateFirst) {
         rotateBackup()
     }
 
-    backupLog << "Create a temporary task to backup nexus db in "+CurrentBackupDirPath+"/db\n"
+    log.info("Create a temporary task to backup nexus db in "+CurrentBackupDirPath+"/db")
     TaskScheduler taskScheduler = container.lookup(TaskScheduler.class.getName())
     TaskConfiguration tempBackupTaskConfiguration = taskScheduler.createTaskConfigurationInstance('db.backup')
     tempBackupTaskConfiguration.setName('Temporary db.backup task')
@@ -84,17 +77,17 @@ try {
     Schedule schedule = taskScheduler.scheduleFactory.manual()
     TaskInfo tempBackupTask = taskScheduler.scheduleTask(tempBackupTaskConfiguration, schedule)
 
-    backupLog << "Run the temporary db backup task\n"
+    log.info("Run the temporary db backup task")
     tempBackupTask.runNow()
 
-    backupLog << "Copy the blobstores into "+CurrentBackupDirPath+"\n"
+    log.info("Copy the blobstores into "+CurrentBackupDirPath)
     FileUtils.copyDirectory(new File(nexusDataDirPath+'/blobs'), new File(CurrentBackupDirPath))
 
-    backupLog << "Wait for temporary db backup task to finish\n"
+    log.info("Wait for temporary db backup task to finish")
     while (tempBackupTask.currentState.state != TaskInfo.State.WAITING) {
         TimeUnit.SECONDS.sleep(1)
     }
-    backupLog << "Remove temporary task\n"
+    log.info("Remove temporary task")
     tempBackupTask.remove()
 
     /** Post backup rotation */
@@ -103,5 +96,5 @@ try {
     }
 
 } catch (Exception e) {
-    backupLog << e.toString()
+    log.error(e.toString())
 }

@@ -580,7 +580,6 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
       nexus_backup_configure: false
       nexus_backup_cron: '0 0 21 * * ?'  # See cron expressions definition in nexus create task gui
       nexus_backup_dir: '/var/nexus-backup'
-      nexus_backup_log: '{{ nexus_backup_dir }}/nexus-backup.log'
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
       nexus_backup_rotate: false
       nexus_backup_rotate_first: false
@@ -602,8 +601,6 @@ When using rotation, if you want to save extra disk space during the backup proc
 you can set `nexus_backup_rotate_first: true`. This will configure a pre-rotation
 rather than the default post-rotation. Please note than in this case, old backup(s)
 is/are removed before the current one is done and successful.
-
-Note that `nexus_backup_log` _must be writable_ by the nexus user or the **backup task will fail**
 
 #### Restore procedure
 Run your playbook with parameter `-e nexus_restore_point=<YYYY-MM-dd-HH-mm-ss>`
