@@ -32,6 +32,8 @@ privilege.setProperties([
 
 if (update) {
     authManager.updatePrivilege(privilege)
+    log.info("Privilege {} updated", parsed_args.name)
 } else {
     authManager.addPrivilege(privilege)
+    log.info("Privilege {} created", parsed_args.name)
 }
