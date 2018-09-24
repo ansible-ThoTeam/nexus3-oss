@@ -24,16 +24,19 @@ def updateUser(parsed_args) {
     security.securitySystem.updateUser(user)
     security.setUserRoles(parsed_args.username, parsed_args.roles)
     security.securitySystem.changePassword(parsed_args.username, parsed_args.password)
+    log.info("Updated user {}", parsed_args.username)
 }
 
 def addUser(parsed_args) {
     security.addUser(parsed_args.username, parsed_args.first_name, parsed_args.last_name, parsed_args.email, true, parsed_args.password, parsed_args.roles)
+    log.info("Created user {}", parsed_args.username)
 }
 
 def deleteUser(parsed_args) {
     try {
         security.securitySystem.deleteUser(parsed_args.username, UserManager.DEFAULT_SOURCE)
+        log.info("Deleted user {}", parsed_args.username)
     } catch (UserNotFoundException ignored) {
-        // No user, so nothing to do
+        log.info("Delete user: user {} does not exist", parsed_args.username)
     }
 }
