@@ -39,7 +39,7 @@ def rotateBackup() {
         rotateMsg = "Post-rotating"
     }
 
-    log.info(rotateMsg + " backups to keep only last "+nexusBackupKeepRotations.toString()+" Backups")
+    log.info("{} backups to keep only last {} backups", rotateMsg, nexusBackupKeepRotations.toString())
     backupDirs = []
     backupCounter = 0
     backupPattern = ~/blob-backup-.*/
@@ -49,27 +49,27 @@ def rotateBackup() {
     backupDirs.sort{ it.name }.reverse().each { dir ->
         backupCounter++
         if (backupCounter > realKeep) {
-            log.info("Deleting backup "+ dir.name.toString())
+            log.info("Deleting backup {}", dir.name.toString())
             dir.deleteDir()
         }
     }
     if (backupCounter > realKeep) {
         backupDeleted =  backupCounter - realKeep
-        log.info("Deleted a total of "+ backupDeleted + " backup directories")
+        log.info("Deleted a total of {} backup directories", backupDeleted)
     } else {
         log.info("There were no backup directories to delete")
     }
 }
 
 try {
-    log.info("Backup directory is "+CurrentBackupDirPath)
+    log.info("Backup directory is {}", CurrentBackupDirPath)
 
     /** pre backup rotation */
     if (nexusBackupRotate && nexusBackupRotateFirst) {
         rotateBackup()
     }
 
-    log.info("Create a temporary task to backup nexus db in "+CurrentBackupDirPath+"/db")
+    log.info("Create a temporary task to backup nexus db in {}/db", CurrentBackupDirPath)
     TaskScheduler taskScheduler = container.lookup(TaskScheduler.class.getName())
     TaskConfiguration tempBackupTaskConfiguration = taskScheduler.createTaskConfigurationInstance('db.backup')
     tempBackupTaskConfiguration.setName('Temporary db.backup task')
@@ -80,7 +80,7 @@ try {
     log.info("Run the temporary db backup task")
     tempBackupTask.runNow()
 
-    log.info("Copy the blobstores into "+CurrentBackupDirPath)
+    log.info("Copy the blobstores into {}", CurrentBackupDirPath)
     FileUtils.copyDirectory(new File(nexusDataDirPath+'/blobs'), new File(CurrentBackupDirPath))
 
     log.info("Wait for temporary db backup task to finish")
