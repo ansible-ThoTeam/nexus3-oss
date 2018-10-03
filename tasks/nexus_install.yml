@@ -420,12 +420,12 @@
   local_action:
     module: archive
     path: "{{ role_path }}/files/groovy/*"
-    dest: "{{ role_path }}/groovy-scripts.tar.gz"
+    dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
   run_once: true
 
 - name: Upload new scripts
   unarchive:
-    src: "{{ role_path }}/groovy-scripts.tar.gz"
+    src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
 
 - name: Sync new scripts to old and get differences
