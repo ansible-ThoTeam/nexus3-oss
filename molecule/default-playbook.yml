@@ -6,3 +6,15 @@
   vars_files:
     - ssl-{{ ansible_os_family }}.yml
     - nexus_test_vars.yml
+  # Allow to add some extra env for guest
+  # for local tests purposes (e.g. set proxy)
+  # Usage: create molecule/custom_env.yml and define molecule_custom_env
+  #
+  # ---
+  # molecule_custom_env:
+  #   http_proxy: http://my.proxy:8080
+  # ...
+  #
+  # Call molecule converge with extra vars loading the file
+  # molecule converge -s <scenario> -- -e @../custom_env.yml
+  environment: "{{ molecule_custom_env | default({}) }}"
