@@ -37,6 +37,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
             * [Purge nexus](#purge-nexus)
             * [Force groovy scripts registration](#force-groovy-scripts-registration)
             * [Change admin password after first install](#change-admin-password-after-first-install)
+            * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -48,7 +49,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2018-09-14T15:30+02:00 -->
+<!-- Added by: olcla, at: 2018-10-03T15:25+02:00 -->
 
 <!--te-->
 
@@ -86,13 +87,17 @@ Ansible variables, along with the default values (see `default/main.yml`) :
     nexus_download_url: "http://download.sonatype.com/nexus/3"
 ```
 
-The role will install/upgrade-to latest nexus available version by default. You may fix the version by tuning the `nexus_version` variable. See available versions at https://www.sonatype.com/download-oss-sonatype.
+The role will install latest nexus available version by default. You may fix the version by setting the `nexus_version` variable. See available versions at https://www.sonatype.com/download-oss-sonatype.
 
-If you use an older version of nexus, you should make sure you do not use features which are not available (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
+If you fix the version and change it to a different one, the role will try to upgrade your installation. **Make sure to change to a later version in release history**. Downgrading will fail (unless you re-install from scratch using the [`nexus_purge` special var](#purge-nexus))
+
+If you don't fix the version and play the role on an existing installation, the current installed version will be used (detecting target of `{{ nexus_installation_dir}}/nexus-latest`). If you want to upgrade nexus, you will have to pass the special var `nexus_upgrade=true` on the ansible-playbook command line. See [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
+
+If you use an older version of nexus than the lastest, you should make sure you do not use features which are not available in the installed release (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
 
 `nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
 
-You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail and you will have to set the version to download.** If you still want to take advantage of automatic latest version detection, a call to `<your_custom_location>/latest-unix.tar.gz` must return and HTTP 302 redirect to the latest available version in your cache/proxy.
+You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail and you will have to fix the version to download.** If you still want to take advantage of automatic latest version detection, a call to `<your_custom_location>/latest-unix.tar.gz` must return an HTTP 302 redirect to the latest available version in your cache/proxy.
 
 ### Download dir for nexus package
 ```yaml
@@ -655,6 +660,22 @@ If you want to change your admin password after first install, you can temporari
 
 ```bash
 ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_default_admin_password=oldPassword
+```
+
+#### Upgrade nexus to latest version
+
+```yaml
+    nexus_upgrade: true
+```
+**This variable has no effect if nexus_version is fixed in your vars**
+
+Unless you set this variable, the role will keep the current installed nexus version when running against an already provisionned host. Passing this extra var will trigger automatic latest nexus version detection and upgrade if a newer version is available.
+
+**Setting this var as part of your playbook breaks idempotence** (i.e. your playbook will make changes to your system if a new version is available although no parameters have changed)
+
+We strongly suggest to use this variable only as an extra var to ansible-playbook call
+```bash
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_upgrade=true
 ```
 
 ## Dependencies
