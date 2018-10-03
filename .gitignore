@@ -9,5 +9,3 @@ molecule/custom_env.yml
 README.md.orig.*
 README.md.toc.*
 *.pyc
-
-groovy-scripts.tar.gz
