@@ -570,3 +570,10 @@ _nexus_repos_yum_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
+# apt-get plugin support
+nexus_apt_plugin_install: false
+nexus_apt_plugin_version: 1.0.7
+nexus_apt_plugin_download_url: "{{ nexus_download_url }}"
+nexus_apt_plugin_package: 'nexus-repository-apt-{{ nexus_apt_plugin_version }}.jar'
+nexus_apt_plugin_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/system/net/staticsnow/nexus-repository-apt/{{ nexus_apt_plugin_version }}'

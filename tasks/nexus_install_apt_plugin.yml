@@ -1,0 +1,50 @@
+---
+- name: Ensure Nexus APT plugin directory exists
+  file:
+    path: "{{ nexus_apt_plugin_dir }}"
+    state: "directory"
+
+- name: Download APT plugin
+  get_url:
+    url: "{{ nexus_apt_plugin_download_url }}//{{ nexus_apt_plugin_package }}"
+    dest: "{{ nexus_apt_plugin_dir }}/{{ nexus_apt_plugin_package }}"
+    force: no
+
+- name: Add APT plugin feature
+  blockinfile:
+    path: "{{ nexus_installation_dir }}//nexus-{{ nexus_version }}/system/org/sonatype/nexus/assemblies/nexus-core-feature/{{ nexus_version }}/nexus-core-feature-{{ nexus_version }}-features.xml"
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK 1 -->"
+    insertafter: "nexus-coreui-plugin</feature>"
+    content: |
+      <feature version="{{ nexus_apt_plugin_version }}" prerequisite="false" dependency="false">nexus-repository-apt</feature>
+  notify:
+    - nexus-service-stop
+
+- name: Enable APT plugin feature dependencies
+  blockinfile:
+    path: "{{ nexus_installation_dir }}//nexus-{{ nexus_version }}/system/org/sonatype/nexus/assemblies/nexus-core-feature/{{ nexus_version }}/nexus-core-feature-{{ nexus_version }}-features.xml"
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK 2 -->"
+    insertbefore: "</features>"
+    content: |
+      <feature name="nexus-repository-apt" description="net.staticsnow:nexus-repository-apt" version="{{ nexus_apt_plugin_version }}">
+        <details>net.staticsnow:nexus-repository-apt</details>
+        <bundle>mvn:net.staticsnow/nexus-repository-apt/{{ nexus_apt_plugin_version }}</bundle>
+        <bundle>mvn:org.apache.commons/commons-compress/1.16.1</bundle>
+        <bundle>mvn:org.tukaani/xz/1.8</bundle>
+      </feature>
+  notify:
+    - nexus-service-stop
+
+- meta: flush_handlers
+
+- name: Enable nexus service and make sure it is started
+  systemd:
+    name: nexus.service
+    enabled: yes
+    state: started
+    no_block: yes
+  notify:
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- meta: flush_handlers

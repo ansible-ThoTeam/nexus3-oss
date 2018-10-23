@@ -19,6 +19,9 @@
 
 - import_tasks: nexus_install.yml
 
+- include_tasks: nexus_install_apt_plugin.yml
+  when: nexus_apt_plugin_install
+
 - include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable
 
