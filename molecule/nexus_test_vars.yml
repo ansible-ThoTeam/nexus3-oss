@@ -85,15 +85,13 @@ nexus_privileges:
     type: wildcard
     description: first wilcard
     pattern: nexus:repository-view:yum:*
-  
   - name: some_application
     type: application
     description: some nexus configuration
     domain: some_nexus_domain
     actions:
       - some action
-
-      - name: script1
+  - name: script1
     type: script
     description: first script
     script_name: the_script_name
