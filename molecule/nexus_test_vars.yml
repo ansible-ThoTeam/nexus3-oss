@@ -79,3 +79,23 @@ nexus_local_users:
       - developers
   - username: olduser  # make sure this old account is removed
     state: absent
+
+nexus_privileges:
+  - name: wildcard1
+    type: wildcard
+    description: first wilcard
+    pattern: nexus:repository-view:yum:*
+  
+  - name: some_application
+    type: application
+    description: some nexus configuration
+    domain: some_nexus_domain
+    actions:
+      - some action
+
+      - name: script1
+    type: script
+    description: first script
+    script_name: the_script_name
+    actions:
+      - some actions
