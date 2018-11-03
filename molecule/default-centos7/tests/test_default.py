@@ -1,1 +1,1 @@
-../../default-test.py
+../../test_default.py
