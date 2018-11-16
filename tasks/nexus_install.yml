@@ -417,6 +417,7 @@
     - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
 
 - name: Archive scripts
+  become: no
   local_action:
     module: archive
     path: "{{ role_path }}/files/groovy/*"
