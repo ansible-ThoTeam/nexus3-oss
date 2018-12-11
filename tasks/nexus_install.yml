@@ -246,7 +246,7 @@
 
 - name: Set NEXUS_HOME for the service user
   lineinfile:
-    dest: "/home/{{ nexus_os_user }}/.bashrc"
+    dest: "{{ nexus_os_user_home_dir }}/.bashrc"
     regexp: "^export NEXUS_HOME=.*"
     line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
   notify:
