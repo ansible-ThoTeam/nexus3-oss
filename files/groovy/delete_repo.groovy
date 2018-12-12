@@ -1,9 +1,9 @@
 import groovy.json.JsonSlurper
 import org.sonatype.nexus.repository.Repository
 
-def arg = new JsonSlurper().parseText(args)
+def parsed_args = new JsonSlurper().parseText(args)
 
-Repository repo = repository.repositoryManager.get(arg.name)
+Repository repo = repository.repositoryManager.get(parsed_args.name)
 
 if (repo != null) {
     repository.repositoryManager.delete(repo.name)
