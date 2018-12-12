@@ -69,6 +69,7 @@
   user:
     name: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    home: "{{ nexus_os_user_home_dir }}"
     shell: "/bin/bash"
     state: present
 
