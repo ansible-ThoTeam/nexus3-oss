@@ -126,7 +126,7 @@ User and group used to own the nexus files and run the service, those will be cr
     nexus_os_user_home_dir: '/home/nexus'
 ```
 
-Allow to change the nexus users default home directory
+Allow to change the nexus user default home directory
 
 ### Nexus instance directories
 ```yaml
