@@ -92,13 +92,16 @@ httpd_setup_enable: false
 httpd_server_name: nexus.vm
 httpd_ssl_certificate_file: 'files/nexus.vm.crt'
 httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
+# httpd_ssl_certificate_chain_file: "{{ httpd_ssl_certificate_file }}"
 # If httpd_copy_ssl_files is false you need to provide the following variables:
 # - httpd_ssl_cert_file_location
 # - httpd_ssl_cert_key_location
+# - httpd_ssl_cert_chain_file_location <= optionnal. Leave unset if none
 httpd_copy_ssl_files: true
 # These specifies to the vhost file where to find on the remote file system the certificates files.
 httpd_ssl_cert_file_location: "/etc/pki/tls/certs/nexus.vm.crt"
 httpd_ssl_cert_key_location: "/etc/pki/tls/private/nexus.vm.key"
+# httpd_ssl_cert_chain_file_location: "{{ httpd_ssl_cert_file_location }}"
 httpd_default_admin_email: "admin@example.com"
 
 ldap_connections: []
