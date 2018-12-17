@@ -358,11 +358,12 @@
 
 - name: Access scripts API endpoint with defined admin password
   uri:
-    url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
+    url: "{{ nexus_default_schema }}://{{ nexus_default_host }}:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
     method: 'HEAD'
     user: 'admin'
     password: "{{ nexus_admin_password }}"
     force_basic_auth: yes
+    validate_certs: "{{ nexus_validate_certs }}"
     status_code: 200, 401
   register: nexus_api_head_with_defined_password
   check_mode: no
@@ -375,11 +376,12 @@
 
 - name: Access scripts API endpoint with default admin password
   uri:
-    url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
+    url: "{{ nexus_default_schema }}://{{ nexus_default_host }}:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
     method: 'HEAD'
     user: 'admin'
     password: "{{ nexus_default_admin_password }}"
     force_basic_auth: yes
+    validate_certs: "{{ nexus_validate_certs }}"
     status_code: 200, 401
   register: nexus_api_head_with_default_password
   when: nexus_api_head_with_defined_password.status == 401
