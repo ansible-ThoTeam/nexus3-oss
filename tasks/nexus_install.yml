@@ -3,7 +3,7 @@
 - name: Set detection method to fixed if we have a var
   set_fact:
     nexus_version_detected_from: fixed
-  when: nexus_version != ""
+  when: nexus_version | length > 0
 
 - name: No version given => Version detection
   block:
@@ -316,7 +316,7 @@
   file:
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
-  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout != ""
+  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout | length > 0
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
