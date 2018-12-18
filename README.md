@@ -122,6 +122,12 @@ Port and context path of the java nexus process. `nexus_default_context_path` ha
 
 User and group used to own the nexus files and run the service, those will be created by the role if absent.
 
+```yaml
+    nexus_os_user_home_dir: '/home/nexus'
+```
+
+Allow to change the nexus user default home directory
+
 ### Nexus instance directories
 ```yaml
     nexus_installation_dir: '/opt'
@@ -391,7 +397,7 @@ If you want to remove old account, provide only username and set state to absent
 
 For more info on Content selector see [documentation](https://help.sonatype.com/repomanager3/configuration/repository-management#RepositoryManagement-ContentSelectors)
 
-To use content selector add new privilege with `type: repository-content-selector` and proper `contentSelector` 
+To use content selector add new privilege with `type: repository-content-selector` and proper `contentSelector`
 ```yaml
 - name: docker-login-privilege
   type: repository-content-selector
@@ -521,7 +527,7 @@ nexus_npm_bearer_token_realm: false
 nexus_docker_bearer_token_realm: false  # required for docker anonymous access
 ```
 
-The Remote User Realm can also be enabled with 
+The Remote User Realm can also be enabled with
 
 ```yaml
 nexus_rut_auth_realm: true
@@ -626,7 +632,7 @@ These are not present in `defaults/main.yml` and are meant to be used on the com
 
 ** Warning: this will completely erase the current data. Make sure to backup previously if needed **
 
-Use the `nexus_purge` variable if you need to restart from scratch and re-install a blank instance of nexus. 
+Use the `nexus_purge` variable if you need to restart from scratch and re-install a blank instance of nexus.
 
 ```bash
 ansible-playbook -i your/inventory.ini your_nexus_playbook.yml -e nexus_purge=true
