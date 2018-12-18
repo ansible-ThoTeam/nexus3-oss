@@ -419,11 +419,11 @@
 
 - name: Archive scripts
   become: no
-  local_action:
-    module: archive
+  archive:
     path: "{{ role_path }}/files/groovy/*"
     dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
   run_once: true
+  delegate_to: localhost
 
 - name: Upload new scripts
   unarchive:
