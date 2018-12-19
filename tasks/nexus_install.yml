@@ -16,7 +16,11 @@
     - name: Register nexus_version from currently installed
       # Note: setting nexus_version here skips the next block task.
       set_fact:
-        nexus_version: "{{ nexus_latest_link_stat.stat.lnk_target | regex_replace('^.*/nexus-(\\d*\\.\\d*\\.\\d*-\\d*)', '\\1') }}"
+        nexus_version: >
+          {{
+            nexus_latest_link_stat.stat.lnk_target
+            | regex_replace('^.*/nexus-(\\d*\\.\\d*\\.\\d*-\\d*)', '\\1')
+          }}
         nexus_version_detected_from: installed
       when:
         - nexus_latest_link_stat.stat.exists | default(false)
@@ -34,7 +38,11 @@
 
     - name: Register nexus_version from latest nexus uri redirection
       set_fact:
-        nexus_version: "{{ nexus_latest_uri_call.location | regex_replace('^https://.*nexus-(\\d*\\.\\d*\\.\\d*-\\d*)-unix.tar.gz', '\\1') }}"
+        nexus_version: >
+          {{
+            nexus_latest_uri_call.location
+            | regex_replace('^https://.*nexus-(\\d*\\.\\d*\\.\\d*-\\d*)-unix.tar.gz', '\\1')
+          }}
         nexus_version_detected_from: latest
 
   when: nexus_version == ''
@@ -431,7 +439,9 @@
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
 
 - name: Sync new scripts to old and get differences
-  shell: 'rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/ | cut -d" " -f 2 | sed "s/\.groovy//g"'
+  shell: >
+    rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
+    | cut -d" " -f 2 | sed "s/\.groovy//g"
   register: nexus_groovy_files_changed
   check_mode: no
   changed_when: false
