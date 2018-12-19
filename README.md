@@ -91,7 +91,7 @@ The role will install latest nexus available version by default. You may fix the
 
 If you fix the version and change it to a different one, the role will try to upgrade your installation. **Make sure to change to a later version in release history**. Downgrading will fail (unless you re-install from scratch using the [`nexus_purge` special var](#purge-nexus))
 
-If you don't fix the version and play the role on an existing installation, the current installed version will be used (detecting target of `{{ nexus_installation_dir}}/nexus-latest`). If you want to upgrade nexus, you will have to pass the special var `nexus_upgrade=true` on the ansible-playbook command line. See [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
+If you don't fix the version and play the role on an existing installation, the current installed version will be used (detecting target of `{{ nexus_installation_dir }}/nexus-latest`). If you want to upgrade nexus, you will have to pass the special var `nexus_upgrade=true` on the ansible-playbook command line. See [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
 
 If you use an older version of nexus than the lastest, you should make sure you do not use features which are not available in the installed release (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
 

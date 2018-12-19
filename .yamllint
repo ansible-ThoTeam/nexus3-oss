@@ -6,7 +6,7 @@ rules:
     spaces: 2
     check-multi-line-strings: false
   line-length:
-    max: 250
+    max: 120
     level: warning
   document-start:
     present: true

@@ -3,7 +3,7 @@
 - name: Set detection method to fixed if we have a var
   set_fact:
     nexus_version_detected_from: fixed
-  when: nexus_version != ""
+  when: nexus_version | length > 0
 
 - name: No version given => Version detection
   block:
@@ -16,7 +16,11 @@
     - name: Register nexus_version from currently installed
       # Note: setting nexus_version here skips the next block task.
       set_fact:
-        nexus_version: "{{ nexus_latest_link_stat.stat.lnk_target | regex_replace('^.*/nexus-(\\d*\\.\\d*\\.\\d*-\\d*)', '\\1') }}"
+        nexus_version: >-
+          {{
+            nexus_latest_link_stat.stat.lnk_target
+            | regex_replace("^.*/nexus-(\d*\.\d*\.\d*-\d*)", "\1")
+          }}
         nexus_version_detected_from: installed
       when:
         - nexus_latest_link_stat.stat.exists | default(false)
@@ -34,7 +38,11 @@
 
     - name: Register nexus_version from latest nexus uri redirection
       set_fact:
-        nexus_version: "{{ nexus_latest_uri_call.location | regex_replace('^https://.*nexus-(\\d*\\.\\d*\\.\\d*-\\d*)-unix.tar.gz', '\\1') }}"
+        nexus_version: >-
+          {{
+            nexus_latest_uri_call.location
+            | regex_replace("^https://.*nexus-(\d*\.\d*\.\d*-\d*)-unix.tar.gz", "\1")
+          }}
         nexus_version_detected_from: latest
 
   when: nexus_version == ''
@@ -316,7 +324,7 @@
   file:
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
-  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout != ""
+  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout | length > 0
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
@@ -419,11 +427,11 @@
 
 - name: Archive scripts
   become: no
-  local_action:
-    module: archive
+  archive:
     path: "{{ role_path }}/files/groovy/*"
     dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
   run_once: true
+  delegate_to: localhost
 
 - name: Upload new scripts
   unarchive:
@@ -431,7 +439,9 @@
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
 
 - name: Sync new scripts to old and get differences
-  shell: 'rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/ | cut -d" " -f 2 | sed "s/\.groovy//g"'
+  shell: >
+    rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
+    | cut -d" " -f 2 | sed "s/\.groovy//g"
   register: nexus_groovy_files_changed
   check_mode: no
   changed_when: false
@@ -442,7 +452,7 @@
 
 - name: Declare new or changed groovy scripts in nexus
   include_tasks: declare_script_each.yml
-  with_items: "{{ nexus_groovy_files_changed.stdout_lines}}"
+  with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
 
 - name: Change admin password if we are still using default
   block:

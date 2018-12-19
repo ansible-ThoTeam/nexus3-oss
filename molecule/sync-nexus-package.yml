@@ -33,7 +33,8 @@
     - name: get the current nexus version
       get_url:
         url: "{{ nexus_latest_uri_call.location }}"
-        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads/{{ nexus_latest_uri_call.location | urlsplit('path') | basename}}"
+        dest: "{{ molecule_scenario_directory }}/../.nexus-downloads\
+          /{{ nexus_latest_uri_call.location | urlsplit('path') | basename }}"
         force: no
 
 
