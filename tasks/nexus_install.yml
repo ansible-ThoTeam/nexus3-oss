@@ -16,10 +16,10 @@
     - name: Register nexus_version from currently installed
       # Note: setting nexus_version here skips the next block task.
       set_fact:
-        nexus_version: >
+        nexus_version: >-
           {{
             nexus_latest_link_stat.stat.lnk_target
-            | regex_replace('^.*/nexus-(\\d*\\.\\d*\\.\\d*-\\d*)', '\\1')
+            | regex_replace("^.*/nexus-(\d*\.\d*\.\d*-\d*)", "\1")
           }}
         nexus_version_detected_from: installed
       when:
@@ -38,10 +38,10 @@
 
     - name: Register nexus_version from latest nexus uri redirection
       set_fact:
-        nexus_version: >
+        nexus_version: >-
           {{
             nexus_latest_uri_call.location
-            | regex_replace('^https://.*nexus-(\\d*\\.\\d*\\.\\d*-\\d*)-unix.tar.gz', '\\1')
+            | regex_replace("^https://.*nexus-(\d*\.\d*\.\d*-\d*)-unix.tar.gz", "\1")
           }}
         nexus_version_detected_from: latest
 
