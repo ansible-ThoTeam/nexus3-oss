@@ -87,7 +87,7 @@ Ansible variables, along with the default values (see `default/main.yml`) :
     nexus_download_url: "http://download.sonatype.com/nexus/3"
 ```
 
-The role will install latest nexus available version by default. You may fix the version by setting the `nexus_version` variable. See available versions at https://www.sonatype.com/download-oss-sonatype.
+The role will install latest nexus available version by default. You may fix the version by setting the `nexus_version` variable. See available versions in the [Download Archives](https://help.sonatype.com/repomanager3/download/download-archives---repository-manager-3)
 
 If you fix the version and change it to a different one, the role will try to upgrade your installation. **Make sure to change to a later version in release history**. Downgrading will fail (unless you re-install from scratch using the [`nexus_purge` special var](#purge-nexus))
 
