@@ -183,6 +183,13 @@ nexus_local_users: []
 #    roles:
 #      - developers
 
+nexus_ldap_users: []
+# example user
+#  - username: j.doe
+#    state: present
+#    roles:
+#      - "nx-admin"
+
 nexus_delete_default_repos: false
 
 nexus_delete_default_blobstore: false
