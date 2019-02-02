@@ -35,4 +35,8 @@ galaxy_info:
     - pypi
     - web
 
-dependencies: []
+dependencies:
+  - role: sleighzy.java-8
+    when: ansible_os_family == 'RedHat'
+  - role: yauh.java8
+    when: ansible_os_family == 'Debian'
