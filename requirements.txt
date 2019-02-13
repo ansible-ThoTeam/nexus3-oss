@@ -14,10 +14,9 @@
 ##################################
 
 # Latest ansible
-# Make sure we skip ansible 2.5.3 which contains a bug in synchronize module
-ansible>2.5.3
-# Latest molecule
-molecule
+ansible
+# Latest molecule from source
+git+https://github.com/ansible/molecule
 # Latest docker-py
 docker-py
 # Python vagrant only needed for local test for selinux
