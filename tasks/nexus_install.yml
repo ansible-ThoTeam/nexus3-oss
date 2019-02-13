@@ -45,7 +45,7 @@
           }}
         nexus_version_detected_from: latest
 
-  when: nexus_version == ''
+  when: nexus_version | length == 0
 
 - name: Print info about detected version to use
   vars:
@@ -440,6 +440,7 @@
 
 - name: Sync new scripts to old and get differences
   shell: >
+    set -o pipefail &&
     rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
     | cut -d" " -f 2 | sed "s/\.groovy//g"
   register: nexus_groovy_files_changed
@@ -449,6 +450,7 @@
   # skip ansible lint (we don't want to use synchronize module for this)
   args:
     warn: false
+    executable: /bin/bash
 
 - name: Declare new or changed groovy scripts in nexus
   include_tasks: declare_script_each.yml
