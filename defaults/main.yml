@@ -58,7 +58,15 @@ nexus_admin_password: 'changeme'
 
 nexus_anonymous_access: false
 
-public_hostname: 'nexus.vm'
+nexus_public_hostname: 'nexus.vm'
+nexus_public_scheme: https
+
+# How should the role access the API for provisionning
+nexus_api_hostname: localhost
+nexus_api_scheme: http
+nexus_api_validate_certs: "{{ nexus_api_scheme == 'https' }}"
+nexus_api_context_path: "{{ nexus_default_context_path }}"
+nexus_api_port: "{{ nexus_default_port }}"
 
 # security realms
 nexus_nuget_api_key_realm: false

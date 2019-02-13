@@ -21,3 +21,20 @@
       has been renamed nexus_purge. Please fix the var name accordingly
       on you command line call.
   when: purge is defined
+
+# @deprecated: public_hostname was renamed to nexus_public_hostname
+# @version: 2.3.0
+- name: Variable refactoring - public_hostname is now nexus_public_hostname
+  fail:
+    msg: >-
+      Version 2.3.0 of this role introduced a variable name change: public_hostname was renamed to
+      nexus_public_hostname. We have detected that public_hostname is set in your vars ({{ public_hostname }})
+      and is different from nexus_public_hostname which still has its default value ({{ nexus_public_hostname }}).
+      Fix this by setting a correct value for nexus_public_hostname and remove public_hostname if
+      possible.
+  when: >-
+    public_hosname | default('') | length > 0
+    and
+    public_hostname != nexus_public_hostname
+    and
+    nexus_public_hostname == 'nexus.vm'

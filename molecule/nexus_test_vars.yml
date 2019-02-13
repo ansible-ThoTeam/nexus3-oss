@@ -4,7 +4,7 @@ httpd_setup_enable: true
 httpd_copy_ssl_files: false
 httpd_ssl_cert_file_location: "{{ default_cert }}"
 httpd_ssl_cert_key_location: "{{ default_key }}"
-public_hostname: localhost
+nexus_public_hostname: localhost
 
 nexus_backup_configure: true
 

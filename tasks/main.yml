@@ -188,7 +188,7 @@
   vars:
     script_name: setup_base_url
     args:
-      base_url: "https://{{ public_hostname }}/"
+      base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
 
 - include_tasks: call_script.yml
   vars:
