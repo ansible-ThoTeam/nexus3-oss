@@ -191,19 +191,25 @@ The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/securi
     httpd_setup_enable: false
     httpd_ssl_certificate_file: 'files/nexus.vm.crt'
     httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
+    # httpd_ssl_certificate_chain_file: "{{ httpd_ssl_certificate_file }}"
+    httpd_copy_ssl_files: true
 ```
 
 Setup an [SSL Reverse-proxy](https://help.sonatype.com/display/NXRM3/Run+Behind+a+Reverse+Proxy#RunBehindaReverseProxy-Example:ReverseProxySSLTerminationatBasePath), this needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
 
+With `httpd_copy_ssl_files: true` (default), the above certs must exist in your playbook dir and will be copied to the server and configured in apache. `httpd_ssl_certificate_chain_file` is optional and must be left unset if you do not want to configure a chain file.
+
+If you want to use existing certificates on the server, set `httpd_copy_ssl_files: false` and provide the following variables
+
 ```yaml
-    httpd_copy_ssl_files: true  # Default is false
     # These specifies to the vhost where to find on the remote server file
     # system the certificate files.
     httpd_ssl_cert_file_location: "/etc/pki/tls/certs/wildcard.vm.crt"
     httpd_ssl_cert_key_location: "/etc/pki/tls/private/wildcard.vm.key"
+    # httpd_ssl_cert_chain_file_location: "{{ httpd_ssl_cert_file_location }}"
 ```
 
-Use already existing SSL certificates on the server file system for the https reverse proxy
+`httpd_ssl_cert_chain_file_location` is optional and must be left unset if you do not want to configure a chain file
 
 ```yaml
     httpd_default_admin_email: "admin@example.com"
