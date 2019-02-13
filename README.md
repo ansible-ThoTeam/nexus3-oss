@@ -167,10 +167,11 @@ Allow [anonymous access](https://help.sonatype.com/display/NXRM3/Anonymous+Acces
 
 ### Public hostname
 ```yaml
-    public_hostname: 'nexus.vm'
+    nexus_public_hostname: 'nexus.vm'
+    nexus_public_scheme: https
 ```
 
-The fully qualified domain name under which the nexus instance will be accessible to its clients.
+The fully qualified domain name and scheme under which the nexus instance will be accessible to its clients.
 
 ### Branding capabalities
 ```yaml
