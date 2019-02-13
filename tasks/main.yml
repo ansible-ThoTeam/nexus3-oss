@@ -247,12 +247,12 @@
     script_name: setup_capability
     args:
       capability_typeId: "rapture.branding"
-      capability_enabled: "{{ nexus_branding_footer != '' and nexus_branding_header != '' }}"
+      capability_enabled: "{{ (nexus_branding_footer | length > 0) and (nexus_branding_header | length > 0) }}"
       capability_properties:
         footerHtml: "{{ nexus_branding_footer }}"
         headerHtml: "{{ nexus_branding_header }}"
-        footerEnabled: "{{ nexus_branding_footer != '' }}"
-        headerEnabled: "{{ nexus_branding_header != '' }}"
+        footerEnabled: "{{ nexus_branding_footer | length > 0 }}"
+        headerEnabled: "{{ nexus_branding_header | length > 0 }}"
 
 - name: Configure audit capability
   include_tasks: call_script.yml

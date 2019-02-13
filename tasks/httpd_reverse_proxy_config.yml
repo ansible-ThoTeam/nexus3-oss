@@ -13,7 +13,7 @@
     src: "{{ item }}"
     dest: "{{ certificate_file_dest }}"
     mode: 0600
-  when: httpd_copy_ssl_files and item != ''
+  when: (httpd_copy_ssl_files | bool) and (item | length > 0)
   notify:
     - httpd-service-reload
     - wait-for-httpd
