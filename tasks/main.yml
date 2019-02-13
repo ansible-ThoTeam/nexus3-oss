@@ -65,6 +65,9 @@
 - include_tasks: setup_user_each.yml
   with_items: "{{ nexus_local_users }}"
 
+- include_tasks: setup_ldap_user_each.yml
+  with_items: "{{ nexus_ldap_users }}"
+
 - name: "Digest splited blob list var"
   include_vars: blob_vars.yml
   when: nexus_blob_split

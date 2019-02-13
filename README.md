@@ -373,25 +373,26 @@ List of the [roles](https://help.sonatype.com/display/NXRM3/Roles) to setup.
 
 ```yaml
     nexus_local_users: []
+      # - username: jenkins # used as key to update
+      #   state: present # default value if ommited, use 'absent' to remove user
+      #   first_name: Jenkins
+      #   last_name: CI
+      #   email: support@company.com
+      #   password: "s3cr3t"
+      #   roles:
+      #     - developers # role ID
 ```
-
-Local (non-LDAP) users/accounts to create in nexus, items go as follow :
+Local (non-LDAP) users/accounts list to create in nexus. State `absent` will remove the user if it exists
 
 ```yaml
-  - username: jenkins # used as key to update
-    first_name: Jenkins
-    last_name: CI
-    email: support@company.com
-    password: "s3cr3t"
-    roles:
-      - developers # role ID
+      nexus_ldap_users: []
+      # - username: j.doe
+      #   state: present
+      #   roles:
+      #     - "nx-admin"
 ```
+Ldap users/roles mappings. State `absent` will remove roles from the existing user if already present.
 
-If you want to remove old account, provide only username and set state to absent :
-```yaml
- - username: olduser
-   state: absent
-```
 
 ### Content selectors
 ```yaml
