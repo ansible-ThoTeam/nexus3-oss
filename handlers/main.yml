@@ -19,7 +19,7 @@
 - name: wait-for-nexus
   wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
-    search_regex: "Started Sonatype Nexus OSS .*"
+    search_regex: "Started Sonatype Nexus .*"
     timeout: 1800
 
 - name: wait-for-nexus-port
