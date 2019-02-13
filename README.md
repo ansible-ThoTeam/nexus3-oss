@@ -173,6 +173,17 @@ Allow [anonymous access](https://help.sonatype.com/display/NXRM3/Anonymous+Acces
 
 The fully qualified domain name and scheme under which the nexus instance will be accessible to its clients.
 
+### API access for this role
+```yaml
+    nexus_api_hostname: localhost
+    nexus_api_scheme: http
+    nexus_api_validate_certs: "{{ nexus_api_scheme == 'https' }}"
+    nexus_api_context_path: "{{ nexus_default_context_path }}"
+    nexus_api_port: "{{ nexus_default_port }}"
+```
+These vars control how the role connects to the nexus API for provisionning.
+**For advance usage only. You most probably do not want to change these default settings**
+
 ### Branding capabalities
 ```yaml
     nexus_branding_header: ""

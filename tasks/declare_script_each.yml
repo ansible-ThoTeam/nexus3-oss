@@ -1,23 +1,26 @@
 ---
 - name: Removing (potential) previously declared Groovy script {{ item }}
   uri:
-    url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}\
-      /{{ item }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ item }}"
     user: 'admin'
     password: "{{ current_nexus_admin_password }}"
     method: DELETE
     force_basic_auth: yes
     status_code: 204,404
+    validate_certs: "{{ nexus_api_validate_certs }}"
 
 - name: Declaring Groovy script {{ item }}
   uri:
-    url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}{{ nexus_rest_api_endpoint }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
     user: 'admin'
     password: "{{ current_nexus_admin_password }}"
     body_format: json
     method: POST
     force_basic_auth: yes
     status_code: 204
+    validate_certs: "{{ nexus_api_validate_certs }}"
     body:
       name: "{{ item }}"
       type: 'groovy'
