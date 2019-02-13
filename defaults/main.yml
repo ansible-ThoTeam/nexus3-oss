@@ -58,7 +58,7 @@ nexus_admin_password: 'changeme'
 
 nexus_anonymous_access: false
 
-public_hostname: 'nexus.vm'
+nexus_public_hostname: 'nexus.vm'
 
 # security realms
 nexus_nuget_api_key_realm: false
