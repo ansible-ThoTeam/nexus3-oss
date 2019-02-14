@@ -350,18 +350,25 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
     ldap_user_memberof_attribute: 'memberOf'
 ```
 
-### Privileges, roles and users
+### Privileges
 ```yaml
     nexus_privileges:
       - name: all-repos-read # used as key to update a privilege
+        # type: <one of application, repository-admin, repository-content-selector, repository-view, script or wildcard>
         description: 'Read & Browse access to all repos'
         repository: '*'
         actions: # can be add, browse, create, delete, edit, read or  * (all)
           - read
           - browse
+        # pattern: pattern
+        # domain: domain
+        # script_name: name
 ```
 
-List of the [privileges](https://help.sonatype.com/display/NXRM3/Privileges) to setup. Those items are combined with the following default values :
+List of the [privileges](https://help.sonatype.com/display/NXRM3/Privileges) to setup. Please see
+documentation and GUI to check out which variables should be set depending on the type of privilege.
+
+Those items are combined with the following default values :
 
 ```yaml
     _nexus_privilege_defaults:
@@ -371,6 +378,8 @@ List of the [privileges](https://help.sonatype.com/display/NXRM3/Privileges) to 
         - read
 ```
 
+
+### Roles
 ```yaml
     nexus_roles:
       - id: Developpers # can map to a LDAP group id, also used as a key to update a role
@@ -384,6 +393,7 @@ List of the [privileges](https://help.sonatype.com/display/NXRM3/Privileges) to 
 
 List of the [roles](https://help.sonatype.com/display/NXRM3/Roles) to setup.
 
+### Users
 ```yaml
     nexus_local_users: []
       # - username: jenkins # used as key to update
