@@ -89,19 +89,35 @@ Ansible variables, along with the default values (see `default/main.yml`) :
     nexus_version: ''
     nexus_timezone: 'UTC'
     nexus_download_url: "http://download.sonatype.com/nexus/3"
+    # nexus_version_running: <unset>
 ```
 
-The role will install latest nexus available version by default. You may fix the version by setting the `nexus_version` variable. See available versions in the [Download Archives](https://help.sonatype.com/repomanager3/download/download-archives---repository-manager-3)
+The role will install latest nexus available version by default. You may fix the version by setting
+the `nexus_version` variable. See available versions at https://www.sonatype.com/download-oss-sonatype.
 
-If you fix the version and change it to a different one, the role will try to upgrade your installation. **Make sure to change to a later version in release history**. Downgrading will fail (unless you re-install from scratch using the [`nexus_purge` special var](#purge-nexus))
+If you fix the version and change it to a different one, the role will try to upgrade your installation.
+**Make sure to change to a later version in release history**. Downgrading will fail (unless you re-install
+from scratch using the [`nexus_purge` special var](#purge-nexus))
 
-If you don't fix the version and play the role on an existing installation, the current installed version will be used (detecting target of `{{ nexus_installation_dir }}/nexus-latest`). If you want to upgrade nexus, you will have to pass the special var `nexus_upgrade=true` on the ansible-playbook command line. See [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
+If you don't fix the version and play the role on an existing installation, the current installed version will be used
+(detecting target of `{{ nexus_installation_dir}}/nexus-latest`). If you want to upgrade nexus, you will have to pass
+the special var `nexus_upgrade=true` on the ansible-playbook command line.
+See [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
 
-If you use an older version of nexus than the lastest, you should make sure you do not use features which are not available in the installed release (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
+If you use an older version of nexus than the lastest, you should make sure you do not use features which are
+not available in the installed release (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
 
-`nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
+`nexus_timezone` is a Java Timezone name and can be useful in combinationwith `nexus_scheduled_tasks` cron expressions below.
 
-You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment, proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail and you will have to fix the version to download.** If you still want to take advantage of automatic latest version detection, a call to `<your_custom_location>/latest-unix.tar.gz` must return an HTTP 302 redirect to the latest available version in your cache/proxy.
+You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment,
+proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail
+and you will have to fix the version to download.** If you still want to take advantage of automatic latest version detection,
+a call to `<your_custom_location>/latest-unix.tar.gz` must return an HTTP 302 redirect to the latest available version
+in your cache/proxy.
+
+`nexus_version_running` is a variable used internally. **As such, it should never be set directly**
+It will exist only if nexus is currently installed on the host and will register the current version prior to running
+the role. It can be used later in your playbook if needed (e.g. for an upgrade notification email)
 
 ### Download dir for nexus package
 ```yaml

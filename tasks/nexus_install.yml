@@ -5,27 +5,34 @@
     nexus_version_detected_from: fixed
   when: nexus_version | length > 0
 
+- name: "Check nexus-latest link stat in {{ nexus_installation_dir }}"
+  stat:
+    path: "{{ nexus_installation_dir }}/nexus-latest"
+  register: nexus_latest_link
+  check_mode: no
+
+- name: Register current running version if any
+  set_fact:
+    nexus_version_running: >-
+      {{
+        nexus_latest_link.stat.lnk_target
+        | regex_replace('^.*/nexus-(\d*\.\d*\.\d*-\d*)', '\1')
+      }}
+  when:
+    - nexus_latest_link.stat.exists | default(false)
+    - nexus_latest_link.stat.islnk | default(false)
+
 - name: No version given => Version detection
   block:
-    - name: "Check nexus-latest link stat in {{ nexus_installation_dir }}"
-      stat:
-        path: "{{ nexus_installation_dir }}/nexus-latest"
-      register: nexus_latest_link_stat
-      check_mode: no
 
     - name: Register nexus_version from currently installed
       # Note: setting nexus_version here skips the next block task.
       set_fact:
-        nexus_version: >-
-          {{
-            nexus_latest_link_stat.stat.lnk_target
-            | regex_replace("^.*/nexus-(\d*\.\d*\.\d*-\d*)", "\1")
-          }}
+        nexus_version: "{{ nexus_version_running }}"
         nexus_version_detected_from: installed
       when:
-        - nexus_latest_link_stat.stat.exists | default(false)
-        - nexus_latest_link_stat.stat.islnk | default(false)
-        - not (nexus_upgrade | default(false))
+        - nexus_version_running is defined
+        - not (nexus_upgrade | default(false) | bool)
 
     - name: Call latest nexus uri to get redirection
       uri:
@@ -52,7 +59,8 @@
     version_info: |-
       Used version: {{ nexus_version }}
       Version detected from: {{ nexus_version_detected_from }}
-      Upgrade allowed: {{ nexus_upgrade | default(false) }}
+      Upgrade allowed: {{ nexus_upgrade | default(false) | bool }}
+      Current running version: {{ nexus_version_running | default('none') }}
   debug:
     msg: "{{ version_info.split('\n') }}"
 
