@@ -724,13 +724,39 @@ ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_default_admin_
 ```
 **This variable has no effect if nexus_version is fixed in your vars**
 
-Unless you set this variable, the role will keep the current installed nexus version when running against an already provisionned host. Passing this extra var will trigger automatic latest nexus version detection and upgrade if a newer version is available.
+Unless you set this variable, the role will keep the current installed nexus version when running against
+an already provisionned host. Passing this extra var will trigger automatic latest nexus version detection and upgrade
+if a newer version is available.
 
-**Setting this var as part of your playbook breaks idempotence** (i.e. your playbook will make changes to your system if a new version is available although no parameters have changed)
+**Setting this var as part of your playbook breaks idempotence** (i.e. your playbook will make changes to your system
+if a new version is available although no parameters have changed)
 
 We strongly suggest to use this variable only as an extra var to ansible-playbook call
 ```bash
 ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_upgrade=true
+```
+
+#### Skip provisionning tasks
+```yaml
+    nexus_run_provisionning: false
+```
+This var is unset by default and will default to `true`. Setting it to `false` will cause the role to skip all of the
+provisionning tasks and will therefore *not create/update*:
+* ldap configurations
+* content selectors
+* privileges
+* roles
+* users (except checking/updating admin password)
+* blobstores
+* repositories
+* tasks (backup will still be configured if enabled)
+
+This can save time if you have lots of configured repositories/users/roles... and you want to play the role
+to simply check nexus is correctly installed, or restore a backup, or upgrade nexus version.
+
+We strongly suggest to use this variable only as an extra var to ansible-playbook call
+```bash
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionning=false
 ```
 
 ## Dependencies
