@@ -81,6 +81,12 @@ nexus_local_users:
     state: absent
 
 nexus_privileges:
+  - name: all-repos-read
+    description: 'Read & Browse access to all repos'
+    repository: '*'
+    actions:
+      - read
+      - browse
   - name: wildcard1
     type: wildcard
     description: first wilcard
