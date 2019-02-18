@@ -39,5 +39,4 @@ rules:
     max-spaces-inside: 0
     level: error
   truthy: disable
-  new-line-at-end-of-file: disable
   comments-indentation: enable
