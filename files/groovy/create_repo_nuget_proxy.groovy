@@ -33,8 +33,8 @@ if (existingRepository != null) {
             attributes: [
                     proxy  : [
                             remoteUrl: parsed_args.remote_url,
-                            contentMaxAge: parsed_args.get('content_max_age', 1440.0),
-                            metadataMaxAge: parsed_args.get('metadata_max_age', 1440.0)
+                            contentMaxAge: parsed_args.get('maximum_component_age', 1440.0),
+                            metadataMaxAge: parsed_args.get('maximum_metadata_age', 1440.0)
                     ],
                     httpclient: [
                             blocked: false,
