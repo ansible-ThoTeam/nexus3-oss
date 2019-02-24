@@ -38,3 +38,18 @@
     public_hostname != nexus_public_hostname
     and
     nexus_public_hostname == 'nexus.vm'
+
+# @deprecated: remote_url is the variable to configure a proxy repo. proxy_url is not supported
+# anymore to configure docker proxy repos
+# @version: 2.3.0
+- name: "Coding standard: proxy_url is not supported anymore for docker proxy repos"
+  fail:
+    msg: >-
+      proxy_url used to be the variable to configure docker proxy repositories in nexus3-oss role. Since version 2.3.0,
+      all repository configuration use the same standard var remote_url. Please review your configurations
+      in nexus_repos_docker_proxy and rename the variable accordingly.
+  when: >-
+    nexus_repos_docker_proxy
+    | json_query('[?proxy_url]')
+    | list
+    | length > 0

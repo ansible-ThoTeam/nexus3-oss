@@ -19,5 +19,7 @@ ansible
 git+https://github.com/ansible/molecule
 # Latest docker-py
 docker-py
+# We use json_query in tasks which requires jmespath
+jmespath
 # Python vagrant only needed for local test for selinux
 # python-vagrant

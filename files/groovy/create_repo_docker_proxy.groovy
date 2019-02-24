@@ -19,7 +19,7 @@ if (existingRepository != null) {
     // Only set attributes that can be changed
     newConfig.attributes['docker']['forceBasicAuth'] = parsed_args.force_basic_auth
     newConfig.attributes['docker']['v1Enabled'] = parsed_args.v1_enabled
-    newConfig.attributes['proxy']['remoteUrl'] = parsed_args.proxy_url
+    newConfig.attributes['proxy']['remoteUrl'] = parsed_args.remote_url
     newConfig.attributes['dockerProxy']['indexType'] = parsed_args.index_type
     newConfig.attributes['dockerProxy']['useTrustStoreForIndexAccess'] = parsed_args.use_nexus_certificates_to_access_index
     newConfig.attributes['storage']['strictContentTypeValidation'] = Boolean.valueOf(parsed_args.strict_content_validation)
@@ -45,7 +45,7 @@ if (existingRepository != null) {
                             v1Enabled : parsed_args.v1_enabled
                     ],
                     proxy: [
-                            remoteUrl: parsed_args.proxy_url,
+                            remoteUrl: parsed_args.remote_url,
                             contentMaxAge: parsed_args.get('maximum_component_age', 1440.0),
                             metadataMaxAge: parsed_args.get('maximum_metadata_age', 1440.0)
                     ],
