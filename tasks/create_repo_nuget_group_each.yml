@@ -1,5 +1,0 @@
----
-- include_tasks: call_script.yml
-  vars:
-    script_name: create_repo_nuget_group
-    args: "{{ _nexus_repos_nuget_defaults|combine(item) }}"

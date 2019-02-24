@@ -1,5 +1,0 @@
----
-- include_tasks: call_script.yml
-  vars:
-    script_name: create_repo_maven_hosted
-    args: "{{ _nexus_repos_maven_defaults|combine(item) }}"
