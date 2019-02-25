@@ -3,9 +3,9 @@ import groovy.json.JsonSlurper
 
 parsed_args = new JsonSlurper().parseText(args)
 
-List<Map<String, String>> blobstoreDetails = []
-Map blobstoreResults = [changed: false, error: false]
-blobstoreResults.put('action_details', blobstoreDetails)
+List<Map<String, String>> actionDetails = []
+Map scriptResults = [changed: false, error: false]
+scriptResults.put('action_details', actionDetails)
 
 parsed_args.each { blobstoreDef ->
 
@@ -23,11 +23,11 @@ parsed_args.each { blobstoreDef ->
             }
             log.info(msg, blobstoreDef.name)
             currentResult.put('status', 'created')
-            blobstoreResults['changed'] = true
+            scriptResults['changed'] = true
         } catch (Exception e) {
             log.error('Could not create blobstore {}: {}', blobstoreDef.name, e.toString())
             currentResult.put('status', 'error')
-            blobstoreResults['error'] = true
+            scriptResults['error'] = true
             currentResult.put('error_msg', e.toString())
         }
     } else {
@@ -37,7 +37,7 @@ parsed_args.each { blobstoreDef ->
 
     log.info(msg, blobstoreDef.name)
 
-    blobstoreResults['action_details'].add(currentResult)
+    scriptResults['action_details'].add(currentResult)
 }
 
-return JsonOutput.toJson(blobstoreResults)
+return JsonOutput.toJson(scriptResults)
