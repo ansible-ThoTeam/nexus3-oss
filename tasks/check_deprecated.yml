@@ -41,7 +41,7 @@
 
 # @deprecated: remote_url is the variable to configure a proxy repo. proxy_url is not supported
 # anymore to configure docker proxy repos
-# @version: 2.3.0
+# @version: 2.4.0
 - name: "Coding standard: proxy_url is not supported anymore for docker proxy repos"
   fail:
     msg: >-
