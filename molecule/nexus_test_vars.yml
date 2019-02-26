@@ -103,3 +103,19 @@ nexus_privileges:
     script_name: the_script_name
     actions:
       - some actions
+
+# proxy configuration depending on env
+nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"
+nexus_http_proxy_host: "{{ lookup('env', 'http_proxy') | urlsplit('hostname') }}"
+nexus_http_proxy_port: "{{ lookup('env', 'http_proxy') | urlsplit('port') }}"
+nexus_http_proxy_username: "{{ lookup('env', 'http_proxy') | urlsplit('username') }}"
+nexus_http_proxy_password: "{{ lookup('env', 'http_proxy') | urlsplit('password') }}"
+nexus_with_https_proxy: "{{ lookup('env', 'https_proxy') | length > 0 | bool }}"
+nexus_https_proxy_host: "{{ lookup('env', 'https_proxy') | urlsplit('hostname') }}"
+nexus_https_proxy_port: "{{ lookup('env', 'https_proxy') | urlsplit('port') }}"
+nexus_https_proxy_username: "{{ lookup('env', 'https_proxy') | urlsplit('username') }}"
+nexus_https_proxy_password: "{{ lookup('env', 'https_proxy') | urlsplit('password') }}"
+nexus_proxy_exclude_hosts: # no_proxy env for shell does not obey java style
+  - "localhost"
+  - "127.*"
+  - "[::1]"
