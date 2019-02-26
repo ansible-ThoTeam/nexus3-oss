@@ -15,7 +15,7 @@ platforms:
   - name: nexus3-oss-centos-7
     hostname: nexus3-oss-centos7
     image: thoteam/ansible-centos7-apache-java:latest
-    command: /usr/sbin/init
+    override_command: false
     pull: true
     pre_build_image: true
     privileged: true
@@ -29,6 +29,7 @@ platforms:
   - name: ldap-server-mock
     hostname: ldap-server-mock
     image: thoteam/ldap-server-mock:latest
+    override_command: false
     pull: true
     pre_build_image: true
     ports:

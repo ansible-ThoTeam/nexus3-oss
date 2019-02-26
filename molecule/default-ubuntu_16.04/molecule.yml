@@ -15,7 +15,7 @@ platforms:
   - name: nexus3-oss-ubuntu-16.04
     hostname: nexus3-oss-ubuntu-16.04
     image: thoteam/ansible-ubuntu16_04-apache-java:latest
-    command: /lib/systemd/systemd
+    override_command: false
     pull: true
     pre_build_image: true
     privileged: true
@@ -29,6 +29,7 @@ platforms:
   - name: ldap-server-mock
     hostname: ldap-server-mock
     image: thoteam/ldap-server-mock:latest
+    override_command: false
     pull: true
     pre_build_image: true
     ports:
