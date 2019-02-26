@@ -1,0 +1,6 @@
+---
+
+# This file contains configurations to test ldap with our ldap-server-mock docker image
+# It should be included as a vars_files only in scenarios launching the ldap-server-mock container.
+
+# To be completed.

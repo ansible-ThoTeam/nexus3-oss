@@ -5,7 +5,8 @@
     - role: nexus3-oss
   vars_files:
     - ssl-{{ ansible_os_family }}.yml
-    - nexus_test_vars.yml
+    - nexus_common_test_vars.yml
+    - nexus_ldap_test_vars.yml
 
   environment:
     http_proxy: "{{ lookup('env', 'http_proxy') }}"
