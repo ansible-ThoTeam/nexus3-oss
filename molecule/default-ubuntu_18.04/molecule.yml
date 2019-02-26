@@ -13,18 +13,24 @@ lint:
 platforms:
 
   - name: nexus3-oss-ubuntu-18.04
-    image: thoteam/ansible-ubuntu18_04-apache-java
-    image_version: latest
+    hostname: nexus3-oss-ubuntu-18.04
+    image: thoteam/ansible-ubuntu18_04-apache-java:latest
     command: /lib/systemd/systemd
+    pull: true
+    pre_build_image: true
     privileged: true
     ports:
       - 8094:443
     groups:
       - nexus
+    networks: &nexus_networks
+      - name: nexus_default
 
   - name: ldap-server-mock
-    image: thoteam/ldap-server-mock
-    image_version: latest
+    hostname: ldap-server-mock
+    image: thoteam/ldap-server-mock:latest
+    pull: true
+    pre_build_image: true
     ports:
       - 3004
     volumes:
@@ -32,6 +38,7 @@ platforms:
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-users.json:/srv/ldap-server-mock-users.json
     groups:
       - mockldap
+    networks: *nexus_networks
 
 provisioner:
   name: ansible

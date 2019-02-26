@@ -16,17 +16,21 @@
     - block:
         - name: Install needed dependencie for role testing (debian/ubuntu)
           apt:
-            name: "{{ item }}"
+            name:
+              - apache2
+              - openjdk-8-jre-headless
+              - rsync
             state: present
             update_cache: true
-          with_items:
-            - apache2
-            - openjdk-8-jre-headless
-            - rsync
 
         - name: Enable needed apache modules
           shell: a2enmod ssl rewrite proxy proxy_http headers
 
       when: ansible_os_family == 'Debian'
+
+  environment:
+    http_proxy: "{{ lookup('env', 'http_proxy') }}"
+    https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    no_proxy: "{{ lookup('env', 'no_proxy') }}"
 
 - import_playbook: "../sync-nexus-package.yml"

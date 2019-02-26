@@ -11,11 +11,32 @@ lint:
   name: yamllint
 
 platforms:
+
   - name: nexus3-oss-default
-    image: thoteam/ansible-centos7-apache-java
-    image_version: latest
+    hostname: nexus3-oss-default
+    image: thoteam/ansible-centos7-apache-java:latest
     command: /usr/sbin/init
+    pull: true
+    pre_build_image: true
     privileged: true
+    groups:
+      - nexus
+    networks: &nexus_networks
+      - name: nexus_default
+
+  - name: ldap-server-mock
+    hostname: ldap-server-mock
+    image: thoteam/ldap-server-mock:latest
+    pull: true
+    pre_build_image: true
+    ports:
+      - 3004
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-conf.json:/srv/ldap-server-mock-conf.json
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-users.json:/srv/ldap-server-mock-users.json
+    groups:
+      - mockldap
+    networks: *nexus_networks
 
 provisioner:
   name: ansible
