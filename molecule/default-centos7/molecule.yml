@@ -11,6 +11,7 @@ lint:
   name: yamllint
 
 platforms:
+
   - name: nexus3-oss-centos-7
     image: thoteam/ansible-centos7-apache-java
     image_version: latest
@@ -18,6 +19,19 @@ platforms:
     privileged: true
     ports:
       - 8090:443
+    groups:
+      - nexus
+
+  - name: ldap-server-mock
+    image: thoteam/ldap-server-mock
+    image_version: latest
+    ports:
+      - 3004
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-conf.json:/srv/ldap-server-mock-conf.json
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-users.json:/srv/ldap-server-mock-users.json
+    groups:
+      - mockldap
 
 provisioner:
   name: ansible

@@ -17,6 +17,8 @@ platforms:
     memory: 4096
     instance_raw_config_args:
       - "vm.network 'forwarded_port', guest: 443, host: 9101"
+    groups:
+      - nexus
   - name: vb-debian-stretch
     box: thoteam/vb-stretch
     box_url: http://vagrant.thoteam.com/vb-stretch/vb-stretch.json
@@ -24,6 +26,8 @@ platforms:
     memory: 4096
     instance_raw_config_args:
       - "vm.network 'forwarded_port', guest: 443, host: 9102"
+    groups:
+      - nexus
 provisioner:
   name: ansible
   lint:

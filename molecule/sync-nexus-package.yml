@@ -39,7 +39,7 @@
 
 
 - name: "Prepare posttep 2/2: sync nexus package to instances"
-  hosts: all
+  hosts: nexus
   vars:
     molecule_ephemeral_directory: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
   tasks:

@@ -1,6 +1,6 @@
 ---
 - name: Prepare
-  hosts: all
+  hosts: nexus
   become: true
   tasks:
     - name: Install needed dependencies for role testing (redhat)
