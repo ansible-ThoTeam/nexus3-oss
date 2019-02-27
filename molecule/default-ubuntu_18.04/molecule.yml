@@ -24,7 +24,7 @@ platforms:
     groups:
       - nexus
     networks: &nexus_networks
-      - name: nexus_default
+      - name: nexus-default
 
   - name: ldap-server-mock
     hostname: ldap-server-mock
