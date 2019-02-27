@@ -19,7 +19,7 @@ platforms:
     pull: true
     pre_build_image: true
     privileged: true
-    ports:
+    published_ports:
       - 8094:443
     groups:
       - nexus
@@ -32,7 +32,7 @@ platforms:
     override_command: false
     pull: true
     pre_build_image: true
-    ports:
+    exposed_ports:
       - 3004
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-conf.json:/srv/ldap-server-mock-conf.json
