@@ -29,8 +29,8 @@ platforms:
     image: thoteam/ldap-server-mock:latest
     pull: true
     pre_build_image: true
-    ports:
-      - 3004
+    exposed_ports:
+      - "3004"
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-conf.json:/srv/ldap-server-mock-conf.json
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-users.json:/srv/ldap-server-mock-users.json

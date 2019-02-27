@@ -33,7 +33,7 @@ platforms:
     pull: true
     pre_build_image: true
     exposed_ports:
-      - 3004
+      - "3004"
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-conf.json:/srv/ldap-server-mock-conf.json
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-users.json:/srv/ldap-server-mock-users.json
