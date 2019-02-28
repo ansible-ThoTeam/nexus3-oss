@@ -30,7 +30,7 @@ platforms:
     hostname: slapd-server-mock
     image: thoteam/slapd-server-mock:latest
     override_command: false
-    pull: false
+    pull: true
     pre_build_image: true
     env:
       LDAP_DOMAIN: slapd-server-mock
