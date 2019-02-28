@@ -15,7 +15,7 @@ platforms:
   - name: nexus3-oss-centos-7
     hostname: nexus3-oss-centos7
     image: thoteam/ansible-centos7-apache-java:latest
-    override_command: false
+    command: /usr/sbin/init
     pull: true
     pre_build_image: true
     privileged: true
@@ -30,7 +30,7 @@ platforms:
     hostname: slapd-server-mock
     image: thoteam/slapd-server-mock:latest
     override_command: false
-    pull: true
+    pull: false
     pre_build_image: true
     env:
       LDAP_DOMAIN: slapd-server-mock
