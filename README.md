@@ -263,111 +263,116 @@ Ldap connections and security realm are disabled by default
 
 ```yaml
     nexus_ldap_realm: true
-  - ldap_name: 'My Company LDAP' # used as a key to update the ldap config
-    ldap_protocol: 'ldaps' # ldap or ldaps
-    ldap_hostname: 'ldap.mycompany.com'
-    ldap_port: 636
-    ldap_search_base: 'dc=mycompany,dc=net'
-    ldap_auth: 'none' # or simple
-    ldap_auth_username: 'username' # if auth = simple
-    ldap_auth_password: 'password' # if auth = simple
-    ldap_user_base_dn: 'ou=users'
-    ldap_user_filter: '(cn=*)' # (optional)
-    ldap_user_object_class: 'inetOrgPerson'
-    ldap_user_id_attribute: 'uid'
-    ldap_user_real_name_attribute: 'cn'
-    ldap_user_email_attribute: 'mail'
-    ldap_user_subtree: false
-    ldap_map_groups_as_roles: false
-    ldap_group_base_dn: 'ou=groups'
-    ldap_group_object_class: 'posixGroup'
-    ldap_group_id_attribute: 'cn'
-    ldap_group_member_attribute: 'memberUid'
-    ldap_group_member_format: '${username}'
-    ldap_group_subtree: false
+    ldap_connections:
+      - ldap_name: 'My Company LDAP' # used as a key to update the ldap config
+        ldap_protocol: 'ldaps' # ldap or ldaps
+        ldap_hostname: 'ldap.mycompany.com'
+        ldap_port: 636
+        ldap_search_base: 'dc=mycompany,dc=net'
+        ldap_auth: 'none' # or simple
+        ldap_auth_username: 'username' # if auth = simple
+        ldap_auth_password: 'password' # if auth = simple
+        ldap_user_base_dn: 'ou=users'
+        ldap_user_filter: '(cn=*)' # (optional)
+        ldap_user_object_class: 'inetOrgPerson'
+        ldap_user_id_attribute: 'uid'
+        ldap_user_real_name_attribute: 'cn'
+        ldap_user_email_attribute: 'mail'
+        ldap_user_subtree: false
+        ldap_map_groups_as_roles: false
+        ldap_group_base_dn: 'ou=groups'
+        ldap_group_object_class: 'posixGroup'
+        ldap_group_id_attribute: 'cn'
+        ldap_group_member_attribute: 'memberUid'
+        ldap_group_member_format: '${username}'
+        ldap_group_subtree: false
 ```
 
 Example LDAP config for anonymous authentication (anonymous bind), this is also the "minimal" config :
 
 ```yaml
     nexus_ldap_realm: true
-  - ldap_name: 'Simplest LDAP config'
-    ldap_protocol: 'ldaps'
-    ldap_hostname: 'annuaire.mycompany.com'
-    ldap_search_base: 'dc=mycompany,dc=net'
-    ldap_port: 636
-    ldap_user_id_attribute: 'uid'
-    ldap_user_real_name_attribute: 'cn'
-    ldap_user_email_attribute: 'mail'
-    ldap_user_object_class: 'inetOrgPerson'
+    ldap_connection:
+      - ldap_name: 'Simplest LDAP config'
+        ldap_protocol: 'ldaps'
+        ldap_hostname: 'annuaire.mycompany.com'
+        ldap_search_base: 'dc=mycompany,dc=net'
+        ldap_port: 636
+        ldap_user_id_attribute: 'uid'
+        ldap_user_real_name_attribute: 'cn'
+        ldap_user_email_attribute: 'mail'
+        ldap_user_object_class: 'inetOrgPerson'
 ```
 
 Example LDAP config for simple authentication (using a DSA account) :
 
 ```yaml
     nexus_ldap_realm: true
-  - ldap_name: 'LDAP config with DSA'
-    ldap_protocol: 'ldaps'
-    ldap_hostname: 'annuaire.mycompany.com'
-    ldap_port: 636
-    ldap_auth: 'simple'
-    ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
-    ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
-    ldap_search_base: 'dc=mycompany,dc=net'
-    ldap_user_base_dn: 'ou=users'
-    ldap_user_object_class: 'inetOrgPerson'
-    ldap_user_id_attribute: 'uid'
-    ldap_user_real_name_attribute: 'cn'
-    ldap_user_email_attribute: 'mail'
-    ldap_user_subtree: false
+    ldap_connections:
+      - ldap_name: 'LDAP config with DSA'
+        ldap_protocol: 'ldaps'
+        ldap_hostname: 'annuaire.mycompany.com'
+        ldap_port: 636
+        ldap_auth: 'simple'
+        ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
+        ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
+        ldap_search_base: 'dc=mycompany,dc=net'
+        ldap_user_base_dn: 'ou=users'
+        ldap_user_object_class: 'inetOrgPerson'
+        ldap_user_id_attribute: 'uid'
+        ldap_user_real_name_attribute: 'cn'
+        ldap_user_email_attribute: 'mail'
+        ldap_user_subtree: false
 ```
 
 Example LDAP config for simple authentication (using a DSA account) + groups mapped as roles :
 
 ```yaml
     nexus_ldap_realm: true
-  - ldap_name: 'LDAP config with DSA'
-    ldap_protocol: 'ldaps'
-    ldap_hostname: 'annuaire.mycompany.com'
-    ldap_port: 636
-    ldap_auth: 'simple'
-    ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
-    ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
-    ldap_search_base: 'dc=mycompany,dc=net'
-    ldap_user_base_dn: 'ou=users'
-    ldap_user_object_class: 'inetOrgPerson'
-    ldap_user_id_attribute: 'uid'
-    ldap_user_real_name_attribute: 'cn'
-    ldap_user_email_attribute: 'mail'
-    ldap_map_groups_as_roles: true
-    ldap_group_base_dn: 'ou=groups'
-    ldap_group_object_class: 'groupOfNames'
-    ldap_group_id_attribute: 'cn'
-    ldap_group_member_attribute: 'member'
-    ldap_group_member_format: 'uid=${username},ou=users,dc=mycompany,dc=net'
-    ldap_group_subtree: false
+    ldap_connections
+      - ldap_name: 'LDAP config with DSA'
+        ldap_protocol: 'ldaps'
+        ldap_hostname: 'annuaire.mycompany.com'
+        ldap_port: 636
+        ldap_auth: 'simple'
+        ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
+        ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
+        ldap_search_base: 'dc=mycompany,dc=net'
+        ldap_user_base_dn: 'ou=users'
+        ldap_user_object_class: 'inetOrgPerson'
+        ldap_user_id_attribute: 'uid'
+        ldap_user_real_name_attribute: 'cn'
+        ldap_user_email_attribute: 'mail'
+        ldap_map_groups_as_roles: true
+        ldap_group_base_dn: 'ou=groups'
+        ldap_group_object_class: 'groupOfNames'
+        ldap_group_id_attribute: 'cn'
+        ldap_group_member_attribute: 'member'
+        ldap_group_member_format: 'uid=${username},ou=users,dc=mycompany,dc=net'
+        ldap_group_subtree: false
 ```
 
 Example LDAP config for simple authentication (using a DSA account) + groups mapped as roles dynamically :
 
 ```yaml
     nexus_ldap_realm: true
-  - ldap_name: 'LDAP config with DSA'
-    ldap_protocol: 'ldaps'
-    ldap_hostname: 'annuaire.mycompany.com'
-    ldap_port: 636
-    ldap_auth: 'simple'
-    ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
-    ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
-    ldap_search_base: 'dc=mycompany,dc=net'
-    ldap_user_base_dn: 'ou=users'
-    ldap_user_object_class: 'inetOrgPerson'
-    ldap_user_id_attribute: 'uid'
-    ldap_user_real_name_attribute: 'cn'
-    ldap_user_email_attribute: 'mail'
-    ldap_map_groups_as_roles: true
-    ldap_map_groups_as_roles_type: 'dynamic'
-    ldap_user_memberof_attribute: 'memberOf'
+    ldap_connections:
+      - ldap_name: 'LDAP config with DSA'
+        ldap_protocol: 'ldaps'
+        ldap_hostname: 'annuaire.mycompany.com'
+        ldap_port: 636
+        ldap_auth: 'simple'
+        ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
+        ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
+        ldap_search_base: 'dc=mycompany,dc=net'
+        ldap_user_base_dn: 'ou=users'
+        ldap_user_object_class: 'inetOrgPerson'
+        ldap_user_id_attribute: 'uid'
+        ldap_user_real_name_attribute: 'cn'
+        ldap_user_email_attribute: 'mail'
+        ldap_map_groups_as_roles: true
+        ldap_map_groups_as_roles_type: 'dynamic'
+        ldap_user_memberof_attribute: 'memberOf'
 ```
 
 ### Privileges

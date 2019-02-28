@@ -79,6 +79,7 @@
       vars:
         script_name: setup_ldap_users_from_list
         args: "{{ nexus_ldap_users }}"
+      when: nexus_ldap_users | length > 0
 
     - name: "Digest splited blob list var"
       include_vars: blob_vars.yml
@@ -103,6 +104,7 @@
           vars:
             script_name: create_blobstores_from_list
             args: "{{ nexus_blobstores }}"
+          when: nexus_blobstores | length > 0
 
 
   when: nexus_run_provisionning | default(true) | bool
