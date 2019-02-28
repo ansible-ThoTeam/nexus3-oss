@@ -24,16 +24,14 @@ platforms:
     networks: &nexus_networks
       - name: nexus-default
 
-  - name: ldap-server-mock
-    hostname: ldap-server-mock
-    image: thoteam/ldap-server-mock:latest
+  - name: slapd-server-mock
+    hostname: slapd-server-mock
+    image: thoteam/slapd-server-mock:latest
+    override_command: false
     pull: true
     pre_build_image: true
-    exposed_ports:
-      - "3004"
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-conf.json:/srv/ldap-server-mock-conf.json
-      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/ldap-server-mock-users.json:/srv/ldap-server-mock-users.json
+    env:
+      LDAP_DOMAIN: slapd-server-mock
     groups:
       - mockldap
     networks: *nexus_networks

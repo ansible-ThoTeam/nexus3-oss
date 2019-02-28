@@ -1,6 +1,0 @@
-{
-  "port": 3004,
-  "userLoginAttribute": "uid",
-  "searchBase": "dc=thoteam,dc=com",
-  "searchFilter": "(&(objectclass=person)(uid={{username}}))"
-}
