@@ -440,6 +440,7 @@ Local (non-LDAP) users/accounts list to create in nexus. State `absent` will rem
       #     - "nx-admin"
 ```
 Ldap users/roles mappings. State `absent` will remove roles from the existing user if already present.
+Ldap users are not removed. Trying to set roles on a non existing user will result in an error.
 
 
 ### Content selectors

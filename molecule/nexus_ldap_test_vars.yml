@@ -24,6 +24,6 @@ ldap_connections:
 
 # Add some roles to ldap users so we test the relevent script
 nexus_ldap_users:
-  - name: developer3
+  - username: developer3
     roles:
       - nx-anonymous

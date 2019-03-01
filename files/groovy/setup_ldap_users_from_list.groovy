@@ -14,10 +14,10 @@ scriptResults.put('action_details', actionDetails)
 parsed_args.each { currentUserDef ->
 
     state = currentUserDef.get('state', 'present')
-    Map<String, String> currentResult = [name: currentUserDef.name, state: state, roles: currentUserDef.roles.join(', ')]
+    Map<String, String> currentResult = [username: currentUserDef.username, state: state, roles: currentUserDef.roles.join(', ')]
 
     try {
-        User user = security.getSecuritySystem().getUser(currentUserDef.name,"LDAP")
+        User user = security.getSecuritySystem().getUser(currentUserDef.username,"LDAP")
         authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE)
         currentResult.put('status', 'roles unchanged')
         currentUserDef.roles.each { role ->
