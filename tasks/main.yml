@@ -65,8 +65,12 @@
     - include_tasks: create_content_selector_each.yml
       with_items: "{{ nexus_content_selectors }}"
 
-    - include_tasks: setup_privilege_each.yml
-      with_items: "{{ nexus_privileges }}"
+    - name: Create/check privileges
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_privileges_from_list
+        args: "{{ nexus_privileges }}"
+      when: nexus_privileges | length > 0
 
     - name: Create/check roles
       include_tasks: call_script.yml
