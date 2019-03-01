@@ -71,8 +71,12 @@
     - include_tasks: setup_role_each.yml
       with_items: "{{ nexus_roles }}"
 
-    - include_tasks: setup_user_each.yml
-      with_items: "{{ nexus_local_users }}"
+    - name: Create/check local users
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_users_from_list
+        args: "{{ nexus_local_users }}"
+      when: nexus_local_users | length > 0
 
     - name: Create/check ldap users
       include_tasks: call_script.yml
