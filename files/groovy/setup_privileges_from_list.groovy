@@ -4,6 +4,7 @@ import org.sonatype.nexus.security.privilege.NoSuchPrivilegeException
 import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.privilege.Privilege
 
+
 parsed_args = new JsonSlurper().parseText(args)
 
 List<Map<String, String>> actionDetails = []
@@ -23,6 +24,7 @@ parsed_args.each { privilegeDef ->
         try {
             privilege = authManager.getPrivilege(privilegeDef.name)
         } catch (NoSuchPrivilegeException ignored) {
+            currentResult.put('debug', "test")
             // could not find any existing  privilege
             update = false
             privilege = new Privilege(
@@ -43,11 +45,17 @@ parsed_args.each { privilegeDef ->
                 'actions'        : privilegeDef.actions.join(',')
         ] as Map<String, String>)
 
-        if (update && (privilege.getProperties().sort().toString() != authManager.getPrivilege(privilegeDef.name).getProperties().sort().toString())) {
-            authManager.updatePrivilege(privilege)
-            log.info("Privilege {} updated", privilegeDef.name)
-            currentResult.status = 'updated'
-            scriptResults.changed = true
+        // @todo: Fix update when only description is changed.
+        //  For time being if you only change description, the privilege
+        //  will not be updated
+        if (update) {
+            definedProperties = privilege.getProperties().sort().toString()
+            currentProperties = authManager.getPrivilege(privilegeDef.name).getProperties().sort().toString()
+            if (definedProperties != currentProperties) {
+                authManager.updatePrivilege(privilege)
+                currentResult.status = 'updated'
+                scriptResults.changed = true
+            }
         } else {
             authManager.addPrivilege(privilege)
             log.info("Privilege {} created", privilegeDef.name)
