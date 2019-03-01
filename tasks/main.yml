@@ -68,8 +68,12 @@
     - include_tasks: setup_privilege_each.yml
       with_items: "{{ nexus_privileges }}"
 
-    - include_tasks: setup_role_each.yml
-      with_items: "{{ nexus_roles }}"
+    - name: Create/check roles
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_roles_from_list
+        args: "{{ nexus_roles }}"
+      when: nexus_roles | length > 0
 
     - name: Create/check local users
       include_tasks: call_script.yml
