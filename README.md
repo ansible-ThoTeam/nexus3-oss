@@ -41,6 +41,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
             * [Force groovy scripts registration](#force-groovy-scripts-registration)
             * [Change admin password after first install](#change-admin-password-after-first-install)
             * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
+            * [Skip provisionning tasks](#skip-provisionning-tasks)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -52,7 +53,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2019-02-14T02:13+01:00 -->
+<!-- Added by: olcla, at: 2019-03-01T15:18+01:00 -->
 
 <!--te-->
 
@@ -72,8 +73,7 @@ We would like to thank the original authors for the work done.
 - Rsync has to be installed on the target machine (it is not needed on the host running ansible if different)
 - `jmespath` library needs to be installed on the host running the playbook (needed for the `json_query` filter). See `requirements.txt`
 - Java 8 (mandatory)
-    - Oracle Java 8 is the official supported platform by Sonatype
-    - openjdk8 is know to work and is used for deployment test on travis on the corresponding platform docker images.
+    - **Oracle announced Java 8 EOL. Sonatype is now recommending openjdk8**
     - For more information see [nexus3 system requirements](https://help.sonatype.com/display/NXRM3/System+Requirements)
 - Apache HTTPD (optional)
     - Used to setup a SSL reverse-proxy
@@ -769,7 +769,7 @@ ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionn
 ## Dependencies
 
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
-  - [ansiblebit.oracle-java](https://galaxy.ansible.com/ansiblebit/oracle-java/)
+  - [geerlingguy.apache](https://galaxy.ansible.com/geerlingguy/java/)
   - [geerlingguy.apache](https://galaxy.ansible.com/geerlingguy/apache/)
 
 Feel free to use them or implement your own install scenario at your convenience.
@@ -873,13 +873,16 @@ Feel free to use them or implement your own install scenario at your convenience
           - vaadin-addons
           - jaspersoft
 
+
   roles:
-    - { role: ansiblebit.oracle-java, oracle_java_set_as_default: yes, tags: ['ansiblebit.oracle-java'] }
+    
+    
+    - { role: geerlingguy.java, vars: See role doc for your distribution/version }
     # Debian/Ubuntu only
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
-    - { role: ansible-ThoTeam.nexus3-oss, tags: ['savoirfairelinux.nexus3-oss'] }
+    - { role: ansible-ThoTeam.nexus3-oss, tags: ['ansible-ThoTeam.nexus3-oss'] }
 ```
 
 ## Development, Contribution and Testing

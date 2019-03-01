@@ -83,6 +83,11 @@ parsed_args.each { currentRepo ->
                     contentMaxAge : currentRepo.get('maximum_component_age', 1440.0),
                     metadataMaxAge: currentRepo.get('maximum_metadata_age', 1440.0)
             ]
+
+            configuration.attributes['negativeCache'] = [
+                    enabled: currentRepo.get('negative_cache_enabled', true),
+                    timeToLive: currentRepo.get('negative_cache_ttl', 1440.0)
+            ]
         }
 
         // Configs for docker proxy repos
