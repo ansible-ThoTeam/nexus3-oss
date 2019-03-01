@@ -11,13 +11,32 @@ lint:
   name: yamllint
 
 platforms:
+
   - name: nexus3-oss-debian-stretch
-    image: thoteam/ansible-debian_stretch-apache-java
-    image_version: latest
-    command: /lib/systemd/systemd
+    hostname: nexus3-oss-debian-stretch
+    image: thoteam/ansible-debian_stretch-apache-java:latest
+    command: lib/systemd/systemd
+    pull: true
+    pre_build_image: true
     privileged: true
-    ports:
+    published_ports:
       - 8092:443
+    groups:
+      - nexus
+    networks: &nexus_networks
+      - name: nexus-default
+
+  - name: slapd-server-mock
+    hostname: slapd-server-mock
+    image: thoteam/slapd-server-mock:latest
+    override_command: false
+    pull: true
+    pre_build_image: true
+    env:
+      LDAP_DOMAIN: slapd-server-mock
+    groups:
+      - mockldap
+    networks: *nexus_networks
 
 provisioner:
   name: ansible

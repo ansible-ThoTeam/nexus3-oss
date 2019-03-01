@@ -182,7 +182,7 @@ nexus_privileges:
       - browse
 
 nexus_roles:
-  - id: Developpers  # can map to a LDAP group id, also used as a key to update a role
+  - id: developers  # can map to a LDAP group id, also used as a key to update a role
     name: developers
     description: All developers
     privileges:
@@ -429,7 +429,7 @@ nexus_repos_docker_proxy:
     http_port: "{{ nexus_docker_proxy_port }}"
     v1_enabled: True
     index_type: "HUB"
-    proxy_url: "https://registry-1.docker.io"
+    remote_url: "https://registry-1.docker.io"
     use_nexus_certificates_to_access_index: false
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440

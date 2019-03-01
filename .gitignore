@@ -5,7 +5,6 @@ molecule/**/.molecule/
 molecule/**/__pycache__/
 molecule/**/.cache
 molecule/**/.pytest_cache
-molecule/custom_env.yml
 README.md.orig.*
 README.md.toc.*
 *.pyc

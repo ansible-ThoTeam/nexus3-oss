@@ -11,13 +11,32 @@ lint:
   name: yamllint
 
 platforms:
+
   - name: nexus3-oss-ubuntu-16.04
-    image: thoteam/ansible-ubuntu16_04-apache-java
-    image_version: latest
-    command: /lib/systemd/systemd
+    hostname: nexus3-oss-ubuntu-16.04
+    image: thoteam/ansible-ubuntu16_04-apache-java:latest
+    command: lib/systemd/systemd
+    pull: true
+    pre_build_image: true
     privileged: true
-    ports:
+    published_ports:
       - 8093:443
+    groups:
+      - nexus
+    networks: &nexus_networks
+      - name: nexus-default
+
+  - name: slapd-server-mock
+    hostname: slapd-server-mock
+    image: thoteam/slapd-server-mock:latest
+    override_command: false
+    pull: true
+    pre_build_image: true
+    env:
+      LDAP_DOMAIN: slapd-server-mock
+    groups:
+      - mockldap
+    networks: *nexus_networks
 
 provisioner:
   name: ansible

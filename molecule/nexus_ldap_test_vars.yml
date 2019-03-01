@@ -1,0 +1,29 @@
+---
+
+# This file contains configurations to test ldap with our thoteam/slapd-server-mock docker image
+# It should be included as a vars_files only in scenarios launching the slapd-server-mock container.
+
+nexus_ldap_realm: true
+ldap_connections:
+  - ldap_name: 'Mock ldap server'
+    ldap_protocol: 'ldap'
+    ldap_hostname: 'slapd-server-mock'
+    ldap_search_base: 'dc=slapd-server-mock'
+    ldap_port: 389
+    ldap_user_base_dn: 'ou=people'
+    ldap_user_id_attribute: 'uid'
+    ldap_user_real_name_attribute: 'cn'
+    ldap_user_email_attribute: 'mail'
+    ldap_user_object_class: 'person'
+    ldap_map_groups_as_roles: true
+    ldap_group_base_dn: 'ou=groups'
+    ldap_group_object_class: 'posixGroup'
+    ldap_group_id_attribute: 'cn'
+    ldap_group_member_attribute: 'memberUID'
+    ldap_group_member_format: '${username}'
+
+# Add some roles to ldap users so we test the relevent script
+nexus_ldap_users:
+  - username: developer3
+    roles:
+      - nx-anonymous

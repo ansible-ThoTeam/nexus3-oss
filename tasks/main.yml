@@ -1,6 +1,14 @@
 ---
+
 - name: check deprecated vars and features
   import_tasks: "check_deprecated.yml"
+
+- name: "Make sure our internal var for repos is unset"
+  fail:
+    msg: >-
+      _nexus_repos_global_list is set somewhere in your playbook/inventory. This is an internal var
+      that must be unset when the role starts executing. Please unset this var
+  when: _nexus_repos_global_list is defined
 
 - name: Include OS specific variables.
   include_vars: "configure-{{ ansible_os_family }}.yml"
@@ -57,25 +65,59 @@
     - include_tasks: create_content_selector_each.yml
       with_items: "{{ nexus_content_selectors }}"
 
-    - include_tasks: setup_privilege_each.yml
-      with_items: "{{ nexus_privileges }}"
+    - name: Create/check privileges
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_privileges_from_list
+        args: "{{ nexus_privileges }}"
+      when: nexus_privileges | length > 0
 
-    - include_tasks: setup_role_each.yml
-      with_items: "{{ nexus_roles }}"
+    - name: Create/check roles
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_roles_from_list
+        args: "{{ nexus_roles }}"
+      when: nexus_roles | length > 0
 
-    - include_tasks: setup_user_each.yml
-      with_items: "{{ nexus_local_users }}"
+    - name: Create/check local users
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_users_from_list
+        args: "{{ nexus_local_users }}"
+      when: nexus_local_users | length > 0
 
-    - include_tasks: setup_ldap_user_each.yml
-      with_items: "{{ nexus_ldap_users }}"
+    - name: Create/check ldap users
+      include_tasks: call_script.yml
+      vars:
+        script_name: setup_ldap_users_from_list
+        args: "{{ nexus_ldap_users }}"
+      when: nexus_ldap_users | length > 0
 
     - name: "Digest splited blob list var"
       include_vars: blob_vars.yml
       when: nexus_blob_split
 
-    - include_tasks: create_blobstore_each.yml
-      with_items: "{{ nexus_blobstores }}"
+    - name: Create/Check blobstores
       when: nexus_restore_point is undefined
+      block:
+
+        - name: Create directories for blob stores.
+          file:
+            path: "{{ item['path'] }}"
+            owner: "{{ nexus_os_user }}"
+            group: "{{ nexus_os_group }}"
+            state: directory
+            recurse: true
+          when: item.path is defined
+          loop: "{{ nexus_blobstores }}"
+
+        - name: Create/Check blobstores
+          include_tasks: call_script.yml
+          vars:
+            script_name: create_blobstores_from_list
+            args: "{{ nexus_blobstores }}"
+          when: nexus_blobstores | length > 0
+
 
   when: nexus_run_provisionning | default(true) | bool
 
@@ -84,103 +126,15 @@
   when: nexus_restore_point is defined
 
 - block:
-    - include_tasks: create_repo_maven_proxy_each.yml
-      with_items: "{{ nexus_repos_maven_proxy }}"
 
-    - include_tasks: create_repo_maven_hosted_each.yml
-      with_items: "{{ nexus_repos_maven_hosted }}"
+    - name: Apply defaults to repositories configurations and process a single list
+      include_tasks: process_repos_list.yml
 
-    - include_tasks: create_repo_maven_group_each.yml
-      with_items: "{{ nexus_repos_maven_group }}"
-
-    - block:
-        - include_tasks: create_repo_docker_hosted_each.yml
-          with_items: "{{ nexus_repos_docker_hosted }}"
-
-        - include_tasks: create_repo_docker_proxy_each.yml
-          with_items: "{{ nexus_repos_docker_proxy }}"
-
-        - include_tasks: create_repo_docker_group_each.yml
-          with_items: "{{ nexus_repos_docker_group }}"
-      when: nexus_config_docker
-
-    - block:
-        - include_tasks: create_repo_pypi_proxy_each.yml
-          with_items: "{{ nexus_repos_pypi_proxy }}"
-
-        - include_tasks: create_repo_pypi_hosted_each.yml
-          with_items: "{{ nexus_repos_pypi_hosted }}"
-
-        - include_tasks: create_repo_pypi_group_each.yml
-          with_items: "{{ nexus_repos_pypi_group }}"
-      when: nexus_config_pypi
-
-    - block:
-        - include_tasks: create_repo_raw_proxy_each.yml
-          with_items: "{{ nexus_repos_raw_proxy }}"
-
-        - include_tasks: create_repo_raw_hosted_each.yml
-          with_items: "{{ nexus_repos_raw_hosted }}"
-
-        - include_tasks: create_repo_raw_group_each.yml
-          with_items: "{{ nexus_repos_raw_group }}"
-      when: nexus_config_raw
-
-    - block:
-        - include_tasks: create_repo_rubygems_proxy_each.yml
-          with_items: "{{ nexus_repos_rubygems_proxy }}"
-
-        - include_tasks: create_repo_rubygems_hosted_each.yml
-          with_items: "{{ nexus_repos_rubygems_hosted }}"
-
-        - include_tasks: create_repo_rubygems_group_each.yml
-          with_items: "{{ nexus_repos_rubygems_group }}"
-      when: nexus_config_rubygems
-
-    - block:
-        - include_tasks: create_repo_bower_proxy_each.yml
-          with_items: "{{ nexus_repos_bower_proxy }}"
-
-        - include_tasks: create_repo_bower_hosted_each.yml
-          with_items: "{{ nexus_repos_bower_hosted }}"
-
-        - include_tasks: create_repo_bower_group_each.yml
-          with_items: "{{ nexus_repos_bower_group }}"
-      when: nexus_config_bower
-
-    - block:
-        - include_tasks: create_repo_npm_proxy_each.yml
-          with_items: "{{ nexus_repos_npm_proxy }}"
-
-        - include_tasks: create_repo_npm_hosted_each.yml
-          with_items: "{{ nexus_repos_npm_hosted }}"
-
-        - include_tasks: create_repo_npm_group_each.yml
-          with_items: "{{ nexus_repos_npm_group }}"
-      when: nexus_config_npm
-
-    - block:
-        - include_tasks: create_repo_nuget_proxy_each.yml
-          with_items: "{{ nexus_repos_nuget_proxy }}"
-        - include_tasks: create_repo_nuget_hosted_each.yml
-          with_items: "{{ nexus_repos_nuget_hosted }}"
-        - include_tasks: create_repo_nuget_group_each.yml
-          with_items: "{{ nexus_repos_nuget_group }}"
-      when: nexus_config_nuget
-
-
-    - include_tasks: create_repo_gitlfs_hosted_each.yml
-      with_items: "{{ nexus_repos_gitlfs_hosted }}"
-      when: nexus_config_gitlfs
-
-    - block:
-        - include_tasks: create_repo_yum_hosted_each.yml
-          with_items: "{{ nexus_repos_yum_hosted }}"
-        - include_tasks: create_repo_yum_proxy_each.yml
-          with_items: "{{ nexus_repos_yum_proxy }}"
-        - include_tasks: create_repo_yum_group_each.yml
-          with_items: "{{ nexus_repos_yum_group }}"
-      when: nexus_config_yum
+    - name: Create configured repositories
+      include_tasks: call_script.yml
+      vars:
+        script_name: create_repos_from_list
+        args: "{{ _nexus_repos_global_list }}"
 
   when: nexus_run_provisionning | default(true) | bool
 
