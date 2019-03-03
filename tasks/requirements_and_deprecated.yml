@@ -1,4 +1,27 @@
 ---
+# This file contains all requirements and deprecation checks
+# that can be run before the role starts.
+
+# @requirement: jmespath module must be installe on ansible host
+# @version: 2.4.0
+- name: Check presence of jmespath python module on ansible host
+  block:
+    - name: Try to use jmespath on a test var
+      set_fact:
+        voidvar: "{{ [] | json_query('[]') }}"
+  rescue:
+    - name: Print message about jmespath
+      vars:
+        error_msg: |-
+          Since version 2.4.0, this role uses the  json_query filter which requires
+          the presense of the python module jmespath on the host running ansible.
+          Please install jmespath (i.e. pip install jmespath) on your ansible host.
+      debug:
+        msg: "{{ error_msg.split('\n') }}"
+
+    - name: fail
+      fail:
+        msg: "Install jmespath. See debug message above"
 
 # @deprecated: nexus_package must not exists
 # @version: 2.2.0
@@ -53,3 +76,21 @@
     | json_query('[?proxy_url]')
     | list
     | length > 0
+
+# @requirement: new internal var _nexus_repos_global_List must be undefined
+# @version: 2.4.0
+- name: "Make sure our internal var for repos is unset"
+  when: _nexus_repos_global_list is defined
+  block:
+    - name: Print debug message about our internal var
+      vars:
+        error_msg: |-
+          _nexus_repos_global_list is set somewhere in your playbook/inventory.
+          This is an internal var that must be unset when the role starts executing.
+          Please unset _nexus_repos_global_list from your playbook/inventory
+      debug:
+        msg: "{{ error_msg.split('\n') }}"
+
+    - name: Fail as we cannot run correctly with internal var set
+      fail:
+        msg: "Unset _nexus_repos_global_list. See debug message above"
