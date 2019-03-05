@@ -39,6 +39,12 @@ nexus_docker_proxy_port: 9081
 nexus_docker_group_port: 9082
 nexus_default_context_path: '/'
 
+# Nexus JVM values
+nexus_heap_size: "{{ [(ansible_memory_mb.real.total - 1024), 4096] | min | int }}m"
+
+# Nexus Jetty properties
+idletimeout: 30000 #Milliseconds
+
 nexus_admin_password: 'changeme'  # Note : admin password change subsequent to first-time install is *not implemented* yet
 nexus_anonymous_access: false
 
