@@ -103,7 +103,8 @@ nexus_branding_header: ""
 nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
 
 httpd_setup_enable: false
-httpd_server_name: nexus.vm
+httpd_server_name: "{{ nexus_public_hostname }}"
+httpd_default_admin_email: "admin@example.com"
 httpd_ssl_certificate_file: 'files/nexus.vm.crt'
 httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 # httpd_ssl_certificate_chain_file: "{{ httpd_ssl_certificate_file }}"
@@ -116,7 +117,6 @@ httpd_copy_ssl_files: true
 httpd_ssl_cert_file_location: "/etc/pki/tls/certs/nexus.vm.crt"
 httpd_ssl_cert_key_location: "/etc/pki/tls/private/nexus.vm.key"
 # httpd_ssl_cert_chain_file_location: "{{ httpd_ssl_cert_file_location }}"
-httpd_default_admin_email: "admin@example.com"
 
 ldap_connections: []
 # example ldap config :
