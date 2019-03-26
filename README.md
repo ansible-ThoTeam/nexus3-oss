@@ -222,13 +222,19 @@ The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/securi
 ### Reverse proxy setup
 ```yaml
     httpd_setup_enable: false
+    httpd_server_name: "{{ nexus_public_hostname }}"
+    httpd_default_admin_email: "admin@example.com"
     httpd_ssl_certificate_file: 'files/nexus.vm.crt'
     httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
     # httpd_ssl_certificate_chain_file: "{{ httpd_ssl_certificate_file }}"
     httpd_copy_ssl_files: true
 ```
 
-Setup an [SSL Reverse-proxy](https://help.sonatype.com/display/NXRM3/Run+Behind+a+Reverse+Proxy#RunBehindaReverseProxy-Example:ReverseProxySSLTerminationatBasePath), this needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
+Setup an [SSL Reverse-proxy](https://help.sonatype.com/display/NXRM3/Run+Behind+a+Reverse+Proxy#RunBehindaReverseProxy-Example:ReverseProxySSLTerminationatBasePath).
+This needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
+
+The default hostname used is `nexus_public_hostname`. If you need different names for whatever reason, you can set
+`httpd_server_name` to a different value.
 
 With `httpd_copy_ssl_files: true` (default), the above certs must exist in your playbook dir and will be copied to the server and configured in apache. `httpd_ssl_certificate_chain_file` is optional and must be left unset if you do not want to configure a chain file.
 
@@ -786,7 +792,7 @@ Feel free to use them or implement your own install scenario at your convenience
   vars:
     nexus_timezone: 'Canada/Eastern'
     nexus_admin_password: "{{ vault_nexus_admin_password }}"
-    httpd_server_name: 'nexus.vm'
+    nexus_public_hostname: 'nexus.vm'
     httpd_setup_enable: true
     httpd_ssl_certificate_file: "{{ vault_httpd_ssl_certificate_file }}"
     httpd_ssl_certificate_key_file: "{{ vault_httpd_ssl_certificate_key_file }}"
