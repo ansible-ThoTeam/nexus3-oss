@@ -177,6 +177,7 @@ nexus_privileges:
   - name: all-repos-read  # used as key to update a privilege
     description: 'Read & Browse access to all repos'
     repository: '*'
+    type: repository-view
     actions:
       - read
       - browse
