@@ -76,6 +76,17 @@
     - include_tasks: create_content_selector_each.yml
       with_items: "{{ nexus_content_selectors }}"
 
+    - name: apply defaults to privileges
+      # @todo: fix with easier syntax once the flip filter is released
+      # See more comments on this issue in process_repos_list.yml
+      set_fact:
+        nexus_privileges: >-
+          {%- set result=[] -%}
+          {%- for privilege in nexus_privileges -%}
+            {{ result.append(_nexus_privilege_defaults | combine(privilege)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
+
     - name: Create/check privileges
       include_tasks: call_script.yml
       vars:
