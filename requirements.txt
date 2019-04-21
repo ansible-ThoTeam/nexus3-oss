@@ -15,10 +15,12 @@
 
 # Latest ansible
 ansible
-# Latest molecule from source
-git+https://github.com/ansible/molecule
-# Latest docker-py
-docker-py
+# Latest molecule
+molecule
+# Yamllint is not in molecule deps anymore
+yamllint
+# Latest docker
+docker
 # We use json_query in tasks which requires jmespath
 jmespath
 # Python vagrant only needed for local test for selinux
