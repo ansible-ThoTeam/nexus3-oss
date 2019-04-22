@@ -1,8 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible.errors import AnsibleError, AnsibleFilterError
+from ansible.errors import AnsibleFilterError
 import json
+
 
 class FilterModule(object):
     """
@@ -20,7 +21,7 @@ class FilterModule(object):
         Check if the passed uri module call data has returned an error
 
         :param data: A registered var after calling the nexus groovy script though uri module
-        :return: boolean: true if error, false otherwise
+        :return: boolean: True if error, False otherwise
         """
         return self._nexus_groovy_result(data, 'error')
 
@@ -29,7 +30,7 @@ class FilterModule(object):
         Check if the passed uri module call data has returned a changed state
 
         :param data: A registered var after calling the nexus groovy script though uri module
-        :return: boolean: true if changed, false otherwise
+        :return: boolean: True if changed, False otherwise
         """
         return self._nexus_groovy_result(data, 'changed')
 
@@ -48,17 +49,17 @@ class FilterModule(object):
         Inspect data from an uri module call to a custom groovy script in nexus
         and return the required element. This is based on a specific json
         we return in result for groovy script in this role. If the result does
-        not contain the expected params or is not in json format, changed will always 
-        be false.
-        
+        not contain the expected params or is not in json format, changed will always
+        be False.
+
         The element can be:
-        - error: true if the call did not return a 200 status or error is true in result
-        - changed: true if changed is true in result
+        - error: True if the call did not return a 200 status or error is True in result
+        - changed: True if changed is True in result
         - details: a list of maps with details for each action taken in the script
-        
+
         :param data: A registered var after calling the script though uri module
         :param element: The desired element (error, changed, action_details)
-        :return: true/false or a list of maps with details.
+        :return: True/False or a list of maps with details.
         """
 
         valid_elements = ['error', 'changed', 'action_details']
@@ -104,7 +105,7 @@ class FilterModule(object):
                 result = {
                     'error': True,
                     'changed': False,
-                    'action_details': raw_result if raw_result else  "Global script failure"
+                    'action_details': raw_result if raw_result else "Global script failure"
                 }
         except Exception as e:
             raise AnsibleFilterError('Filter encountered an unexpected exception: {} {}'.format(type(e), e))
