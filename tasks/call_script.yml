@@ -20,6 +20,7 @@
       debug:
         msg: "{{ script_run | nexus_groovy_details }}"
         verbosity: 1
+      when: not ansible_check_mode
 
   rescue:
 
