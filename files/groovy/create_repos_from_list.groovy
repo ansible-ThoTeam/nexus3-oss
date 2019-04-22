@@ -118,12 +118,18 @@ parsed_args.each { currentRepo ->
         if (existingRepository == null) {
             repositoryManager.create(configuration)
             currentResult.put('status', 'created')
+            scriptResults['changed'] = true
+            log.info('Configuration for repo {} created', currentRepo.name)
         } else {
-            repositoryManager.update(configuration)
-            currentResult.put('status', 'updated')
+            if (configuration.equals(existingRepository.configuration)) {
+                repositoryManager.update(configuration)
+                currentResult.put('status', 'updated')
+                log.info('Configuration for repo {} saved', currentRepo.name)
+                scriptResults['changed'] = true
+            } else {
+                currentResult.put('status', 'no change')
+            }
         }
-        log.info('Configuration for repo {} saved', currentRepo.name)
-        scriptResults['changed'] = true
 
     } catch (Exception e) {
         currentResult.put('status', 'error')

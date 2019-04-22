@@ -1,14 +1,49 @@
 ---
-- name: Calling Groovy script {{ script_name }}
-  uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ script_name }}/run"
-    user: 'admin'
-    password: "{{ current_nexus_admin_password }}"
-    headers:
-      Content-Type: "text/plain"
-    method: POST
-    status_code: 200,204
-    force_basic_auth: yes
-    validate_certs: "{{ nexus_api_validate_certs }}"
-    body: "{{ args | to_json }}"
+- block:
+    - name: Calling Groovy script {{ script_name }}
+      uri:
+        url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ script_name }}/run"
+        user: 'admin'
+        password: "{{ current_nexus_admin_password }}"
+        headers:
+          Content-Type: "text/plain"
+        method: POST
+        force_basic_auth: yes
+        validate_certs: "{{ nexus_api_validate_certs }}"
+        body: "{{ args | to_json }}"
+      register: script_run
+      failed_when: script_run | nexus_groovy_error | bool
+      changed_when: script_run | nexus_groovy_changed | bool
+
+    - name: Details about runned script if verbose mode is on
+      debug:
+        msg: "{{ script_run | nexus_groovy_details }}"
+        verbosity: 1
+      when: not ansible_check_mode
+
+  rescue:
+
+    - when: script_run | nexus_groovy_details == 'Global script failure'
+      block:
+
+        - name: Debug script result for global fail
+          debug:
+            var: script_run
+
+        - name: Global script failure at nexus level
+          fail:
+            msg: >-
+              Running the script {{ script_name }} failed at nexus level.
+              See the above debug output
+
+
+    - name: Debug script result for failed script actions
+      debug:
+        msg: "{{ script_run | nexus_groovy_details }}"
+
+    - name: Script action failure
+      fail:
+        msg: >-
+          The script {{ script_name }} returned at least one of its
+          actions has failed. See the degug message above for details
