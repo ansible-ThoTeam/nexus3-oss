@@ -262,3 +262,7 @@
         language: groovy
         source: "{{ lookup('template', './templates/backup.groovy.j2') }}"
   when: nexus_backup_configure | bool
+
+- name: run tests
+  include: nexus_tests.yml
+  tags: nexus_tests

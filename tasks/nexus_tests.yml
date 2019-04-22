@@ -1,0 +1,16 @@
+---
+- name: force notified handlers
+  meta: flush_handlers
+
+- name: ensure port 8081 listening
+  wait_for:
+    port: 8081
+    delay: 15
+    timeout: 30
+  retries: 2
+
+- name: test nexus home
+  uri:
+    url: http://localhost:8081/
+    status_code: 200
+    validate_certs: False
