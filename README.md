@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ansible-ThoTeam/nexus3-oss.svg?branch=master)](https://travis-ci.org/ansible-ThoTeam/nexus3-oss)
 # Ansible Role: Nexus 3 OSS
 
 This role installs and configures Nexus Repository Manager OSS version 3.x.
