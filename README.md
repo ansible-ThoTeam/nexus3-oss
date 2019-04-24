@@ -776,7 +776,7 @@ ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionn
 ## Dependencies
 
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
-  - [geerlingguy.apache](https://galaxy.ansible.com/geerlingguy/java/)
+  - [geerlingguy.java](https://galaxy.ansible.com/geerlingguy/java/)
   - [geerlingguy.apache](https://galaxy.ansible.com/geerlingguy/apache/)
 
 Feel free to use them or implement your own install scenario at your convenience.
