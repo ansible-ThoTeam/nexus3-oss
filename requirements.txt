@@ -16,7 +16,8 @@
 # Latest ansible
 ansible
 # Latest molecule
-molecule
+# molecule
+git+https://github.com/ansible/molecule.git@96036591b74b5b2475151998df2a145f119d421c
 # Yamllint is not in molecule deps anymore
 yamllint
 # Latest docker
