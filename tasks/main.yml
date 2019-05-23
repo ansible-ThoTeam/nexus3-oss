@@ -21,7 +21,7 @@
 - import_tasks: nexus_install.yml
 
 - include_tasks: httpd_reverse_proxy_config.yml
-  when: httpd_setup_enable
+  when: httpd_setup_enable | bool
 
 - name: Configure nexus http proxy
   include_tasks: call_script.yml
@@ -117,7 +117,7 @@
 
     - name: "Digest splited blob list var"
       include_vars: blob_vars.yml
-      when: nexus_blob_split
+      when: nexus_blob_split | bool
 
     - name: Create/Check blobstores
       when: nexus_restore_point is undefined
