@@ -226,6 +226,8 @@
   yum:
     name: rsync
     state: present
+  tags:
+    - skip_ansible_lint  # let yum retry
 
 - block:
     - name: Sync new scripts to old and get differences

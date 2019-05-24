@@ -1,0 +1,59 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+  safe_files:
+    - nexus-downloads
+
+lint:
+  name: yamllint
+
+platforms:
+
+  - name: nexus3-oss-docker
+    hostname: nexus3-oss-docker
+    image: sonatype/nexus3:3.16.1
+    pull: True
+    dockerfile: Dockerfile.j2
+    pre_build_image: False
+    override_command: False
+    published_ports:
+      - 8081:8081
+    groups:
+      - nexus
+    networks: &nexus_networks
+      - name: nexus-default
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+
+scenario:
+  name: default-docker
+  check_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  test_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - check
+    - verify
+    - destroy
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

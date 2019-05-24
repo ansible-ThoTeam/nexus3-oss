@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: nexus
+  roles:
+    - role: nexus3-oss
+      httpd_setup_enable: false
+      nexus_backup_configure: false
+  vars:
+    nexus_installed: true
+    nexus_systemd_service: false
+    nexus_version: '3.16.1'
+  vars_files:
+    - ../ssl-{{ ansible_os_family }}.yml
+    - ../nexus_common_test_vars.yml
