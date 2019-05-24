@@ -18,11 +18,7 @@
 - include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
 
-- import_tasks: nexus_install.yml
-#   when: not nexus_installed
-
-# - import_tasks: nexus_installed.yml
-#   when: nexus_installed
+- include_tasks: nexus_{{ 'installed' if nexus_installed else 'install' }}.yml
 
 - include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
