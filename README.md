@@ -42,6 +42,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
             * [Force groovy scripts registration](#force-groovy-scripts-registration)
             * [Change admin password after first install](#change-admin-password-after-first-install)
             * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
+               * [Fix upgrade failing on timeout waiting for nexus port](#fix-upgrade-failing-on-timeout-waiting-for-nexus-port)
             * [Skip provisionning tasks](#skip-provisionning-tasks)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
@@ -54,7 +55,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2019-03-01T15:18+01:00 -->
+<!-- Added by: olcla, at: 2019-05-24T15:03+02:00 -->
 
 <!--te-->
 
@@ -736,10 +737,10 @@ ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_default_admin_
 ```yaml
     nexus_upgrade: true
 ```
-**This variable has no effect if nexus_version is fixed in your vars**
+**This variable has no effect if `nexus_version` is fixed in your vars**
 
 Unless you set this variable, the role will keep the current installed nexus version when running against
-an already provisionned host. Passing this extra var will trigger automatic latest nexus version detection and upgrade
+an already provisioned host. Passing this extra var will trigger automatic latest nexus version detection and upgrade
 if a newer version is available.
 
 **Setting this var as part of your playbook breaks idempotence** (i.e. your playbook will make changes to your system
@@ -748,6 +749,22 @@ if a new version is available although no parameters have changed)
 We strongly suggest to use this variable only as an extra var to ansible-playbook call
 ```bash
 ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_upgrade=true
+```
+
+##### Fix upgrade failing on timeout waiting for nexus port
+If you have a large nexus repository, you may occasionally see an error message when upgrading
+```
+RUNNING HANDLER [nexus3-oss : wait-for-nexus-port] *************
+fatal: [nexushost]: FAILED! => {"changed": false, "elapsed": 300, "msg": "Timeout when waiting for 127.0.0.1:8081"}
+```
+This is most likely because the nexus upgrade process (i.e. migrating internal orientdb) is taking longer than
+the default 300 seconds. You can overcome this situation by setting a custom timeout in seconds to or/and a number of retries
+for the handler task.
+```
+ansible-playbook -i your/inventory.ini your_playbook.yml \
+-e nexus_upgrade=true \
+-e nexus_wait_for_port_timeout=600
+-e nexus_wait_for_port_retries=2
 ```
 
 #### Skip provisionning tasks

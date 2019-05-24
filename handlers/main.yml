@@ -25,7 +25,10 @@
 - name: wait-for-nexus-port
   wait_for:
     port: "{{ nexus_default_port }}"
-    delay: 5
+    timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
+  retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
+  register: wait_for_result
+  until: wait_for_result is success
 
 - name: httpd-service-reload
   systemd:
