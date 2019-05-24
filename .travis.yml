@@ -13,6 +13,7 @@ install:
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
 env:
   - SCENARIO=default
+  - SCENARIO=default-docker
   - SCENARIO=default-centos7
   - SCENARIO=default-debian_jessie
   - SCENARIO=default-debian_stretch
