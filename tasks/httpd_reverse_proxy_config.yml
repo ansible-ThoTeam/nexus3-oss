@@ -24,7 +24,7 @@
     src: "{{ httpd_ssl_certificate_key_file }}"
     dest: "{{ certificate_key_dest }}"
     mode: 0600
-  when: httpd_copy_ssl_files
+  when: httpd_copy_ssl_files | bool
   notify:
     - httpd-service-reload
     - wait-for-httpd
