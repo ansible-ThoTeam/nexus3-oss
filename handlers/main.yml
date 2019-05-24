@@ -3,22 +3,23 @@
   systemd:
     daemon-reload: yes
     name: nexus.service
-  when: nexus_systemd_service
 
 - name: nexus-service-restart
   systemd:
     name: nexus.service
     state: restarted
     no_block: yes
-  when: nexus_systemd_service
 
 - name: nexus-service-stop
   systemd:
     name: nexus.service
     state: stopped
-  when:
-    - nexus_systemd_service_file.stat.exists
-    - nexus_systemd_service
+  when: nexus_systemd_service_file.stat.exists
+
+- name: nexus-container-restart
+  debug:
+    msg: "Placeholder"
+  delegate_to: localhost
 
 - name: wait-for-nexus
   wait_for:
@@ -40,7 +41,6 @@
     state: reloaded
     enabled: yes
     no_block: yes
-  when: nexus_systemd_service
 
 - name: wait-for-httpd
   wait_for:

@@ -59,37 +59,35 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Dkaraf.data=.*"
     line: "-Dkaraf.data={{ nexus_data_dir }}"
-  notify:
-    - nexus-service-stop
+  notify: nexus-container-restart
 
 - name: Setup JVM logfile directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:LogFile=.*"
     line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
-  notify:
-    - nexus-service-stop
+  notify: nexus-container-restart
 
 - name: Setup Nexus JVM min heap size
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Xms.*"
     line: "-Xms{{ nexus_min_heap_size }}"
-  notify: nexus-service-stop
+  notify: nexus-container-restart
 
 - name: Setup Nexus JVM max heap size
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Xmx.*"
     line: "-Xmx{{ nexus_max_heap_size }}"
-  notify: nexus-service-stop
+  notify: nexus-container-restart
 
 - name: Setup Nexus JVM max direct memory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:MaxDirectMemorySize=.*"
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
-  notify: nexus-service-stop
+  notify: nexus-container-restart
 
 - name: Create Nexus tmp/backup directory
   file:
@@ -106,8 +104,7 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Djava.io.tmpdir=.*"
     line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
-  notify:
-    - nexus-service-stop
+  notify: nexus-container-restart
 
 - block:
     - name: "Deploy backup restore script"
