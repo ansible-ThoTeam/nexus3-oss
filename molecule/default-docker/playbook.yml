@@ -6,7 +6,7 @@
       httpd_setup_enable: false
       nexus_backup_configure: false
   vars:
-    nexus_installed: true
+    nexus_docker: true
     nexus_version: '3.16.1'
   vars_files:
     - ../ssl-{{ ansible_os_family }}.yml

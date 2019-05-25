@@ -17,7 +17,7 @@ nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC'  # java timezone
 nexus_tmp_dir: '/tmp/nexus'
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
-nexus_installed: false
+nexus_docker: false
 
 # These are the default values for JVM Ram
 # don't touch those unless you have read
