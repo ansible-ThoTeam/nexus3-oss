@@ -49,6 +49,8 @@ scenario:
     - create
     - prepare
     - converge
+    - converge  # Second converge since nexus process is running as root and creates files in blobs
+    - idempotence
     - check
     - verify
     - destroy
