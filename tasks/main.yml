@@ -20,6 +20,8 @@
 
 - include_tasks: nexus_{{ 'docker' if nexus_docker else 'install' }}.yml
 
+- include_tasks: nexus_provision.yml
+
 - include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
 
