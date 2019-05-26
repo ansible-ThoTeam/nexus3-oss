@@ -142,6 +142,13 @@
     port: "{{ nexus_default_port }}"
     delay: 5
 
+- name: ensure rsync is installed
+  yum:
+    name: rsync
+    state: present
+  tags:
+    - skip_ansible_lint  # let yum retry
+
 - name: Access scripts API endpoint with defined admin password
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
@@ -218,13 +225,6 @@
   unarchive:
     src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
-
-- name: ensure rsync is installed
-  yum:
-    name: rsync
-    state: present
-  tags:
-    - skip_ansible_lint  # let yum retry
 
 - block:
     - name: Sync new scripts to old and get differences
