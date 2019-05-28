@@ -52,3 +52,85 @@
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+
+- name: Setup Nexus data directory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Dkaraf.data=.*"
+    line: "-Dkaraf.data={{ nexus_data_dir }}"
+  notify:
+    - "{{ nexus_service_handler }}"
+
+- name: Setup JVM logfile directory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-XX:LogFile=.*"
+    line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
+  notify:
+    - "{{ nexus_service_handler }}"
+
+- name: Setup Nexus default timezone
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Duser.timezone=.*"
+    line: "-Duser.timezone={{ nexus_timezone }}"
+  notify:
+    - "{{ nexus_service_handler }}"
+
+- name: Setup Nexus JVM min heap size
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Xms.*"
+    line: "-Xms{{ nexus_min_heap_size }}"
+  notify: "{{ nexus_service_handler }}"
+
+- name: Setup Nexus JVM max heap size
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Xmx.*"
+    line: "-Xmx{{ nexus_max_heap_size }}"
+  notify: "{{ nexus_service_handler }}"
+
+- name: Setup Nexus JVM max direct memory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-XX:MaxDirectMemorySize=.*"
+    line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
+  notify: "{{ nexus_service_handler }}"
+
+- name: Create Nexus tmp/backup directory
+  file:
+    path: "{{ item }}"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+  with_items:
+    - "{{ nexus_tmp_dir }}"
+    - "{{ nexus_backup_dir }}"
+
+- name: Setup Nexus tmp directory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Djava.io.tmpdir=.*"
+    line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
+  notify:
+    - "{{ nexus_service_handler }}"
+
+- block:
+    - name: "Deploy backup restore script"
+      template:
+        src: "nexus-blob-restore.sh.j2"
+        dest: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
+        mode: 0755
+    - name: "Symlink backup restore script to /sbin"
+      file:
+        src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
+        dest: "/sbin/nexus-blob-restore.sh"
+        state: link
+  when: nexus_backup_configure | bool
+
+- name: 'Check if data directory is empty (first-time install)'
+  command: "ls {{ nexus_data_dir }}"
+  register: nexus_data_dir_contents
+  check_mode: no
+  changed_when: false
