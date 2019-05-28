@@ -16,105 +16,44 @@
     follow: false
   register: nexus_latest_version
   notify:
-    - nexus-container-restart
+    - "{{ nexus_service_handler }}"
 
-- name: Get application settings directories
-  set_fact:
-    nexus_app_dir_settings_dirs:
-      - "{{ nexus_installation_dir }}/nexus-latest/etc"
-      - "{{ nexus_installation_dir }}/nexus-latest/etc/karaf"
-      - "{{ nexus_installation_dir }}/nexus-latest/etc/jetty"
-      - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
-      - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
-      - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
-  when: nexus_version is version_compare('3.1.0', '>=')
-
-- name: Get rest API endpoint (v < 3.8.0)
-  set_fact:
-    nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
-  when: nexus_version is version_compare('3.8.0', '<')
-
-- name: Get rest API endpoint (v >= 3.8.0)
-  set_fact:
-    nexus_rest_api_endpoint: "service/rest/v1/script"
-  when: nexus_version is version_compare('3.8.0', '>=')
-
-- name: Get path to database restore dir (v < 3.11.0)
-  set_fact:
-    nexus_db_restore_dir: "{{ nexus_data_dir }}/backup"
-  when: nexus_version is version_compare('3.11.0', '<')
-
-- name: Get path to database restore dir (v >= 3.11.0)
-  set_fact:
-    nexus_db_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
-  when: nexus_version is version_compare('3.11.0', '>=')
-
-- name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
-  file:
-    path: "{{ item }}"
-    state: "directory"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
-    mode: "0755"
-    recurse: false
-  with_items: "{{ nexus_app_dir_settings_dirs }}"
-  when: nexus_latest_version.changed
-  register: chown_config_first_time
-  tags:
-    # hard to run as a handler for time being
-    - skip_ansible_lint
-
-- name: Create Nexus data directory
-  file:
-    path: "{{ nexus_data_dir }}"
-    state: "directory"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
-
-- name: Update symlink nexus-latest
-  file:
-    path: "{{ nexus_installation_dir }}/nexus-latest"
-    src: "/opt/sonatype/nexus"
-    owner: "{{ nexus_os_user }}"
-    group: "{{ nexus_os_group }}"
-    state: link
-    follow: false
-  register: nexus_latest_version
+- include_tasks: nexus_paths.yml
 
 - name: Setup Nexus data directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Dkaraf.data=.*"
     line: "-Dkaraf.data={{ nexus_data_dir }}"
-  notify: nexus-container-restart
+  notify: "{{ nexus_service_handler }}"
 
 - name: Setup JVM logfile directory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:LogFile=.*"
     line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
-  notify: nexus-container-restart
+  notify: "{{ nexus_service_handler }}"
 
 - name: Setup Nexus JVM min heap size
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Xms.*"
     line: "-Xms{{ nexus_min_heap_size }}"
-  notify: nexus-container-restart
+  notify: "{{ nexus_service_handler }}"
 
 - name: Setup Nexus JVM max heap size
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Xmx.*"
     line: "-Xmx{{ nexus_max_heap_size }}"
-  notify: nexus-container-restart
+  notify: "{{ nexus_service_handler }}"
 
 - name: Setup Nexus JVM max direct memory
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:MaxDirectMemorySize=.*"
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
-  notify: nexus-container-restart
+  notify: "{{ nexus_service_handler }}"
 
 - name: Create Nexus tmp/backup directory
   file:
@@ -131,7 +70,7 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-Djava.io.tmpdir=.*"
     line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
-  notify: nexus-container-restart
+  notify: "{{ nexus_service_handler }}"
 
 - block:
     - name: "Deploy backup restore script"

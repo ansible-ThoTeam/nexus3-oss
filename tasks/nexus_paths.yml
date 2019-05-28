@@ -1,0 +1,54 @@
+---
+
+- name: Get application settings directories
+  set_fact:
+    nexus_app_dir_settings_dirs:
+      - "{{ nexus_installation_dir }}/nexus-latest/etc"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/karaf"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/jetty"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
+      - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
+  when: nexus_version is version_compare('3.1.0', '>=')
+
+- name: Get rest API endpoint (v < 3.8.0)
+  set_fact:
+    nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
+  when: nexus_version is version_compare('3.8.0', '<')
+
+- name: Get rest API endpoint (v >= 3.8.0)
+  set_fact:
+    nexus_rest_api_endpoint: "service/rest/v1/script"
+  when: nexus_version is version_compare('3.8.0', '>=')
+
+- name: Get path to database restore dir (v < 3.11.0)
+  set_fact:
+    nexus_db_restore_dir: "{{ nexus_data_dir }}/backup"
+  when: nexus_version is version_compare('3.11.0', '<')
+
+- name: Get path to database restore dir (v >= 3.11.0)
+  set_fact:
+    nexus_db_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
+  when: nexus_version is version_compare('3.11.0', '>=')
+
+- name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
+  file:
+    path: "{{ item }}"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    mode: "0755"
+    recurse: false
+  with_items: "{{ nexus_app_dir_settings_dirs }}"
+  when: nexus_latest_version.changed
+  register: chown_config_first_time
+  tags:
+    # hard to run as a handler for time being
+    - skip_ansible_lint
+
+- name: Create Nexus data directory
+  file:
+    path: "{{ nexus_data_dir }}"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
