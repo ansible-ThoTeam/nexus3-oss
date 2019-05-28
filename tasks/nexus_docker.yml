@@ -1,0 +1,35 @@
+---
+
+- name: Fail if version not provided
+  fail:
+    msg: >-
+      The nexus_version must be specified.
+  when: nexus_version | length == 0
+
+- name: Update symlink nexus-latest
+  file:
+    path: "{{ nexus_installation_dir }}/nexus-latest"
+    src: "{{ nexus_installation_dir }}/sonatype/nexus"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    state: link
+    follow: false
+  register: nexus_latest_version
+  notify:
+    - "{{ nexus_service_handler }}"
+
+- include_tasks: nexus_paths.yml
+
+- meta: flush_handlers
+
+- name: wait-for-nexus-port
+  wait_for:
+    port: "{{ nexus_default_port }}"
+    delay: 5
+
+- name: ensure rsync is installed
+  yum:
+    name: rsync
+    state: present
+  tags:
+    - skip_ansible_lint  # let yum retry
