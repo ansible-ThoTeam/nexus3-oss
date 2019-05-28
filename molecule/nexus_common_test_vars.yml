@@ -165,6 +165,22 @@ nexus_scheduled_tasks:
       gracePeriodInDays: "2"
     booleanTaskProperties:
       removeIfReleased: true
+  #  Example task to run manually
+  - name: Purge-unused-maven-snapshots-manual
+    manual: true
+    typeId: repository.maven.purge-unused-snapshots
+    task_alert_email: alerts@example.org  # optional
+    taskProperties:
+      repositoryName: "*"
+      lastUsedDays: "30"
+  #  Example task to run once
+  - name: Purge-unused-maven-snapshots-once
+    once: true
+    typeId: repository.maven.purge-unused-snapshots
+    task_alert_email: alerts@example.org  # optional
+    taskProperties:
+      repositoryName: "*"
+      lastUsedDays: "30"
 
 nexus_local_users:
   - username: jenkins
