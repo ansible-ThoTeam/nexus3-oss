@@ -31,12 +31,25 @@ parsed_args.booleanTaskProperties.each { key, value -> taskConfiguration.setBool
 
 Schedule schedule = null;
 
-if (parsed_args.manual) {
-  schedule = taskScheduler.scheduleFactory.manual()
-} else if (parsed_args.once) {
-  schedule = taskScheduler.scheduleFactory.once(new Date())
-} else {
-  schedule = taskScheduler.scheduleFactory.cron(new Date(), parsed_args.cron)
+switch( parsed_args.schedule_type ) {
+    case 'manual':
+        schedule = taskScheduler.scheduleFactory.manual()
+        break
+    case 'now':
+        schedule = taskScheduler.scheduleFactory.now()
+        break
+    case 'once':
+        schedule = taskScheduler.scheduleFactory.once(new Date())
+        break
+    case 'hourly':
+        schedule = taskScheduler.scheduleFactory.hourly(new Date())
+        break
+    case 'daily':
+        schedule = taskScheduler.scheduleFactory.daily(new Date())
+        break
+    default:
+        schedule = taskScheduler.scheduleFactory.cron(new Date(), parsed_args.cron)
+        break
 }
 
 taskScheduler.scheduleTask(taskConfiguration, schedule)
