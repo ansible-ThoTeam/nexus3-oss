@@ -392,6 +392,22 @@
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
 
+- name: Run shell to get admin pass
+  shell: |
+    cat /var/nexus/admin.password
+  register: shell_admin_pass
+  no_log: true
+
+#- name: Debug
+#  debug:
+#    msg: "Current admin password in /var/nexus/admin.password is : {{shell_admin_pass.stdout}}"
+
+- name: Register default admin password for next operations
+  set_fact:
+    nexus_default_admin_password: "{{shell_admin_pass.stdout}}"
+  when: nexus_api_head_with_defined_password.status == 401
+
+
 - name: Access scripts API endpoint with default admin password
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
