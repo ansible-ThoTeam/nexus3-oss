@@ -13,7 +13,7 @@ TaskInfo existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
 }
 
 if (existingTask && existingTask.getCurrentState().getRunState() != null) {
-    log.info("Could not update currently running task : " + parsed_args.name)
+    log.info('Could not update currently running task : {}', parsed_args.name)
     return
 }
 
@@ -29,6 +29,18 @@ if (parsed_args.task_alert_email) {
 
 parsed_args.booleanTaskProperties.each { key, value -> taskConfiguration.setBoolean(key, Boolean.valueOf(value)) }
 
-Schedule schedule = taskScheduler.scheduleFactory.cron(new Date(), parsed_args.cron)
+String frequency = parsed_args.frequency ?: 'cron'
+
+Schedule schedule
+switch (frequency) {
+    case 'cron':
+        shedule = taskScheduler.scheduleFactory.cron(new Date(), parsed_args.cron)
+        break
+    case 'manual':
+        shedule = taskScheduler.scheduleFactory.manual()
+        break
+    default:
+        log.info('Unhandled `frequency` parameter value : {}', frequency)
+}
 
 taskScheduler.scheduleTask(taskConfiguration, schedule)

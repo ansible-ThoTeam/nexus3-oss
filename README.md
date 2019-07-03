@@ -639,6 +639,13 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
     #    task_alert_email: alerts@example.org  # optional
     #    taskProperties:
     #      age: "24"
+    #  # Example task to reindex npm repositories
+    #  - name: Reindex npm repositories
+    #    frequency: "manual"
+    #    typeId: "repository.npm.reindex"
+    #    task_alert_email: alerts@example.org  # optional
+    #    taskProperties:
+    #      repositoryName: "*"  # * for all repos. Change to a repository name if you only want a specific one
 ```
 
 [Scheduled tasks](https://help.sonatype.com/display/NXRM3/System+Configuration#SystemConfiguration-ConfiguringandExecutingTasks) to setup. `typeId` and task-specific `taskProperties`/`booleanTaskProperties` can be guessed either:
