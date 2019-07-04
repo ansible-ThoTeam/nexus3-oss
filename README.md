@@ -507,6 +507,7 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
 ```yaml
     nexus_repos_maven_proxy:
       - name: central
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://repo1.maven.org/maven2/'
         layout_policy: permissive
         # maximum_component_age: -1
@@ -514,6 +515,7 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
       - name: jboss
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
@@ -535,6 +537,7 @@ Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Ma
 ```yaml
     nexus_repos_maven_hosted:
       - name: private-release
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         version_policy: release
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 ```
@@ -544,6 +547,7 @@ Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+M
 ```yaml
     nexus_repos_maven_group:
       - name: public
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         member_repos:
           - central
           - jboss
@@ -871,17 +875,22 @@ Feel free to use them or implement your own install scenario at your convenience
           blobstoreName: 'company-artifacts'
     nexus_repos_maven_proxy:
       - name: central
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://repo1.maven.org/maven2/'
         layout_policy: permissive
       - name: alfresco
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://artifacts.alfresco.com/nexus/content/groups/private/'
         remote_username: 'secret-username'
         remote_password: "{{ vault_alfresco_private_password }}"
       - name: jboss
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
       - name: vaadin-addons
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://maven.vaadin.com/vaadin-addons/'
       - name: jaspersoft
+        blob_store: "{{ nexus_blob_names.mvn.blob }}"
         remote_url: 'https://jaspersoft.artifactoryonline.com/jaspersoft/jaspersoft-repo/'
         version_policy: mixed
     nexus_repos_maven_hosted:

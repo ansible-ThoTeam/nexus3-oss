@@ -396,6 +396,7 @@
   shell: |
     cat /var/nexus/admin.password
   register: shell_admin_pass
+  ignore_errors: yes
   no_log: true
 
 #- name: Debug
@@ -405,8 +406,13 @@
 - name: Register default admin password for next operations
   set_fact:
     nexus_default_admin_password: "{{shell_admin_pass.stdout}}"
-  when: nexus_api_head_with_defined_password.status == 401
+  when: nexus_api_head_with_defined_password.status == 401 and shell_admin_pass.rc == 0
 
+
+- name: Register default admin password for next operations
+  set_fact:
+    current_nexus_admin_password: "{{ nexus_default_admin_password }}"
+  when: nexus_api_head_with_defined_password.status == 401 and shell_admin_pass.rc != 0
 
 - name: Access scripts API endpoint with default admin password
   uri:

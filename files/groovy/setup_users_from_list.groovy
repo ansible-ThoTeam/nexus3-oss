@@ -1,19 +1,22 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.Field
+import org.sonatype.nexus.security.authz.AuthorizationManager
 import org.sonatype.nexus.security.role.RoleIdentifier
 import org.sonatype.nexus.security.user.InvalidCredentialsException
+import org.sonatype.nexus.security.user.User
 import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.user.UserNotFoundException
-import org.sonatype.nexus.security.user.User
 
 List<Map<String, String>> actionDetails = []
 @Field Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', actionDetails)
-@Field authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
+
 
 def updateUser(userDef, currentResult) {
     User user = security.securitySystem.getUser(userDef.username)
+
+    AuthorizationManager authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
 
     user.setFirstName(userDef.first_name)
     user.setLastName(userDef.last_name)
@@ -31,18 +34,20 @@ def updateUser(userDef, currentResult) {
         RoleIdentifier role = new RoleIdentifier("default", authManager.getRole(roleDef).roleId);
         definedRoles.add(role)
     }
-    if (! existingRoles.equals(definedRoles)) {
+    if (!existingRoles.equals(definedRoles)) {
         security.securitySystem.setUsersRoles(user.getUserId(), "default", definedRoles)
         currentResult.put('status', 'updated')
         scriptResults['changed'] = true
     }
 
-    try {
-        security.securitySystem.changePassword(userDef.username, userDef.password, userDef.password)
-    } catch (InvalidCredentialsException ignored) {
-        security.securitySystem.changePassword(userDef.username, userDef.password)
-        currentResult.put('status', 'updated')
-        scriptResults['changed'] = true
+    if (!userDef.username.equals('anonymous')) {
+        try {
+            security.securitySystem.changePassword(userDef.username, userDef.password, userDef.password)
+        } catch (InvalidCredentialsException ignored) {
+            security.securitySystem.changePassword(userDef.username, userDef.password)
+            currentResult.put('status', 'updated')
+            scriptResults['changed'] = true
+        }
     }
     log.info("Updated user {}", userDef.username)
 }

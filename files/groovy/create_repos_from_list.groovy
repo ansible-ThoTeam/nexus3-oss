@@ -44,13 +44,14 @@ parsed_args.each { currentRepo ->
         // Configs for all group repos
         if (currentRepo.type == 'group') {
             configuration.attributes['group'] = [
-                    memberNames: currentRepo.member_repos
+                    memberNames: currentRepo.member_repos,
+                    online        : true
             ]
         }
 
         // Configs for all hosted repos
         if (currentRepo.type == 'hosted') {
-            configuration.attributes['storage']['writePolicy'] = currentRepo.write_policy.toUpperCase()
+            configuration.attributes['storage']['writePolicy'] = currentRepo.write_policy!=null?currentRepo.write_policy.toUpperCase() : 'ALLOW_ONCE'
         }
 
         // Configs for yum hosted repos
@@ -85,9 +86,16 @@ parsed_args.each { currentRepo ->
             ]
 
             configuration.attributes['negativeCache'] = [
-                    enabled: currentRepo.get('negative_cache_enabled', true),
+                    enabled   : currentRepo.get('negative_cache_enabled', true),
                     timeToLive: currentRepo.get('negative_cache_ttl', 1440.0)
             ]
+
+            if (currentRepo.format == 'maven2') {
+                configuration.attributes['maven'] = [
+                        routingRule  : 'NONE'
+                ]
+            }
+
         }
 
         // Configs for docker proxy repos
@@ -102,9 +110,12 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type in ['hosted', 'proxy'] && currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    layoutPolicy : currentRepo.layout_policy.toUpperCase(),
+                    cleanupPolicy: currentRepo.cleanup_policy != null ? currentRepo.cleanup_policy.toUpperCase() : 'NONE'
             ]
         }
+
+
 
         // Configs for all docker repos
         if (currentRepo.format == 'docker') {
