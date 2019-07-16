@@ -10,7 +10,7 @@ import org.sonatype.nexus.security.user.User
 List<Map<String, String>> actionDetails = []
 @Field Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', actionDetails)
-@Field authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
+authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
 
 def updateUser(userDef, currentResult) {
     User user = security.securitySystem.getUser(userDef.username)

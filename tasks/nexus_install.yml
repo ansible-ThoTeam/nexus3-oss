@@ -392,6 +392,20 @@
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
 
+- name: Get generated admin password from file (nexus >= 3.17)
+  when:
+    - nexus_api_head_with_defined_password.status == 401
+    - nexus_version is version_compare('3.17.0', '>=')
+  block:
+    - name: Slurp content of remote generated password file
+      slurp:
+        src: "{{ nexus_data_dir }}/admin.password"
+      register: _slurpedpass
+
+    - name: Set default password from slurped content
+      set_fact:
+        nexus_default_admin_password: "{{ _slurpedpass.content | b64decode }}"
+
 - name: Access scripts API endpoint with default admin password
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
@@ -414,7 +428,7 @@
   fail:
     msg: >-
       Failed to determine current Nexus password
-      (it is neither the default nor the defined password).
+      (it is neither the default/generated nor the defined password).
       If you are trying to change nexus_admin_password after first
       install, please set `-e nexus_default_admin_password=oldPassword`
       on the ansible-playbook command line.
@@ -487,5 +501,11 @@
       set_fact:
         current_nexus_admin_password: "{{ nexus_admin_password }}"
       no_log: true
+
+    - name: Clear generated password file from install (nexus > 3.17)
+      file:
+        path: "{{ nexus_data_dir }}/admin.password"
+        state: absent
+      when: nexus_version is version_compare('3.17.0', '>=')
 
   when: (nexus_api_head_with_default_password.status | default(false)) == 200
