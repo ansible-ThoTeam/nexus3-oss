@@ -124,6 +124,7 @@ ldap_connections: []
 #    ldap_protocol: 'ldaps' # ldap or ldaps
 #    ldap_hostname: 'ldap.mycompany.com'
 #    ldap_port: 636
+#    ldap_use_trust_store: false  # Wether or not to use certs in nexus trust store
 #    ldap_auth: 'simple' or 'none'
 #    ldap_auth_username: 'username' (or DN)   (optional)
 #    ldap_auth_password: 'password'           (optional)
