@@ -37,6 +37,7 @@ connection.setSearchBase(parsed_args.search_base)
 connection.setConnectionTimeout(30)
 connection.setConnectionRetryDelay(300)
 connection.setMaxIncidentsCount(3)
+connection.setUseTrustStore(Boolean.valueOf(parsed_args.use_trust_store))
 ldapConfig.setConnection(connection)
 
 

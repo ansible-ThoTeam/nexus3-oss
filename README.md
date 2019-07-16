@@ -276,6 +276,7 @@ Ldap connections and security realm are disabled by default
         ldap_protocol: 'ldaps' # ldap or ldaps
         ldap_hostname: 'ldap.mycompany.com'
         ldap_port: 636
+        ldap_use_trust_store: false # Wether or not to use certs in the nexus trust store
         ldap_search_base: 'dc=mycompany,dc=net'
         ldap_auth: 'none' # or simple
         ldap_auth_username: 'username' # if auth = simple
@@ -306,6 +307,7 @@ Example LDAP config for anonymous authentication (anonymous bind), this is also 
         ldap_hostname: 'annuaire.mycompany.com'
         ldap_search_base: 'dc=mycompany,dc=net'
         ldap_port: 636
+        ldap_use_trust_store: false
         ldap_user_id_attribute: 'uid'
         ldap_user_real_name_attribute: 'cn'
         ldap_user_email_attribute: 'mail'
@@ -321,6 +323,7 @@ Example LDAP config for simple authentication (using a DSA account) :
         ldap_protocol: 'ldaps'
         ldap_hostname: 'annuaire.mycompany.com'
         ldap_port: 636
+        ldap_use_trust_store: false
         ldap_auth: 'simple'
         ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
         ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
@@ -342,6 +345,7 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
         ldap_protocol: 'ldaps'
         ldap_hostname: 'annuaire.mycompany.com'
         ldap_port: 636
+        ldap_use_trust_store: false
         ldap_auth: 'simple'
         ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
         ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
@@ -369,6 +373,7 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
         ldap_protocol: 'ldaps'
         ldap_hostname: 'annuaire.mycompany.com'
         ldap_port: 636
+        ldap_use_trust_store: false
         ldap_auth: 'simple'
         ldap_auth_username: 'cn=mynexus,ou=dsa,dc=mycompany,dc=net'
         ldap_auth_password: "{{ vault_ldap_dsa_password }}" # better keep passwords in an ansible vault
