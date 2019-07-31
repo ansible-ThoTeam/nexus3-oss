@@ -297,8 +297,7 @@
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-host=.*"
-    line: "application-host=127.0.0.1"
-  when: httpd_setup_enable | bool
+    line: "application-host={{ nexus_application_host }}"
   notify:
     - nexus-service-stop
 
