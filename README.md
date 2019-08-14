@@ -644,6 +644,13 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
     #    task_alert_email: alerts@example.org  # optional
     #    taskProperties:
     #      age: "24"
+    #  #  Example task to compact blobstore :
+    #  - name: Example task to compact blobstore
+    #    typeId: blobstore.compact
+    #    schedule: daily
+    #    start_date: "18/06/2018 05:00"
+    #    taskProperties:
+    #      blobstoreName: 'default'
 ```
 
 [Scheduled tasks](https://help.sonatype.com/display/NXRM3/System+Configuration#SystemConfiguration-ConfiguringandExecutingTasks) to setup. `typeId` and task-specific `taskProperties`/`booleanTaskProperties` can be guessed either:

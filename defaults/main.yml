@@ -326,6 +326,13 @@ nexus_scheduled_tasks: []
 #    task_alert_email: alerts@example.org  # optional
 #    taskProperties:
 #      age: "24"
+#  #  Example task to compact blobstore :
+#  - name: Example task to compact blobstore
+#    typeId: blobstore.compact
+#    schedule: daily
+#    start_date: "18/06/2018 05:00"
+#    taskProperties:
+#      blobstoreName: 'default'
 
 _nexus_privilege_defaults:
   type: repository-view
