@@ -51,7 +51,7 @@
     - nuget-group
     - nuget-hosted
     - nuget.org-proxy
-  when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_repos
+  when: nexus_delete_default_repos # and (nexus_data_dir_contents.stdout | length == 0)
 
 - name: Deleting default blobstore
   include_tasks: delete_blobstore_each.yml
@@ -67,7 +67,7 @@
     - name: "{{ nexus_blob_names.mvn.blob }}"
     - name: "{{ nexus_blob_names.gitlfs.blob }}"
     - name: "{{ nexus_blob_names.yum.blob }}"
-  when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
+  when: nexus_delete_default_blobstore # and (nexus_data_dir_contents.stdout | length == 0)
 
 - block:
     - include_tasks: setup_ldap_each.yml
