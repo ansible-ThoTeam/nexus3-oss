@@ -9,45 +9,49 @@
 # - https://github.com/ansible/ansible/issues/46215
 # - https://github.com/pallets/jinja/pull/906
 
-- name: apply defaults to maven proxy repos
-  set_fact:
-    nexus_repos_maven_proxy: >-
-      {%- set result=[] -%}
-      {%- for repo in nexus_repos_maven_proxy -%}
-        {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
-      {%- endfor -%}
-      {{ result | to_json | from_json }}
+- name: Process definitions for maven
+  when: nexus_config_maven | bool
+  block:
 
-- name: apply defaults to maven hosted repos
-  set_fact:
-    nexus_repos_maven_hosted: >-
-      {%- set result=[] -%}
-      {%- for repo in nexus_repos_maven_hosted -%}
-        {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
-      {%- endfor -%}
-      {{ result | to_json | from_json }}
+    - name: apply defaults to maven proxy repos
+      set_fact:
+        nexus_repos_maven_proxy: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_maven_proxy -%}
+            {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
 
-- name: apply defaults to maven group repos
-  set_fact:
-    nexus_repos_maven_group: >-
-      {%- set result=[] -%}
-      {%- for repo in nexus_repos_maven_group -%}
-        {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
-      {%- endfor -%}
-      {{ result | to_json | from_json }}
+    - name: apply defaults to maven hosted repos
+      set_fact:
+        nexus_repos_maven_hosted: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_maven_hosted -%}
+            {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
 
-- name: Add maven repositories to global repos list
-  set_fact:
-    _nexus_repos_global_list: >-
-      {{
-        _nexus_repos_global_list | default([])
-        +
-        (nexus_repos_maven_proxy | map('combine', {"format": "maven2", "type": "proxy"}) | list)
-        +
-        (nexus_repos_maven_hosted | map('combine', {"format": "maven2", "type": "hosted"}) | list)
-        +
-        (nexus_repos_maven_group | map('combine', {"format": "maven2", "type": "group"}) | list)
-      }}
+    - name: apply defaults to maven group repos
+      set_fact:
+        nexus_repos_maven_group: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_maven_group -%}
+            {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
+
+    - name: Add maven repositories to global repos list
+      set_fact:
+        _nexus_repos_global_list: >-
+          {{
+            _nexus_repos_global_list | default([])
+            +
+            (nexus_repos_maven_proxy | map('combine', {"format": "maven2", "type": "proxy"}) | list)
+            +
+            (nexus_repos_maven_hosted | map('combine', {"format": "maven2", "type": "hosted"}) | list)
+            +
+            (nexus_repos_maven_group | map('combine', {"format": "maven2", "type": "group"}) | list)
+          }}
 
 - name: Process definitions for docker
   when: nexus_config_docker | bool
