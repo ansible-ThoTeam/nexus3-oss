@@ -5,15 +5,17 @@
 
 - name: Include OS specific variables.
   include_vars: "configure-{{ ansible_os_family }}.yml"
+  when: nexus_install_enable
 
 - name: Include OS specific selinux libs and utils if needed
   include_tasks: "selinux-{{ ansible_os_family }}.yml"
-  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled" and nexus_install_enable
 
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service
   register: nexus_systemd_service_file
+  when: nexus_install_enable
 
 - include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
@@ -130,7 +132,7 @@
             group: "{{ nexus_os_group }}"
             state: directory
             recurse: true
-          when: item.path is defined
+          when: item.path is defined and nexus_install_enable
           loop: "{{ nexus_blobstores }}"
 
         - name: Create/Check blobstores
@@ -145,7 +147,7 @@
 
 - name: "Restore nexus backup"
   include_tasks: nexus-restore.yml
-  when: nexus_restore_point is defined
+  when: nexus_restore_point is defined and nexus_install_enable
 
 - block:
 

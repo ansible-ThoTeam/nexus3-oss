@@ -67,6 +67,7 @@
 - name: Register nexus package name
   set_fact:
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+  when: nexus_install_enable
 
 - name: Download nexus_package
   get_url:
@@ -75,11 +76,13 @@
     force: no
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Ensure Nexus o/s group exists
   group:
     name: "{{ nexus_os_group }}"
     state: present
+  when: nexus_install_enable
 
 - name: Ensure Nexus o/s user exists
   user:
@@ -88,11 +91,13 @@
     home: "{{ nexus_os_user_home_dir }}"
     shell: "/bin/bash"
     state: present
+  when: nexus_install_enable
 
 - name: Ensure Nexus installation directory exists
   file:
     path: "{{ nexus_installation_dir }}"
     state: "directory"
+  when: nexus_install_enable
 
 - name: Unpack Nexus download
   unarchive:
@@ -103,12 +108,14 @@
     copy: false
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Ensure proper ownership of nexus installation directory
   file:
     path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     recurse: yes
     mode: "u=rwX,g=rX,o=rX"
+  when: nexus_install_enable
 
 - name: Update symlink nexus-latest
   file:
@@ -121,29 +128,32 @@
   register: nexus_latest_version
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - meta: flush_handlers
+  when: nexus_install_enable
 
 - name: Delete unpacked data directory
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest/data"
     state: absent
+  when: nexus_install_enable
 
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
-  when: nexus_version is version_compare('3.1.0', '<')
+  when: nexus_version is version_compare('3.1.0', '<') and nexus_install_enable
 
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
-  when: nexus_version is version_compare('3.1.0', '>=')
+  when: nexus_version is version_compare('3.1.0', '>=') and nexus_install_enable
 
 - name: Get application settings directories
   set_fact:
     nexus_app_dir_settings_dirs:
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
-  when: nexus_version is version_compare('3.1.0', '<')
+  when: nexus_version is version_compare('3.1.0', '<') and nexus_install_enable
 
 - name: Get application settings directories
   set_fact:
@@ -154,7 +164,7 @@
       - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
-  when: nexus_version is version_compare('3.1.0', '>=')
+  when: nexus_version is version_compare('3.1.0', '>=') and nexus_install_enable
 
 - name: Get rest API endpoint (v < 3.8.0)
   set_fact:
@@ -169,12 +179,12 @@
 - name: Get path to database restore dir (v < 3.11.0)
   set_fact:
     nexus_db_restore_dir: "{{ nexus_data_dir }}/backup"
-  when: nexus_version is version_compare('3.11.0', '<')
+  when: nexus_version is version_compare('3.11.0', '<') and nexus_install_enable
 
 - name: Get path to database restore dir (v >= 3.11.0)
   set_fact:
     nexus_db_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
-  when: nexus_version is version_compare('3.11.0', '>=')
+  when: nexus_version is version_compare('3.11.0', '>=') and nexus_install_enable
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
   file:
@@ -185,7 +195,7 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
-  when: nexus_latest_version.changed
+  when: nexus_latest_version.changed and nexus_install_enable
   register: chown_config_first_time
   tags:
     # hard to run as a handler for time being
@@ -197,6 +207,7 @@
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+  when: nexus_install_enable
 
 - name: Setup Nexus data directory
   lineinfile:
@@ -205,6 +216,7 @@
     line: "-Dkaraf.data={{ nexus_data_dir }}"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Setup JVM logfile directory
   lineinfile:
@@ -213,6 +225,7 @@
     line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Setup Nexus default timezone
   lineinfile:
@@ -221,6 +234,7 @@
     line: "-Duser.timezone={{ nexus_timezone }}"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Setup Nexus JVM min heap size
   lineinfile:
@@ -228,6 +242,7 @@
     regexp: "^-Xms.*"
     line: "-Xms{{ nexus_min_heap_size }}"
   notify: nexus-service-stop
+  when: nexus_install_enable
 
 - name: Setup Nexus JVM max heap size
   lineinfile:
@@ -235,6 +250,7 @@
     regexp: "^-Xmx.*"
     line: "-Xmx{{ nexus_max_heap_size }}"
   notify: nexus-service-stop
+  when: nexus_install_enable
 
 - name: Setup Nexus JVM max direct memory
   lineinfile:
@@ -242,6 +258,7 @@
     regexp: "^-XX:MaxDirectMemorySize=.*"
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
   notify: nexus-service-stop
+  when: nexus_install_enable
 
 - name: Create Nexus tmp/backup directory
   file:
@@ -252,6 +269,7 @@
   with_items:
     - "{{ nexus_tmp_dir }}"
     - "{{ nexus_backup_dir }}"
+  when: nexus_install_enable
 
 - name: Setup Nexus tmp directory
   lineinfile:
@@ -260,6 +278,7 @@
     line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Set NEXUS_HOME for the service user
   lineinfile:
@@ -268,6 +287,7 @@
     line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Set nexus user
   lineinfile:
@@ -276,6 +296,7 @@
     line: "run_as_user=\"{{ nexus_os_user }}\""
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Set nexus port
   lineinfile:
@@ -284,6 +305,7 @@
     line: "application-port={{ nexus_default_port }}"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Set nexus context path
   lineinfile:
@@ -292,13 +314,14 @@
     line: "nexus-context-path={{ nexus_default_context_path }}"
   notify:
     - nexus-service-stop
+  when: nexus_install_enable
 
 - name: Bind nexus service to 127.0.0.1 only
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-host=.*"
     line: "application-host=127.0.0.1"
-  when: httpd_setup_enable | bool
+  when: (httpd_setup_enable | bool) and nexus_install_enable
   notify:
     - nexus-service-stop
 
@@ -308,6 +331,7 @@
     dest: "/etc/systemd/system"
   notify:
     - systemd-reload
+  when: nexus_install_enable
 
 - block:
     - name: "Deploy backup restore script"
@@ -320,7 +344,7 @@
         src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
         dest: "/sbin/nexus-blob-restore.sh"
         state: link
-  when: nexus_backup_configure | bool
+  when: (nexus_backup_configure | bool) and nexus_install_enable
 
 - name: 'Check if data directory is empty (first-time install)'
   command: "ls {{ nexus_data_dir }}"
@@ -332,12 +356,13 @@
   file:
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
-  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout | length > 0
+  when: (nexus_latest_version.changed and nexus_data_dir_contents.stdout | length > 0) and nexus_install_enable
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
 
 - meta: flush_handlers
+  when: nexus_install_enable
 
 - name: Enable nexus service and make sure it is started
   systemd:
@@ -348,8 +373,10 @@
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
+  when: nexus_install_enable
 
 - meta: flush_handlers
+  when: nexus_install_enable
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:
@@ -358,7 +385,7 @@
     group: "root"
     mode: a=rX,u+w
     recurse: true
-  when: chown_config_first_time.changed
+  when: chown_config_first_time.changed and nexus_install_enable
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
@@ -372,6 +399,7 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
+  when: nexus_install_enable
 
 - name: Access scripts API endpoint with defined admin password
   uri:
