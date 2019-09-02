@@ -23,9 +23,9 @@ nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/sc
 # https://help.sonatype.com/repomanager3/system-requirements#SystemRequirements-Memory
 # and you know what you are doing
 # Note: those values probably belong to a host_vars files...
-nexus_min_heap_size: "1200M"
+nexus_min_heap_size: "2703M"
 nexus_max_heap_size: "{{ nexus_min_heap_size }}"
-nexus_max_direct_memory: "2G"
+nexus_max_direct_memory: "{{ nexus_min_heap_size }}"
 
 # Nexus Backup
 nexus_backup_dir: '/var/nexus-backup'
