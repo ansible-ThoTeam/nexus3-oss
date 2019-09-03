@@ -14,7 +14,7 @@
       when: ansible_os_family == 'RedHat'
 
     - block:
-        - name: Install needed dependencie for role testing (debian/ubuntu)
+        - name: Install needed dependencies for role testing (debian/ubuntu)
           apt:
             name:
               - apache2
