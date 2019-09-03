@@ -155,10 +155,15 @@ Allow to change the nexus user default home directory
 ```yaml
     nexus_installation_dir: '/opt'
     nexus_data_dir: '/var/nexus'
-    nexus_tmp_dir: '/tmp/nexus'
+    nexus_tmp_dir: "{{ (ansible_os_family == 'RedHat') | ternary('/var/nexus-tmp', '/tmp/nexus') }}"
 ```
 
-Nexus directories, `nexus_installation_dir` contains the installed executable(s), `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Note: custom blobstores paths outside of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
+Nexus directories.
+* `nexus_installation_dir` contains the installed executable(s)
+* `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Custom blobstores paths outside 
+of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
+* `nexus_tmp_dir` contains all temporary files. Default path for redhat has been moved out of `/tmp` to overcome
+potential problems with automatic cleaning procedures. See #168.
 
 ### Nexus JVM Ram setting
 ```yaml

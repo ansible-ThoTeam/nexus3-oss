@@ -15,7 +15,7 @@ nexus_os_max_filedescriptors: 65536  # minimum value for nexus > 3.5.x
 nexus_installation_dir: '/opt'
 nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC'  # java timezone
-nexus_tmp_dir: '/tmp/nexus'
+nexus_tmp_dir: "{{ (ansible_os_family == 'RedHat') | ternary('/var/nexus-tmp', '/tmp/nexus') }}"
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
 
 # These are the default values for JVM Ram
