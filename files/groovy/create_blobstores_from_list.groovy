@@ -31,11 +31,9 @@ parsed_args.each { blobstoreDef ->
             currentResult.put('error_msg', e.toString())
         }
     } else {
-        msg = "Blobstore {} already exists. Left untouched"
+        log.info("Blobstore {} already exists. Left untouched", blobstoreDef.name)
         currentResult.put('status', 'exists')
     }
-
-    log.info(msg, blobstoreDef.name)
 
     scriptResults['action_details'].add(currentResult)
 }
