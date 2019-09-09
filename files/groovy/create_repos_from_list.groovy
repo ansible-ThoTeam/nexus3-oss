@@ -121,7 +121,7 @@ parsed_args.each { currentRepo ->
             scriptResults['changed'] = true
             log.info('Configuration for repo {} created', currentRepo.name)
         } else {
-            if (configuration.equals(existingRepository.configuration)) {
+            if (!(configuration.properties == existingRepository.configuration.properties)) {
                 repositoryManager.update(configuration)
                 currentResult.put('status', 'updated')
                 log.info('Configuration for repo {} saved', currentRepo.name)
