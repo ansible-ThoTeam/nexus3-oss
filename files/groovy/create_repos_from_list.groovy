@@ -111,7 +111,9 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type == 'proxy' && currentRepo.format == 'docker') {
             configuration.attributes['dockerProxy'] = [
                     indexType                  : currentRepo.index_type,
-                    useTrustStoreForIndexAccess: currentRepo.use_nexus_certificates_to_access_index
+                    useTrustStoreForIndexAccess: currentRepo.use_nexus_certificates_to_access_index,
+                    foreignLayerUrlWhitelist   : currentRepo.foreign_layer_url_whitelist,
+                    cacheForeignLayers         : currentRepo.cache_foreign_layers
             ]
         }
 
