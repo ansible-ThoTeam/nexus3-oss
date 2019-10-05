@@ -373,6 +373,12 @@
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
 
+- name: Install plugins from remote source
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
+  with_items: "{{ nexus_plugin_urls }}"
+
 - name: Access scripts API endpoint with defined admin password
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
