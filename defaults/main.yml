@@ -608,7 +608,8 @@ _nexus_repos_yum_defaults:
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
-# apt support ...
+# apt support
+# More on how to work with apt repos https://help.sonatype.com/repomanager3/formats/apt-repositories
 _nexus_repos_apt_defaults:
   blob_store: "{{ nexus_blob_names.apt.blob }}"
   strict_content_validation: true
