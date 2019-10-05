@@ -61,6 +61,23 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configs for apt repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'apt') {
+            configuration.attributes['apt'] = [
+                    distribution: currentRepo.distribution,
+                    flat        : Boolean.valueOf(currentRepo.flat)
+            ]
+        }
+        if (currentRepo.type == 'hosted' && currentRepo.format == 'apt') {
+            configuration.attributes['apt'] = [
+                    distribution: currentRepo.distribution
+            ]
+            configuration.attributes['aptSigning'] = [
+                    keypair   : currentRepo.keypair,
+                    passphrase: currentRepo.passphrase
+            ]
+        }
+
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
             authentication = currentRepo.remote_username == null ? null : [
