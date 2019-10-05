@@ -129,6 +129,10 @@ the role. It can be used later in your playbook if needed (e.g. for an upgrade n
 
 Directory on target where the nexus package will be downloaded.
 
+**Important note**: if you intend to run the role periodically to maintain/provision your nexus install, you should make
+sure the downloaded files will persists between run. On RHEL/Centos specifically, you should change this dir to a location that
+is not cleaned up automatically. If the package file does not persit, it will be downloaded again which might cause an unnecessary restart of nexus.
+
 ### Nexus port and context path
 ```yaml
     nexus_default_port: 8081
