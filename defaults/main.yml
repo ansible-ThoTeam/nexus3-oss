@@ -419,6 +419,9 @@ _nexus_repos_docker_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  # More about Foreign Layers https://help.sonatype.com/repomanager3/formats/docker-registry/foreign-layers
+  cache_foreign_layers: false  # Nexus gui default. For proxies only
+  foreign_layer_url_whitelist: []  # Nexus gui default. For proxies only
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
@@ -432,6 +435,10 @@ nexus_repos_docker_proxy:
     index_type: "HUB"
     remote_url: "https://registry-1.docker.io"
     use_nexus_certificates_to_access_index: false
+    # cache_foreign_layers: true
+    # foreign_layer_url_whitelist:
+    #   - "https?://go\\.microsoft\\.com/.*"
+    #   - "https://.*\\.azurecr\\.io/.*"
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
     # negative_cache_enabled: true
