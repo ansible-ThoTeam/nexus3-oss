@@ -392,8 +392,14 @@
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
 
+- name: Check that the somefile.conf exists
+  stat:
+    path: "{{ nexus_data_dir }}/admin.password"
+  register: admin_password_file
+
 - name: Get generated admin password from file (nexus >= 3.17)
   when:
+    - admin_password_file.stat.exists == True 
     - nexus_api_head_with_defined_password.status == 401
     - nexus_version is version_compare('3.17.0', '>=')
   block:
