@@ -21,6 +21,8 @@ nexus_blob_names:
     blob: '{{ nexus_blob_prefix }}gitlfs'
   yum:
     blob: '{{ nexus_blob_prefix }}yum'
+  apt:
+    blob: '{{ nexus_blob_prefix }}apt'
 
 
 nexus_blobstores:
@@ -44,3 +46,5 @@ nexus_blobstores:
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.gitlfs.blob }}"
   - name: '{{ nexus_blob_prefix }}yum'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.yum.blob }}"
+  - name: '{{ nexus_blob_prefix }}apt'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.apt.blob }}"

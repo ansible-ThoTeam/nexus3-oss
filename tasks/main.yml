@@ -67,6 +67,7 @@
     - name: "{{ nexus_blob_names.mvn.blob }}"
     - name: "{{ nexus_blob_names.gitlfs.blob }}"
     - name: "{{ nexus_blob_names.yum.blob }}"
+    - name: "{{ nexus_blob_names.apt.blob }}"
   when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
 
 - block:

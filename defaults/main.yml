@@ -167,6 +167,7 @@ nexus_config_npm: false
 nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
+nexus_config_apt: false
 
 nexus_content_selectors: []
 # example selector item :
@@ -236,6 +237,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
   gitlfs:
     blob: 'default'
   yum:
+    blob: 'default'
+  apt:
     blob: 'default'
 
 
@@ -604,3 +607,31 @@ _nexus_repos_yum_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
+# apt support ...
+_nexus_repos_apt_defaults:
+  blob_store: "{{ nexus_blob_names.apt.blob }}"
+  strict_content_validation: true
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  flat: false  # Nexus gui default. For proxies only
+
+nexus_repos_apt_hosted: []
+# - name: private_apt_centos_7
+#   distribution: jessie
+#   keypair: |-
+#     -----BEGIN PGP PRIVATE KEY BLOCK-----
+#
+#     lQWGBF2Ym3ABDACtu4R3enO2TehVslkRXc4ZcMkaAMIcJgOLo/IQBUnN8dInGLFR
+#     ...
+#     -----END PGP PRIVATE KEY BLOCK-----
+#   passphrase: "none"
+nexus_repos_apt_proxy: []
+# - name: apt_centos_7_x86_64
+#   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+#   distribution: jessie
+#   flat: true
