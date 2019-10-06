@@ -399,7 +399,7 @@
 
 - name: Get generated admin password from file (nexus >= 3.17)
   when:
-    - admin_password_file.stat.exists == True
+    - admin_password_file.stat.exists
     - nexus_api_head_with_defined_password.status == 401
     - nexus_version is version_compare('3.17.0', '>=')
   block:
