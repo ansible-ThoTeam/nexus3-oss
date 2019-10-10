@@ -10,8 +10,7 @@ cache:
 services:
   - docker
 install:
-  - pip install --upgrade pip
-  - pip install --upgrade --upgrade-strategy eager -r requirements.txt
+  - pip install --upgrade -r requirements.txt
 env:
   - SCENARIO=default
   - SCENARIO=default-centos7
