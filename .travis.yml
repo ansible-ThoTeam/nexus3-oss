@@ -10,6 +10,7 @@ cache:
 services:
   - docker
 install:
+  - pip install --upgrade pip
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
 env:
   - SCENARIO=default
