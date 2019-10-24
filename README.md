@@ -920,7 +920,7 @@ Feel free to use them or implement your own install scenario at your convenience
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
-    - { role: ansible-ThoTeam.nexus3-oss, tags: ['ansible-ThoTeam.nexus3-oss'] }
+    - { role: ansible-thoteam.nexus3-oss, tags: ['ansible-ThoTeam.nexus3-oss'] }
 ```
 
 ## Development, Contribution and Testing
@@ -1015,7 +1015,6 @@ You can pass additionnal variables to ansible on the command line to override pl
 You will need to add a security exception for the self signed ssl certificate. If you did not change it with a
 command line var above, the default role admin password is "changeme"
 * When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
-
 
 ## License
 
