@@ -920,7 +920,7 @@ Feel free to use them or implement your own install scenario at your convenience
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
-    - { role: ansible-thoteam.nexus3-oss, tags: ['ansible-ThoTeam.nexus3-oss'] }
+    - { role: ansible-thoteam.nexus3-oss, tags: ['ansible-thoteam.nexus3-oss'] }
 ```
 
 ## Development, Contribution and Testing
