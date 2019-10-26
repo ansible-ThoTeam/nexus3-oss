@@ -49,7 +49,7 @@ nexus_docker_hosted_port: 9080
 nexus_docker_proxy_port: 9081
 nexus_docker_group_port: 9082
 nexus_default_context_path: '/'
-nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }'
+nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }}'
 
 # Nexus default admin password on first time install.
 # This should not be set in your playbook.

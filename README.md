@@ -136,7 +136,7 @@ is not cleaned up automatically. If the package file does not persit, it will be
 ### Nexus port, context path ans listening IP
 ```yaml
     nexus_default_port: 8081
-    nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }'
+    nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }}'
     nexus_default_context_path: '/'
 ```
 
