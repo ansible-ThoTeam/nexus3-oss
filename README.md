@@ -247,7 +247,7 @@ This needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, n
 The default hostname used is `nexus_public_hostname`. If you need different names for whatever reason, you can set
 `httpd_server_name` to a different value.
 
-With `httpd_copy_ssl_files: true` (default), the above certs must exist in your playbook dir and will be copied to the server and configured in apache. `httpd_ssl_certificate_chain_file` is optional and must be left unset if you do not want to configure a chain file.
+With `httpd_copy_ssl_files: true` (default), the above certs must exist in your playbook dir and will be copied to the server and configured in apache.
 
 If you want to use existing certificates on the server, set `httpd_copy_ssl_files: false` and provide the following variables
 
