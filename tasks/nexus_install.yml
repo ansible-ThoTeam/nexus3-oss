@@ -392,7 +392,7 @@
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
 
-- name: Check that the somefile.conf exists
+- name: Check if admin.password file exists
   stat:
     path: "{{ nexus_data_dir }}/admin.password"
   register: admin_password_file
