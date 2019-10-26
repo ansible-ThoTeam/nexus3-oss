@@ -293,7 +293,7 @@
   notify:
     - nexus-service-stop
 
-- name: Bind nexus service to 127.0.0.1 only
+- name: "Set nexus service listening ip to {{ nexus_application_host }}"
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-host=.*"
