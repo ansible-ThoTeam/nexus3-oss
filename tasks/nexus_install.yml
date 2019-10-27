@@ -293,12 +293,11 @@
   notify:
     - nexus-service-stop
 
-- name: Bind nexus service to 127.0.0.1 only
+- name: "Set nexus service listening ip to {{ nexus_application_host }}"
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-host=.*"
-    line: "application-host=127.0.0.1"
-  when: httpd_setup_enable | bool
+    line: "application-host={{ nexus_application_host }}"
   notify:
     - nexus-service-stop
 
@@ -392,8 +391,14 @@
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
 
+- name: Check if admin.password file exists
+  stat:
+    path: "{{ nexus_data_dir }}/admin.password"
+  register: admin_password_file
+
 - name: Get generated admin password from file (nexus >= 3.17)
   when:
+    - admin_password_file.stat.exists
     - nexus_api_head_with_defined_password.status == 401
     - nexus_version is version_compare('3.17.0', '>=')
   block:

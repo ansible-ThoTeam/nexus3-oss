@@ -16,8 +16,8 @@
 # Latest ansible
 ansible
 # Latest molecule
-# molecule
-git+https://github.com/ansible/molecule.git@96036591b74b5b2475151998df2a145f119d421c
+molecule
+# git+https://github.com/ansible/molecule.git@96036591b74b5b2475151998df2a145f119d421c
 # latest flake8 (missing dep in latest molecule)
 flake8
 # Yamllint is not in molecule deps anymore
