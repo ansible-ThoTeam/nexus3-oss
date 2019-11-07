@@ -118,7 +118,12 @@ nexus_roles:
     privileges:
       - 'nx-repository-view-yum-private_yum_centos_7-read'
       - 'nx-repository-view-yum-private_yum_centos_7-browse'
-
+  - name: developers
+    id: developers
+    description: "Developers"
+    privileges:
+      - all-repos-read
+      - wildcard1
 
 # proxy configuration depending on env
 nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"
