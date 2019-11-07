@@ -79,6 +79,13 @@ nexus_local_users:
       - developers
   - username: olduser  # make sure this old account is removed
     state: absent
+  - username: test_roles
+    first_name: Test
+    last_name: Roles
+    email: test@roles.com
+    password: "s3cr3t"
+    roles:
+      - c-ro-private_yum_centos_7
 
 nexus_privileges:
   - name: all-repos-read
@@ -103,6 +110,20 @@ nexus_privileges:
     script_name: the_script_name
     actions:
       - some actions
+
+nexus_roles:
+  - name: c-ro-private_yum_centos_7
+    id: c-ro-private_yum_centos_7
+    description: "Custrom read-only role for private_yum_centos_7 hosted repository"
+    privileges:
+      - 'nx-repository-view-yum-private_yum_centos_7-read'
+      - 'nx-repository-view-yum-private_yum_centos_7-browse'
+  - name: developers
+    id: developers
+    description: "Developers"
+    privileges:
+      - all-repos-read
+      - wildcard1
 
 # proxy configuration depending on env
 nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"
