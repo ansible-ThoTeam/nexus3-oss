@@ -134,13 +134,19 @@ Directory on target where the nexus package will be downloaded.
 sure the downloaded files will persists between run. On RHEL/Centos specifically, you should change this dir to a location that
 is not cleaned up automatically. If the package file does not persit, it will be downloaded again which might cause an unnecessary restart of nexus.
 
-### Nexus port and context path
+### Nexus port, context path ans listening IP
 ```yaml
     nexus_default_port: 8081
+    nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }}'
     nexus_default_context_path: '/'
 ```
 
-Port and context path of the java nexus process. `nexus_default_context_path` has to keep the trailing slash when set, for ex. : `nexus_default_context_path: '/nexus/'`.
+Listening port/ip, and context path of the java nexus process.
+* the listening IP/Interface (i.e. `nexus_application_host`) is by default dependant on the `httpd_setup_enable` setting.
+Nexus will listen only on localhost (127.0.0.1) if reverse proxy is enabled or all configured IP (0.0.0.0) if not. You
+can change this setting to your actual need (i.e. don't install proxy and still bind to 127.0.0.1 only if you install
+your own proxy)
+* `nexus_default_context_path` has to keep the trailing slash when set, for ex. : `nexus_default_context_path: '/nexus/'`.
 
 ### Nexus OS user and group
 ```yaml
@@ -249,7 +255,9 @@ The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/securi
 ```
 
 Setup an [SSL Reverse-proxy](https://help.sonatype.com/display/NXRM3/Run+Behind+a+Reverse+Proxy#RunBehindaReverseProxy-Example:ReverseProxySSLTerminationatBasePath).
-This needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds to 127.0.0.1:8081 thus *not* being directly accessible on HTTP port 8081 from an external IP.
+This needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds by default to 127.0.0.1:8081
+thus *not* being directly accessible on HTTP port 8081 from an external IP. (If you want to change this, you can explicitely
+set `nexus_application_host: 0.0.0.0`)
 
 The default hostname used is `nexus_public_hostname`. If you need different names for whatever reason, you can set
 `httpd_server_name` to a different value.
@@ -927,7 +935,7 @@ Feel free to use them or implement your own install scenario at your convenience
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
     # RedHat/CentOS only
     - { role: geerlingguy.apache, apache_create_vhosts: no, apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
-    - { role: ansible-ThoTeam.nexus3-oss, tags: ['ansible-ThoTeam.nexus3-oss'] }
+    - { role: ansible-thoteam.nexus3-oss, tags: ['ansible-thoteam.nexus3-oss'] }
 ```
 
 ## Development, Contribution and Testing
@@ -1022,7 +1030,6 @@ You can pass additionnal variables to ansible on the command line to override pl
 You will need to add a security exception for the self signed ssl certificate. If you did not change it with a
 command line var above, the default role admin password is "changeme"
 * When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
-
 
 ## License
 

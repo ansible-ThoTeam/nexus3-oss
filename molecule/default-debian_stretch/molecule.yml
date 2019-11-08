@@ -14,7 +14,7 @@ platforms:
 
   - name: nexus3-oss-debian-stretch
     hostname: nexus3-oss-debian-stretch
-    image: thoteam/ansible-debian_stretch-apache-java:latest
+    image: thoteam/molecule_apache_openjdk8:debian_stretch
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true

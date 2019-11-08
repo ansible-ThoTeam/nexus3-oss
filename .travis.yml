@@ -14,10 +14,10 @@ install:
 env:
   - SCENARIO=default
   - SCENARIO=default-centos7
-  - SCENARIO=default-debian_jessie
+  - SCENARIO=default-debian_buster
   - SCENARIO=default-debian_stretch
-  - SCENARIO=default-ubuntu_16.04
   - SCENARIO=default-ubuntu_18.04
+  - SCENARIO=default-ubuntu_16.04
 script: |
   if [ "${SCENARIO}" == "default" ]; then
     ./tests/test_groovySyntax.sh

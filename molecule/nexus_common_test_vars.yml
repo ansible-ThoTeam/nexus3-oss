@@ -22,6 +22,7 @@ nexus_config_npm: true
 nexus_config_nuget: true
 nexus_config_gitlfs: true
 nexus_config_yum: true
+nexus_config_apt: true
 
 nexus_anonymous_access: true
 
@@ -55,6 +56,102 @@ nexus_repos_yum_group:
       - private_yum_centos_7
       - epel_centos_7_x86_64
 
+nexus_repos_apt_hosted:
+  - name: private_ubuntu_18.04
+    distribution: bionic
+    keypair: |-
+      -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+      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
+      =R2n2
+      -----END PGP PRIVATE KEY BLOCK-----
+    passphrase: "nexustest"
+nexus_repos_apt_proxy:
+  - name: apt_ubuntu_18.04
+    remote_url: http://archive.ubuntu.com/ubuntu/
+    distribution: bionic
+    maximum_component_age: -1
+    maximum_metadata_age: -1
+    negative_cache_ttl: 60
+
 nexus_scheduled_tasks:
   #  Example task to purge maven snapshots
   - name: Purge-maven-snapshots
@@ -79,6 +176,13 @@ nexus_local_users:
       - developers
   - username: olduser  # make sure this old account is removed
     state: absent
+  - username: test_roles
+    first_name: Test
+    last_name: Roles
+    email: test@roles.com
+    password: "s3cr3t"
+    roles:
+      - c-ro-private_yum_centos_7
 
 nexus_privileges:
   - name: all-repos-read
@@ -103,6 +207,20 @@ nexus_privileges:
     script_name: the_script_name
     actions:
       - some actions
+
+nexus_roles:
+  - name: c-ro-private_yum_centos_7
+    id: c-ro-private_yum_centos_7
+    description: "Custrom read-only role for private_yum_centos_7 hosted repository"
+    privileges:
+      - 'nx-repository-view-yum-private_yum_centos_7-read'
+      - 'nx-repository-view-yum-private_yum_centos_7-browse'
+  - name: developers
+    id: developers
+    description: "Developers"
+    privileges:
+      - all-repos-read
+      - wildcard1
 
 # proxy configuration depending on env
 nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"
