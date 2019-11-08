@@ -14,7 +14,7 @@ platforms:
 
   - name: nexus3-oss-default
     hostname: nexus3-oss-default
-    image: thoteam/ansible-centos7-apache-java:latest
+    image: thoteam/molecule_apache_openjdk8:centos7
     command: /usr/sbin/init
     pull: true
     pre_build_image: true

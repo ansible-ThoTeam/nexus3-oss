@@ -14,7 +14,7 @@ platforms:
 
   - name: nexus3-oss-ubuntu-16.04
     hostname: nexus3-oss-ubuntu-16.04
-    image: thoteam/ansible-ubuntu16_04-apache-java:latest
+    image: thoteam/molecule_apache_openjdk8:ubuntu_16.04
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true

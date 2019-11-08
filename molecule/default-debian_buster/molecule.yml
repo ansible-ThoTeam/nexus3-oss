@@ -14,7 +14,7 @@ platforms:
 
   - name: nexus3-oss-debian-jessie
     hostname: nexus3-oss-debian-jessie
-    image: thoteam/ansible-debian_jessie-apache-java:latest
+    image: thoteam/molecule_apache_openjdk8:debian_buster
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true
