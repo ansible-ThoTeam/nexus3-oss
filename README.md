@@ -20,6 +20,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Nexus OS user and group](#nexus-os-user-and-group)
          * [Nexus instance directories](#nexus-instance-directories)
          * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
+         * [Plugin installation](#plugin-installation)
          * [Admin password](#admin-password)
          * [Default anonymous access](#default-anonymous-access)
          * [Public hostname](#public-hostname)
@@ -185,6 +186,12 @@ These are the defaults for Nexus. **Please do not modify those values** _unless 
 
 As a second warning, here is an extract from the above document:
 > Increasing the JVM heap memory larger than recommended values in an attempt to improve performance is not recommended. This actually can have the opposite effect, causing the operating system to thrash needlessly.
+
+### Plugin installation
+```yaml
+nexus_plugin_urls: []
+```
+Put list of urls pointing to plugins build for your Nexus version. Only *.kar bundles can be installed this way.
 
 ### Admin password
 ```yaml
