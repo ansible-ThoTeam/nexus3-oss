@@ -16,7 +16,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [Role Variables](#role-variables)
          * [General variables](#general-variables)
          * [Download dir for nexus package](#download-dir-for-nexus-package)
-         * [Nexus port and context path](#nexus-port-and-context-path)
+         * [Nexus port, context path ans listening IP](#nexus-port-context-path-ans-listening-ip)
          * [Nexus OS user and group](#nexus-os-user-and-group)
          * [Nexus instance directories](#nexus-instance-directories)
          * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
@@ -56,7 +56,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: 2019-05-24T15:03+02:00 -->
+<!-- Added by: olcla, at: Sat Nov  9 16:00:35 CET 2019 -->
 
 <!--te-->
 
@@ -93,6 +93,7 @@ Ansible variables, along with the default values (see `default/main.yml`) :
     nexus_version: ''
     nexus_timezone: 'UTC'
     nexus_download_url: "http://download.sonatype.com/nexus/3"
+    # nexus_download_ssl_verify: <unset>
     # nexus_version_running: <unset>
 ```
 
@@ -117,7 +118,9 @@ You may change the download site for packages by tuning `nexus_download_url` (e.
 proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail
 and you will have to fix the version to download.** If you still want to take advantage of automatic latest version detection,
 a call to `<your_custom_location>/latest-unix.tar.gz` must return an HTTP 302 redirect to the latest available version
-in your cache/proxy.
+in your cache/proxy. If your download location uses https with a self-signed certificate (or a from a private PKI) and
+you are having troubles getting it validated (i.e. download errors in the role) and you fully trust the target
+you can set `nexus_download_ssl_verify: false`.
 
 `nexus_version_running` is a variable used internally. **As such, it should never be set directly**
 It will exist only if nexus is currently installed on the host and will register the current version prior to running
