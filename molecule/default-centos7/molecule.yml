@@ -44,7 +44,6 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: default-centos7
   check_sequence:
     - destroy
     - create

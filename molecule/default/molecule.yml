@@ -42,7 +42,6 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: default
   check_sequence:
     - destroy
     - create

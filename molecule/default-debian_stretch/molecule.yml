@@ -44,7 +44,6 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: default-debian_stretch
   check_sequence:
     - destroy
     - create
