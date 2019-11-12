@@ -1,14 +1,17 @@
 ---
 dependency:
   name: galaxy
+
 driver:
   name: vagrant
   safe_files:
     - nexus-downloads
   provider:
     name: virtualbox
+
 lint:
   name: yamllint
+
 platforms:
   - name: vb-centos7
     box: thoteam/vb-centos7
@@ -28,12 +31,12 @@ platforms:
       - "vm.network 'forwarded_port', guest: 443, host: 9102"
     groups:
       - nexus
+
 provisioner:
   name: ansible
   lint:
     name: ansible-lint
-scenario:
-  name: selinux
+
 verifier:
   name: testinfra
   lint:

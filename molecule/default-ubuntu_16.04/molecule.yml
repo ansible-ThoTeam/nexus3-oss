@@ -44,7 +44,6 @@ provisioner:
     name: ansible-lint
 
 scenario:
-  name: default-ubuntu_16.04
   check_sequence:
     - destroy
     - create
