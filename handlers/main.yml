@@ -4,17 +4,34 @@
     daemon-reload: yes
     name: nexus.service
 
-- name: nexus-service-restart
+- name: nexus systemd service restart
   systemd:
     name: nexus.service
     state: restarted
     no_block: yes
+  listen: nexus-service-restart
+  when: os_systemd.stat.exists
 
-- name: nexus-service-stop
+- name: nexus sysv service restart
+  service:
+    name: nexus
+    state: restarted
+  listen: nexus-service-restart
+  when: os_sysv.stat.exists
+
+- name: nexus systemd service stop
   systemd:
     name: nexus.service
     state: stopped
+  listen: nexus-service-stop
   when: nexus_systemd_service_file.stat.exists
+
+- name: nexus sysv service stop
+  service:
+    name: nexus
+    state: stopped
+  listen: nexus-service-stop
+  when: nexus_sysv_service_file.stat.exists
 
 - name: wait-for-nexus
   wait_for:

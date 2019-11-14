@@ -309,6 +309,14 @@
     dest: "/etc/systemd/system"
   notify:
     - systemd-reload
+  when: os_systemd.stat.exists
+
+- name: Create sysv service configuration
+  file:
+    path: "/etc/init.d/nexus"
+    src: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus"
+    state: link
+  when: os_sysv.stat.exists
 
 - block:
     - name: "Deploy backup restore script"
@@ -340,7 +348,7 @@
 
 - meta: flush_handlers
 
-- name: Enable nexus service and make sure it is started
+- name: Enable nexus systemd service and make sure it is started
   systemd:
     name: nexus.service
     enabled: yes
@@ -349,6 +357,17 @@
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
+  when: os_systemd.stat.exists
+
+- name: Enable nexus sysv service and make sure it is started
+  service:
+    name: nexus
+    enabled: yes
+    state: started
+  notify:
+    - wait-for-nexus
+    - wait-for-nexus-port
+  when: os_sysv.stat.exists
 
 - meta: flush_handlers
 
