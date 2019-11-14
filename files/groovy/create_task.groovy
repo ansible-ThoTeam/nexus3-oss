@@ -18,16 +18,22 @@ if (existingTask && existingTask.getCurrentState().getRunState() != null) {
 }
 
 TaskConfiguration taskConfiguration = taskScheduler.createTaskConfigurationInstance(parsed_args.typeId)
-if (existingTask) { taskConfiguration.setId(existingTask.getId()) }
+if (existingTask) {
+    taskConfiguration.setId(existingTask.getId())
+}
 taskConfiguration.setName(parsed_args.name)
 
-parsed_args.taskProperties.each { key, value -> taskConfiguration.setString(key, value) }
+parsed_args.taskProperties.each { key, value ->
+    taskConfiguration.setString(key, value)
+}
 
 if (parsed_args.task_alert_email) {
     taskConfiguration.setAlertEmail(parsed_args.task_alert_email)
 }
 
-parsed_args.booleanTaskProperties.each { key, value -> taskConfiguration.setBoolean(key, Boolean.valueOf(value)) }
+parsed_args.booleanTaskProperties.each { key, value ->
+    taskConfiguration.setBoolean(key, Boolean.valueOf(value))
+}
 
 Schedule schedule = null;
 
