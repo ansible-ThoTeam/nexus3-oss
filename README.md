@@ -71,8 +71,10 @@ We would like to thank the original authors for the work done.
 
 ## Requirements
 
-- Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage of new features if needed (and update meta/main.yml for minimum version)
-- Compatible OS. This role is tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04), Debian Jessie and stretch for time being.
+- Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage
+of new features if needed (and update meta/main.yml for minimum version)
+- Compatible OS. This role is tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04),
+Debian stretch and buster for time being.
 - Rsync has to be installed on the target machine (it is not needed on the host running ansible if different)
 - `jmespath` library needs to be installed on the host running the playbook (needed for the `json_query` filter). See `requirements.txt`
 - Java 8 (mandatory)
@@ -967,8 +969,8 @@ This role includes tests and CI integration through travis. At time being, we te
 * ansible good practices (ansible lint)
 * a set of basic deployments on 5 different linux platforms
     * centos7
-    * debian jessie
     * debian stretch
+    * debian buster
     * ubuntu xenial (16.04)
     * ubuntu bionic (18.04)
 
@@ -999,17 +1001,14 @@ Please have a look at molecule documentation (a good start is `molecule --help`)
 
 The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
 * default-centos7 => https://localhost:8090
-* default-debian_jessie => https://localhost:8091
+* default-debian_buster => https://localhost:8091
 * default-debian_stretch => https://localhost:8092
 * default-ubuntu_16.04 => https://localhost:8093
 * default-ubuntu_18.04 => https://localhost:8094
 
-To speed up tests, molecule uses automated docker build images on docker hub:
-* https://hub.docker.com/r/thoteam/ansible-centos7-apache-java/
-* https://hub.docker.com/r/thoteam/ansible-debian_jessie-apache-java/
-* https://hub.docker.com/r/thoteam/ansible-debian_stretch-apache-java/
-* https://hub.docker.com/r/thoteam/ansible-ubuntu16_04-apache-java/
-* https://hub.docker.com/r/thoteam/ansible-ubuntu18_04-apache-java/
+To speed up tests, molecule uses docker hub images with automated build.
+* Git repo: https://github.com/docker-ThoTeam/molecule_apache_openjdk8
+* Docker hub registry: https://hub.docker.com/repository/docker/thoteam/molecule_apache_openjdk8
 
 
 #### Molecule selinux scenario
