@@ -12,8 +12,8 @@ lint:
 
 platforms:
 
-  - name: nexus3-oss-debian-jessie
-    hostname: nexus3-oss-debian-jessie
+  - name: nexus3-oss-debian-buster
+    hostname: nexus3-oss-debian-buster
     image: thoteam/molecule_apache_openjdk8:debian_buster
     command: lib/systemd/systemd
     pull: true
