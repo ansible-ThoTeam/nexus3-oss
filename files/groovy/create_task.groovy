@@ -24,9 +24,12 @@ TaskConfiguration taskConfiguration = taskScheduler.createTaskConfigurationInsta
 if (existingTask) {
     taskConfiguration.setId(existingTask.getId())
 }
+
 taskConfiguration.setName(parsed_args.name)
 
 taskConfiguration.setAlertEmail(parsed_args.get('task_alert_email', '') as String)
+
+taskConfiguration.setEnabled(Boolean.valueOf(parsed_args.get('enabled', 'true') as String))
 
 parsed_args.taskProperties.each { key, value ->
     taskConfiguration.setString(key, value)
