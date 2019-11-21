@@ -26,12 +26,10 @@ if (existingTask) {
 }
 taskConfiguration.setName(parsed_args.name)
 
+taskConfiguration.setAlertEmail(parsed_args.get('task_alert_email', '') as String)
+
 parsed_args.taskProperties.each { key, value ->
     taskConfiguration.setString(key, value)
-}
-
-if (parsed_args.task_alert_email) {
-    taskConfiguration.setAlertEmail(parsed_args.task_alert_email)
 }
 
 parsed_args.booleanTaskProperties.each { key, value ->
