@@ -255,6 +255,15 @@ nexus_blobstores: []
 #     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
 #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 
+# Cleanup Polices
+nexus_repos_cleanup_policy:
+  - name: mvn_cleanup
+    format: maven2
+    mode:
+    notes: ""
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
 
 # also see _nexus_repos_maven_defaults below
 nexus_repos_maven_proxy:
@@ -348,6 +357,8 @@ _nexus_repos_maven_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  cleanup_policy:
+    - mvn_cleanup
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -392,6 +403,7 @@ _nexus_repos_raw_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
