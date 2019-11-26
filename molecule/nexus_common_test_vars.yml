@@ -153,8 +153,9 @@ nexus_repos_apt_proxy:
     negative_cache_ttl: 60
 
 nexus_scheduled_tasks:
-  #  Example task to purge maven snapshots
-  - name: Purge-maven-snapshots
+  #  Example task to purge maven snapshots with cron schedule
+  - name: Purge maven snapshots
+    schedule_type: cron
     cron: '0 50 23 * * ?'
     typeId: repository.maven.remove-snapshots
     task_alert_email: alerts@example.org  # optional
@@ -165,6 +166,61 @@ nexus_scheduled_tasks:
       gracePeriodInDays: "2"
     booleanTaskProperties:
       removeIfReleased: true
+  #  Example task to run manually, now, once, daily, and hourly
+  - name: Purge unused maven snapshots manual
+    schedule_type: manual
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "1"
+  - name: Purge-unused-maven-snapshots-now
+    schedule_type: now
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "2"
+  - name: Purge-unused-maven-snapshots-once
+    schedule_type: once
+    start_date_time: "2050-02-02T00:01:02"
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "3"
+  - name: Purge-unused-maven-snapshots-monthly
+    schedule_type: monthly
+    start_date_time: "2050-03-03T00:01:02"
+    monthly_days:
+      - 1
+      - 15
+      - 999  # Last day of month
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "4"
+  - name: Purge-unused-maven-snapshots-weekly
+    schedule_type: weekly
+    start_date_time: "2050-04-04T00:01:02"
+    weekly_days:
+      - MON
+      - WED
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "5"
+  - name: Purge-unused-maven-snapshots-daily
+    schedule_type: daily
+    start_date_time: "2050-05-05T00:01:02"
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "6"
+  - name: Purge-unused-maven-snapshots-hourly
+    schedule_type: hourly
+    start_date_time: "2050-06-06T00:01:02"
+    typeId: repository.maven.purge-unused-snapshots
+    taskProperties:
+      repositoryName: "*"
+      lastUsed: "7"
 
 nexus_local_users:
   - username: jenkins

@@ -638,6 +638,10 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
 ```
 
 ### Scheduled tasks
+
+These are quick examples and instruction to setup scheduled tasks. For in depth information on available tasks types
+and schedule types, please refer to [the specific section in the repo wiki](https://github.com/ansible-ThoTeam/nexus3-oss/wiki/Scheduled-tasks-configuration)
+
 ```yaml
     nexus_scheduled_tasks: []
     #  #  Example task to compact blobstore :
@@ -683,6 +687,7 @@ nexus_rut_auth_header: "CUSTOM_HEADER"
 **Task properties must be declared in the correct yaml block depending on their type**:
 * `taskProperties` for all string properties (i.e. repository names, blobstore names, time periods...).
 * `booleanTaskProperties` for all boolean properties (i.e. mainly checkboxes in nexus create task GUI).
+
 
 ### Backups
 ```yaml
