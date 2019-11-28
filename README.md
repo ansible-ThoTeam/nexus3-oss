@@ -201,6 +201,12 @@ nexus_plugin_urls: []
 ```
 Put list of urls pointing to plugins build for your Nexus version. Only *.kar bundles can be installed this way.
 
+### Onboarding Wizard
+```yaml
+nexus_onboarding_wizard: false
+```
+Controls whether the nexus onboarding wizard runs when the admin user logs in for the first time
+
 ### Admin password
 ```yaml
     nexus_admin_password: 'changeme'
