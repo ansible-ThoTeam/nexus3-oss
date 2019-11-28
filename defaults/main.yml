@@ -256,7 +256,7 @@ nexus_blobstores: []
 #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 
 # Cleanup Polices
-nexus_repos_cleanup_policy: []
+nexus_repos_cleanup_policies: []
 #   - name: mvn_cleanup
 #     format: maven2
 #     mode:

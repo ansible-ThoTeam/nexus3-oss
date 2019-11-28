@@ -125,8 +125,8 @@
       include_tasks: call_script.yml
       vars:
         script_name: create_cleanup_policies_from_list
-        args: "{{ nexus_repos_cleanup_policy }}"
-      when: nexus_repos_cleanup_policy | length > 0
+        args: "{{ nexus_repos_cleanup_policies }}"
+      when: nexus_repos_cleanup_policies | length > 0
 
     - name: Apply defaults to repositories configurations and process a single list
       include_tasks: process_repos_list.yml

@@ -109,7 +109,7 @@ parsed_args.each { currentRepo ->
 
         // Configure cleanup policy
         if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
-            def cleanupPolicies = currentRepo.cleanup_policy as Set
+            def cleanupPolicies = currentRepo.cleanup_policies as Set
             if (cleanupPolicies != null)
             {
                 configuration.attributes['cleanup'] = [
