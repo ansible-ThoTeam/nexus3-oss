@@ -24,6 +24,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Nexus instance directories](#nexus-instance-directories)
          * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
          * [Plugin installation](#plugin-installation)
+         * [Onboarding Wizard](#onboarding-wizard)
          * [Admin password](#admin-password)
          * [Default anonymous access](#default-anonymous-access)
          * [Public hostname](#public-hostname)
@@ -59,7 +60,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: Sat Nov  9 16:00:35 CET 2019 -->
+<!-- Added by: olcla, at: Thu Nov 28 21:55:10 CET 2019 -->
 
 <!--te-->
 
