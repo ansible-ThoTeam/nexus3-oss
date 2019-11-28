@@ -36,6 +36,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Roles](#roles)
          * [Users](#users)
          * [Content selectors](#content-selectors)
+         * [Cleanup policies](#cleanup-policies)
          * [Blobstores and repositories](#blobstores-and-repositories)
          * [Scheduled tasks](#scheduled-tasks)
          * [Backups](#backups)
@@ -59,7 +60,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: Sat Nov  9 16:00:35 CET 2019 -->
+<!-- Added by: olcla, at: Thu Nov 28 23:04:38 CET 2019 -->
 
 <!--te-->
 
@@ -448,7 +449,6 @@ Those items are combined with the following default values :
         - read
 ```
 
-
 ### Roles
 ```yaml
     nexus_roles:
@@ -510,6 +510,20 @@ To use content selector add new privilege with `type: repository-content-selecto
   - browse
 ```
 
+### Cleanup policies
+```yaml
+nexus_repos_cleanup_policy:
+#   - name: mvn_cleanup
+#     format: maven2
+#     mode:
+#     notes: ""
+#     criteria:
+#       lastBlobUpdated: 60
+#       lastDownloaded: 120
+```
+
+Cleanup policies definitions. Can be added to repo definitions with the option `cleanup_policy`
+
 ### Blobstores and repositories
 ```yaml
     nexus_delete_default_repos: false
@@ -546,12 +560,16 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'
         layout_policy: permissive
+        # cleanup_policy:
+        #    - mvn_cleanup
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+        # cleanup_policy:
+        #    - mvn_cleanup
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
@@ -574,6 +592,8 @@ Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Ma
       - name: private-release
         version_policy: release
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+        # cleanup_policy:
+        #    - mvn_cleanup
 ```
 
 Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration. Negative cache config is optionnal and will default to the above values if omitted.
