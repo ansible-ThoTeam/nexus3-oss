@@ -357,8 +357,6 @@ _nexus_repos_maven_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
-  cleanup_policy:
-    - mvn_cleanup
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
