@@ -278,6 +278,18 @@ nexus_roles:
       - all-repos-read
       - wildcard1
 
+nexus_repos_cleanup_policies:
+  - name: mvn_cleanup
+    format: maven2
+    mode:
+    notes: ""
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+
+# Set default cleanup policy for maven repos
+_nexus_repos_maven_defaults: "{{ _nexus_repos_maven_defaults | combine({cleanup_policies: ['mvn_cleanup']}) }}"
+
 # proxy configuration depending on env
 nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"
 nexus_http_proxy_host: "{{ lookup('env', 'http_proxy') | urlsplit('hostname') }}"
