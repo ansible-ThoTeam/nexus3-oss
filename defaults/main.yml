@@ -263,10 +263,10 @@ nexus_repos_cleanup_policies: []
 #     mode:
 #     notes: ""
 #     criteria:
-#       lastBlobUpdated: 60  # Optional 
-#       lastDownloaded: 120  # Optional 
-#       preRelease: RELEASES # Optional: PRERELEASES or RELEASES  
-#       regexKey: "foo.*"    # Optional 
+#       lastBlobUpdated: 60  # Optional
+#       lastDownloaded: 120  # Optional
+#       preRelease: RELEASES # Optional: PRERELEASES or RELEASES
+#       regexKey: "foo.*"    # Optional
 
 
 # also see _nexus_repos_maven_defaults below
