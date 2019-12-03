@@ -23,36 +23,32 @@ Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', actionDetails)
 
 parsed_args.each { currentPolicy ->
-    
+
     Map<String, String> currentResult = [name: currentPolicy.name, format: currentPolicy.format, mode: currentPolicy.mode]
-    
+
     try {
-    
+
         if (currentPolicy.name == null) {
             throw new Exception("Missing mandatory argument: name")
         }
-    
+
         // create and update use this
         Map<String, String> criteriaMap = createCriteria(currentPolicy)
-    
+
         // "update" operation
         if (cleanupPolicyStorage.exists(currentPolicy.name)) {
             existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
-            if ( existingPolicy.getNotes() == currentPolicy.notes
-                && existingPolicy.getFormat() == currentPolicy.format
-                && existingPolicy.getCriteria()[LAST_BLOB_UPDATED_KEY] == asStringSeconds(currentPolicy.criteria.lastBlobUpdated)
-                && existingPolicy.getCriteria()[LAST_DOWNLOADED_KEY] == asStringSeconds(currentPolicy.criteria.lastDownloaded)
-                && existingPolicy.getCriteria()[REGEX_KEY] == currentPolicy.criteria.regexKey
-            )
+            if ( isPolicyEqual(existingPolicy, currentPolicy) )
             {
                 log.info("No change Cleanup Policy <name=${currentPolicy.name}>")
-                return JsonOutput.toJson(scriptResults)
             } else {
-                log.info("Update Cleanup Policy <name={}, format={}, lastBlob={}, lastDownload={}>", 
-                            currentPolicy.name, 
-                            currentPolicy.format, 
-                            currentPolicy.criteria.lastBlobUpdated, 
-                            currentPolicy.criteria.lastDownloaded)
+                log.info("Update Cleanup Policy <name={}, format={}, lastBlob={}, lastDownload={}, prerelease={}, regex={}> ",
+                            currentPolicy.name,
+                            currentPolicy.format,
+                            currentPolicy.criteria.lastBlobUpdated,
+                            currentPolicy.criteria.lastDownloaded,
+                            currentPolicy.criteria.preRelease,
+                            currentPolicy.criteria.regexKey)
                 existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
                 existingPolicy.setNotes(currentPolicy.notes)
                 existingPolicy.setCriteria(criteriaMap)
@@ -60,16 +56,17 @@ parsed_args.each { currentPolicy ->
                 
                 currentResult.put('status', 'updated')
                 scriptResults['changed'] = true
-                return JsonOutput.toJson(scriptResults)
             }
         } else {
             // "create" operation
             format = currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format
-            log.info("Creating Cleanup Policy <name={}, format={}, lastBlob={}, lastDownload={}>", 
-                            currentPolicy.name, 
-                            currentPolicy.format, 
-                            currentPolicy.criteria.lastBlobUpdated, 
-                            currentPolicy.criteria.lastDownloaded)
+            log.info("Creating Cleanup Policy <name={}, format={}, lastBlob={}, lastDownload={}, preRelease={}, regex={}>",
+                            currentPolicy.name,
+                            currentPolicy.format,
+                            currentPolicy.criteria.lastBlobUpdated,
+                            currentPolicy.criteria.lastDownloaded,
+                            currentPolicy.criteria.preRelease,
+                            currentPolicy.criteria.regexKey)
             cleanupPolicy = new CleanupPolicy(
                     name: currentPolicy.name,
                     notes: currentPolicy.notes,
@@ -92,7 +89,6 @@ parsed_args.each { currentPolicy ->
 }
 return JsonOutput.toJson(scriptResults)
 
-
 def Map<String, String> createCriteria(currentPolicy) {
     Map<String, String> criteriaMap = Maps.newHashMap()
     if (currentPolicy.criteria.lastBlobUpdated == null) {
@@ -105,13 +101,49 @@ def Map<String, String> createCriteria(currentPolicy) {
     } else {
         criteriaMap.put(LAST_DOWNLOADED_KEY, asStringSeconds(currentPolicy.criteria.lastDownloaded))
     }
-    if (currentPolicy.criteria.regexKey != "") {
+    if ((currentPolicy.criteria.preRelease == null) || (currentPolicy.criteria.preRelease == "")) {
+        criteriaMap.remove(IS_PRERELEASE_KEY)
+    } else {
+        criteriaMap.put(IS_PRERELEASE_KEY, Boolean.toString(currentPolicy.criteria.preRelease == "PRERELEASES"))
+    }
+    if ((currentPolicy.criteria.regexKey == null) || (currentPolicy.criteria.regexKey == "")) {
+        criteriaMap.remove(REGEX_KEY)
+    } else {
        criteriaMap.put(REGEX_KEY, String.valueOf(currentPolicy.criteria.regexKey))
     }
-    
     log.info("Using criteriaMap: ${criteriaMap}")
 
     return criteriaMap
+}
+
+def Boolean isPolicyEqual(existingPolicy, currentPolicy) {
+    Boolean isequal = true
+
+    def currentCriteria = createCriteria(currentPolicy)
+
+    isequal &= existingPolicy.getNotes() == currentPolicy.notes
+    isequal &= existingPolicy.getFormat() == currentPolicy.format
+    
+    isequal &= (((! existingPolicy.getCriteria().containsKey(LAST_BLOB_UPDATED_KEY)) && (! currentCriteria.containsKey(LAST_BLOB_UPDATED_KEY)))
+    ||  (existingPolicy.getCriteria().containsKey(LAST_BLOB_UPDATED_KEY)
+        && currentCriteria.containsKey(LAST_BLOB_UPDATED_KEY)
+        && existingPolicy.getCriteria()[LAST_BLOB_UPDATED_KEY] == currentCriteria[LAST_BLOB_UPDATED_KEY]))
+    isequal &= ((! (existingPolicy.getCriteria().containsKey(LAST_DOWNLOADED_KEY)) && (! currentCriteria.containsKey(LAST_DOWNLOADED_KEY)))
+    ||  (existingPolicy.getCriteria().containsKey(LAST_DOWNLOADED_KEY)
+        && currentCriteria.containsKey(LAST_DOWNLOADED_KEY)
+        && existingPolicy.getCriteria()[LAST_DOWNLOADED_KEY] == currentCriteria[LAST_DOWNLOADED_KEY]))
+
+    isequal &= (((! existingPolicy.getCriteria().containsKey(IS_PRERELEASE_KEY)) && (! currentCriteria.containsKey(IS_PRERELEASE_KEY)))
+    ||  (existingPolicy.getCriteria().containsKey(IS_PRERELEASE_KEY)
+        && currentCriteria.containsKey(IS_PRERELEASE_KEY)
+        && existingPolicy.getCriteria()[IS_PRERELEASE_KEY] == currentCriteria[IS_PRERELEASE_KEY]))
+
+    isequal &= (((! existingPolicy.getCriteria().containsKey(REGEX_KEY)) && (! currentCriteria.containsKey(REGEX_KEY)))
+    ||  (existingPolicy.getCriteria().containsKey(REGEX_KEY)
+        && currentCriteria.containsKey(REGEX_KEY)
+        && existingPolicy.getCriteria()[REGEX_KEY] == currentCriteria[REGEX_KEY]))
+
+    return isequal
 }
 
 def Integer asSeconds(days) {
