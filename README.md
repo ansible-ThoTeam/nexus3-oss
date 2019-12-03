@@ -527,6 +527,8 @@ nexus_repos_cleanup_policies:
 #     criteria:
 #       lastBlobUpdated: 60
 #       lastDownloaded: 120
+#       preRelease: RELEASES
+#       regexKey: "foo.*"
 ```
 
 Cleanup policies definitions. Can be added to repo definitions with the option `cleanup_policies`
