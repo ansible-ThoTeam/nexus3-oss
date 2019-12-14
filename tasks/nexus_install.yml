@@ -245,6 +245,13 @@
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
   notify: nexus-service-stop
 
+- name: Stop the admin wizard from running
+  lineinfile:
+    path: "{{ nexus_default_settings_file }}"
+    line: "nexus.onboarding.enabled={{ nexus_onboarding_wizard }}"
+    create: true
+  when: nexus_version is version_compare('3.17.0', '>=')
+
 - name: Create Nexus tmp/backup directory
   file:
     path: "{{ item }}"
