@@ -10,14 +10,14 @@
     state: restarted
     no_block: yes
   listen: nexus-service-restart
-  when: os_systemd.stat.exists
+  when: "ansible_service_mgr == 'systemd'"
 
 - name: nexus sysv service restart
   service:
     name: nexus
     state: restarted
   listen: nexus-service-restart
-  when: os_sysv.stat.exists
+  when: "ansible_service_mgr != 'systemd'"
 
 - name: nexus systemd service stop
   systemd:

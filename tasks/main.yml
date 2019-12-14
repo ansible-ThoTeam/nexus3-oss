@@ -10,16 +10,6 @@
   include_tasks: "selinux-{{ ansible_os_family }}.yml"
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
-- name: Check if SystemD is installed
-  stat:
-    path: /etc/systemd
-  register: os_systemd
-
-- name: Check if sysv is installed
-  stat:
-    path: /etc/init.d
-  register: os_sysv
-
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service

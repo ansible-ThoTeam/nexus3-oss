@@ -309,14 +309,14 @@
     dest: "/etc/systemd/system"
   notify:
     - systemd-reload
-  when: os_systemd.stat.exists
+  when: "ansible_service_mgr == 'systemd'"
 
 - name: Create sysv service configuration
   file:
     path: "/etc/init.d/nexus"
     src: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus"
     state: link
-  when: os_sysv.stat.exists
+  when: "ansible_service_mgr != 'systemd'"
 
 - block:
     - name: "Deploy backup restore script"
@@ -357,7 +357,7 @@
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: os_systemd.stat.exists
+  when: "ansible_service_mgr == 'systemd'"
 
 - name: Enable nexus sysv service and make sure it is started
   service:
@@ -367,7 +367,7 @@
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: os_sysv.stat.exists
+  when: "ansible_service_mgr != 'systemd'"
 
 - meta: flush_handlers
 
