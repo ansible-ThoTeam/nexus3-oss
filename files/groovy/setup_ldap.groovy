@@ -1,6 +1,5 @@
 
 import org.sonatype.nexus.ldap.persist.LdapConfigurationManager
-import org.sonatype.nexus.ldap.persist.entity.LdapConfiguration
 import org.sonatype.nexus.ldap.persist.entity.Connection
 import org.sonatype.nexus.ldap.persist.entity.Mapping
 import groovy.json.JsonSlurper
@@ -8,9 +7,10 @@ import groovy.json.JsonSlurper
 parsed_args = new JsonSlurper().parseText(args)
 
 
-def ldapConfigMgr = container.lookup(LdapConfigurationManager.class.getName());
+def ldapConfigMgr = container.lookup(LdapConfigurationManager.class.getName())
 
-def ldapConfig = new LdapConfiguration()
+def ldapConfig = ldapConfigMgr.getConfiguration()
+
 boolean update = false;
 
 // Look for existing config to update
