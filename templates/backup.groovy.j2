@@ -84,7 +84,7 @@ try {
     FileUtils.copyDirectory(new File(nexusDataDirPath+'/blobs'), new File(CurrentBackupDirPath))
 
     log.info("Wait for temporary db backup task to finish")
-    while (tempBackupTask.currentState.state != TaskInfo.State.WAITING) {
+    while (tempBackupTask.currentState.state.name().toUpperCase() != "WAITING") {
         TimeUnit.SECONDS.sleep(1)
     }
     log.info("Remove temporary task")
