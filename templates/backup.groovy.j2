@@ -4,7 +4,6 @@ import java.time.format.DateTimeFormatter
 import org.sonatype.nexus.scheduling.TaskConfiguration
 import org.sonatype.nexus.scheduling.TaskScheduler
 import org.sonatype.nexus.scheduling.TaskInfo
-import org.sonatype.nexus.scheduling.TaskState
 import org.sonatype.nexus.scheduling.schedule.Schedule
 import java.util.concurrent.TimeUnit
 
@@ -85,7 +84,7 @@ try {
     FileUtils.copyDirectory(new File(nexusDataDirPath+'/blobs'), new File(CurrentBackupDirPath))
 
     log.info("Wait for temporary db backup task to finish")
-    while (tempBackupTask.currentState.state != TaskState.WAITING) {
+    while (tempBackupTask.currentState.state.name().toUpperCase() != "WAITING") {
         TimeUnit.SECONDS.sleep(1)
     }
     log.info("Remove temporary task")
