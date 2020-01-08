@@ -31,6 +31,30 @@ nexus_audit_enabled: true
 nexus_rut_auth_realm: false
 nexus_rut_auth_header: "CUSTOM_RUT_HEADER"
 
+nexus_repos_maven_proxy:
+  - name: central
+    remote_url: 'https://repo1.maven.org/maven2/'
+    layout_policy: permissive
+    cleanup_policies:
+      - mvn_cleanup
+  - name: jboss
+    remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+    cleanup_policies:
+      - mvn_cleanup
+
+nexus_repos_maven_hosted:
+  - name: private-release
+    version_policy: release
+    write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+    cleanup_policies:
+      - mvn_cleanup
+
+nexus_repos_maven_group:
+  - name: public
+    member_repos:
+      - central
+      - jboss
+
 nexus_repos_npm_hosted: []
 nexus_repos_npm_group:
   - name: npm-public
@@ -277,6 +301,15 @@ nexus_roles:
     privileges:
       - all-repos-read
       - wildcard1
+
+nexus_repos_cleanup_policies:
+  - name: mvn_cleanup
+    format: maven2
+    mode:
+    notes: ""
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
 
 # proxy configuration depending on env
 nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"

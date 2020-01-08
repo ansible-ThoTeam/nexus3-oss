@@ -107,6 +107,17 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configure cleanup policy
+        if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
+            def cleanupPolicies = currentRepo.cleanup_policies as Set
+            if (cleanupPolicies != null)
+            {
+                configuration.attributes['cleanup'] = [
+                    policyName: cleanupPolicies
+                ]
+            }
+        }
+
         // Configs for docker proxy repos
         if (currentRepo.type == 'proxy' && currentRepo.format == 'docker') {
             configuration.attributes['dockerProxy'] = [
