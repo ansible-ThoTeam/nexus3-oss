@@ -57,7 +57,6 @@ parsed_args.each { currentPolicy ->
             }
         } else {
             // "create" operation
-            format = currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format
             log.info("Creating Cleanup Policy <name={}, format={}, lastBlob={}, lastDownload={}, preRelease={}, regex={}>",
                             currentPolicy.name,
                             currentPolicy.format,
@@ -65,15 +64,17 @@ parsed_args.each { currentPolicy ->
                             currentPolicy.criteria.lastDownloaded,
                             currentPolicy.criteria.preRelease,
                             currentPolicy.criteria.regexKey)
-            cleanupPolicy = new CleanupPolicy(
-                    name: currentPolicy.name,
-                    notes: currentPolicy.notes,
-                    format: format,
-                    mode: 'deletion',
-                    criteria: criteriaMap
-            )
+
+            CleanupPolicy cleanupPolicy = cleanupPolicyStorage.newCleanupPolicy()
+            cleanupPolicy.with {
+                setName(currentPolicy.name)
+                setNotes(currentPolicy.notes)
+                setFormat(currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format)
+                setMode('deletion')
+                setCriteria(criteriaMap)
+            }
             cleanupPolicyStorage.add(cleanupPolicy)
-        
+
             currentResult.put('status', 'created')
             scriptResults['changed'] = true
         }
