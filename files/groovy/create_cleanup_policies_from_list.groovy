@@ -48,7 +48,6 @@ parsed_args.each { currentPolicy ->
                             currentPolicy.criteria.lastDownloaded,
                             currentPolicy.criteria.preRelease,
                             currentPolicy.criteria.regexKey)
-                existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
                 existingPolicy.setNotes(currentPolicy.notes)
                 existingPolicy.setCriteria(criteriaMap)
                 cleanupPolicyStorage.update(existingPolicy)
