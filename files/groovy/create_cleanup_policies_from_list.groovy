@@ -13,7 +13,7 @@ import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProdu
 import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.REGEX_KEY;
 
 
-def cleanupPolicyStorage = container.lookup(CleanupPolicyStorage.class.getName())
+CleanupPolicyStorage cleanupPolicyStorage = container.lookup(CleanupPolicyStorage.class.getName())
 
 parsed_args = new JsonSlurper().parseText(args)
 
@@ -36,7 +36,7 @@ parsed_args.each { currentPolicy ->
 
         // "update" operation
         if (cleanupPolicyStorage.exists(currentPolicy.name)) {
-            existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
+            CleanupPolicy existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
             if ( isPolicyEqual(existingPolicy, currentPolicy) )
             {
                 log.info("No change Cleanup Policy <name=${currentPolicy.name}>")
