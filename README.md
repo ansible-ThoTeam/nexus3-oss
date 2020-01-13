@@ -726,6 +726,7 @@ and schedule types, please refer to [the specific section in the repo wiki](http
       nexus_backup_configure: false
       nexus_backup_cron: '0 0 21 * * ?'  # See cron expressions definition in nexus create task gui
       nexus_backup_dir: '/var/nexus-backup'
+      nexus_backup_dir_create: true
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
       nexus_backup_rotate: false
       nexus_backup_rotate_first: false
@@ -747,6 +748,8 @@ When using rotation, if you want to save extra disk space during the backup proc
 you can set `nexus_backup_rotate_first: true`. This will configure a pre-rotation
 rather than the default post-rotation. Please note than in this case, old backup(s)
 is/are removed before the current one is done and successful.
+
+If you want to backup to a mounted directory (like s3fs), you can set the `nexus_backup_dir_create` to false.
 
 #### Restore procedure
 Run your playbook with parameter `-e nexus_restore_point=<YYYY-MM-dd-HH-mm-ss>`
