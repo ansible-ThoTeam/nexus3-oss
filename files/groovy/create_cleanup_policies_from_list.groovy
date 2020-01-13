@@ -3,7 +3,6 @@
 import com.google.common.collect.Maps
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovy.json.JsonBuilder
 import java.util.concurrent.TimeUnit
 
 import org.sonatype.nexus.cleanup.storage.CleanupPolicy
@@ -14,7 +13,7 @@ import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProdu
 import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.REGEX_KEY;
 
 
-def cleanupPolicyStorage = container.lookup(CleanupPolicyStorage.class.getName())
+CleanupPolicyStorage cleanupPolicyStorage = container.lookup(CleanupPolicyStorage.class.getName())
 
 parsed_args = new JsonSlurper().parseText(args)
 
@@ -37,7 +36,7 @@ parsed_args.each { currentPolicy ->
 
         // "update" operation
         if (cleanupPolicyStorage.exists(currentPolicy.name)) {
-            existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
+            CleanupPolicy existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
             if ( isPolicyEqual(existingPolicy, currentPolicy) )
             {
                 log.info("No change Cleanup Policy <name=${currentPolicy.name}>")
@@ -49,7 +48,6 @@ parsed_args.each { currentPolicy ->
                             currentPolicy.criteria.lastDownloaded,
                             currentPolicy.criteria.preRelease,
                             currentPolicy.criteria.regexKey)
-                existingPolicy = cleanupPolicyStorage.get(currentPolicy.name)
                 existingPolicy.setNotes(currentPolicy.notes)
                 existingPolicy.setCriteria(criteriaMap)
                 cleanupPolicyStorage.update(existingPolicy)
@@ -59,7 +57,6 @@ parsed_args.each { currentPolicy ->
             }
         } else {
             // "create" operation
-            format = currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format
             log.info("Creating Cleanup Policy <name={}, format={}, lastBlob={}, lastDownload={}, preRelease={}, regex={}>",
                             currentPolicy.name,
                             currentPolicy.format,
@@ -67,15 +64,17 @@ parsed_args.each { currentPolicy ->
                             currentPolicy.criteria.lastDownloaded,
                             currentPolicy.criteria.preRelease,
                             currentPolicy.criteria.regexKey)
-            cleanupPolicy = new CleanupPolicy(
-                    name: currentPolicy.name,
-                    notes: currentPolicy.notes,
-                    format: format,
-                    mode: 'deletion',
-                    criteria: criteriaMap
-            )
+
+            CleanupPolicy cleanupPolicy = cleanupPolicyStorage.newCleanupPolicy()
+            cleanupPolicy.with {
+                setName(currentPolicy.name)
+                setNotes(currentPolicy.notes)
+                setFormat(currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format)
+                setMode('deletion')
+                setCriteria(criteriaMap)
+            }
             cleanupPolicyStorage.add(cleanupPolicy)
-        
+
             currentResult.put('status', 'created')
             scriptResults['changed'] = true
         }
