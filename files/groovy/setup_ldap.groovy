@@ -6,22 +6,20 @@ import groovy.json.JsonSlurper
 
 parsed_args = new JsonSlurper().parseText(args)
 
-
 def ldapConfigMgr = container.lookup(LdapConfigurationManager.class.getName())
 
-def ldapConfig = ldapConfigMgr.getConfiguration()
+// Create a new configuration with the given name
+def ldapConfig = ldapConfigMgr.newConfiguration()
+ldapConfig.setName(parsed_args.name)
 
+// Look for existing config to update and replace the blank one created earlier if found
 boolean update = false;
-
-// Look for existing config to update
 ldapConfigMgr.listLdapServerConfigurations().each {
     if (it.name == parsed_args.name) {
         ldapConfig = it
         update = true
     }
 }
-
-ldapConfig.setName(parsed_args.name)
 
 // Connection
 connection = new Connection()
@@ -68,7 +66,6 @@ mapping.setUserSubtree(parsed_args.user_subtree)
 mapping.setGroupSubtree(parsed_args.group_subtree)
 
 ldapConfig.setMapping(mapping)
-
 
 if (update) {
     ldapConfigMgr.updateLdapServerConfiguration(ldapConfig)
