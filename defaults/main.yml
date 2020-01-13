@@ -31,7 +31,7 @@ nexus_max_direct_memory: "{{ nexus_min_heap_size }}"
 
 # Nexus Backup
 nexus_backup_dir: '/var/nexus-backup'
-nexus_backup_dir_create: true # Shall we create the dir, or do you already have something in place?
+nexus_backup_dir_create: true  # Shall we create the dir, or do you already have something in place?
 nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
 nexus_backup_configure: false  # Shall we configure backup ?
 nexus_backup_cron: "0 0 21 * * ?"  # See cron expression in nexus create task GUI
