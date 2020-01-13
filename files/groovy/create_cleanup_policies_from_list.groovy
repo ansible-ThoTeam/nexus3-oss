@@ -3,7 +3,6 @@
 import com.google.common.collect.Maps
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovy.json.JsonBuilder
 import java.util.concurrent.TimeUnit
 
 import org.sonatype.nexus.cleanup.storage.CleanupPolicy
