@@ -26,7 +26,7 @@ nexusBackupRotate = Boolean.valueOf("{{ nexus_backup_rotate }}")
 nexusBackupRotateFirst = Boolean.valueOf("{{ nexus_backup_rotate_first }}")
 nexusBackupKeepRotations = "{{ nexus_backup_keep_rotations }}".toInteger()
 
-backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('YYYY-MM-dd-HH-mm-ss'))
+backupDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern('yyyy-MM-dd-HH-mm-ss'))
 CurrentBackupDirPath = nexusBackupDirPath+'/blob-backup-'+backupDateString
 
 /** Helper function to rotate backups */
