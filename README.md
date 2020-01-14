@@ -37,6 +37,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Roles](#roles)
          * [Users](#users)
          * [Content selectors](#content-selectors)
+         * [Cleanup policies](#cleanup-policies)
          * [Blobstores and repositories](#blobstores-and-repositories)
          * [Scheduled tasks](#scheduled-tasks)
          * [Backups](#backups)
@@ -60,7 +61,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: Thu Nov 28 21:55:10 CET 2019 -->
+<!-- Added by: olcla, at: Thu Nov 28 23:04:38 CET 2019 -->
 
 <!--te-->
 
@@ -455,7 +456,6 @@ Those items are combined with the following default values :
         - read
 ```
 
-
 ### Roles
 ```yaml
     nexus_roles:
@@ -517,6 +517,22 @@ To use content selector add new privilege with `type: repository-content-selecto
   - browse
 ```
 
+### Cleanup policies
+```yaml
+nexus_repos_cleanup_policies:
+#   - name: mvn_cleanup
+#     format: maven2
+#     mode:
+#     notes: ""
+#     criteria:
+#       lastBlobUpdated: 60
+#       lastDownloaded: 120
+#       preRelease: RELEASES
+#       regexKey: "foo.*"
+```
+
+Cleanup policies definitions. Can be added to repo definitions with the option `cleanup_policies`
+
 ### Blobstores and repositories
 ```yaml
     nexus_delete_default_repos: false
@@ -553,12 +569,16 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
       - name: central
         remote_url: 'https://repo1.maven.org/maven2/'
         layout_policy: permissive
+        # cleanup_policies:
+        #    - mvn_cleanup
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+        # cleanup_policies:
+        #    - mvn_cleanup
         # maximum_component_age: -1
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
@@ -581,6 +601,8 @@ Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Ma
       - name: private-release
         version_policy: release
         write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+        # cleanup_policies:
+        #    - mvn_cleanup
 ```
 
 Maven [hosted repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-HostedRepository) configuration. Negative cache config is optionnal and will default to the above values if omitted.
@@ -704,6 +726,7 @@ and schedule types, please refer to [the specific section in the repo wiki](http
       nexus_backup_configure: false
       nexus_backup_cron: '0 0 21 * * ?'  # See cron expressions definition in nexus create task gui
       nexus_backup_dir: '/var/nexus-backup'
+      nexus_backup_dir_create: true
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
       nexus_backup_rotate: false
       nexus_backup_rotate_first: false
@@ -725,6 +748,8 @@ When using rotation, if you want to save extra disk space during the backup proc
 you can set `nexus_backup_rotate_first: true`. This will configure a pre-rotation
 rather than the default post-rotation. Please note than in this case, old backup(s)
 is/are removed before the current one is done and successful.
+
+If you want to backup to a mounted directory (like s3fs), you can set the `nexus_backup_dir_create` to false.
 
 #### Restore procedure
 Run your playbook with parameter `-e nexus_restore_point=<YYYY-MM-dd-HH-mm-ss>`

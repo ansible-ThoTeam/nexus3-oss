@@ -31,6 +31,7 @@ nexus_max_direct_memory: "{{ nexus_min_heap_size }}"
 
 # Nexus Backup
 nexus_backup_dir: '/var/nexus-backup'
+nexus_backup_dir_create: true  # Shall we create the dir, or do you already have something in place?
 nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
 nexus_backup_configure: false  # Shall we configure backup ?
 nexus_backup_cron: "0 0 21 * * ?"  # See cron expression in nexus create task GUI
@@ -256,6 +257,18 @@ nexus_blobstores: []
 #     accessKeyId: "{{ VAULT_ENCRYPTED_KEY_ID }}"
 #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 
+# Cleanup Polices
+nexus_repos_cleanup_policies: []
+#   - name: mvn_cleanup
+#     format: maven2
+#     mode:
+#     notes: ""
+#     criteria:
+#       lastBlobUpdated: 60  # Optional
+#       lastDownloaded: 120  # Optional
+#       preRelease: RELEASES # Optional: PRERELEASES or RELEASES
+#       regexKey: "foo.*"    # Optional
+
 
 # also see _nexus_repos_maven_defaults below
 nexus_repos_maven_proxy:
@@ -393,6 +406,7 @@ _nexus_repos_raw_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive

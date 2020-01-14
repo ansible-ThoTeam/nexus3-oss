@@ -252,15 +252,20 @@
     create: true
   when: nexus_version is version_compare('3.17.0', '>=')
 
-- name: Create Nexus tmp/backup directory
+- name: Create Nexus tmp directory
   file:
-    path: "{{ item }}"
+    path: "{{ nexus_tmp_dir }}"
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
-  with_items:
-    - "{{ nexus_tmp_dir }}"
-    - "{{ nexus_backup_dir }}"
+
+- name: Create Nexus backup directory
+  file:
+    path: "{{ nexus_backup_dir }}"
+    state: "directory"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+  when: nexus_backup_dir_create | bool
 
 - name: Setup Nexus tmp directory
   lineinfile:

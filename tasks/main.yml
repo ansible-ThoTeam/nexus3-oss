@@ -126,6 +126,12 @@
   when: nexus_restore_point is defined
 
 - block:
+    - name: Create/check cleanup policies
+      include_tasks: call_script.yml
+      vars:
+        script_name: create_cleanup_policies_from_list
+        args: "{{ nexus_repos_cleanup_policies }}"
+      when: nexus_repos_cleanup_policies | length > 0
 
     - name: Apply defaults to repositories configurations and process a single list
       include_tasks: process_repos_list.yml
