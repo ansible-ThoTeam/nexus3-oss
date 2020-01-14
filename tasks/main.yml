@@ -15,6 +15,11 @@
     path: /etc/systemd/system/nexus.service
   register: nexus_systemd_service_file
 
+- name: Check if sysv service is installed
+  stat:
+    path: /etc/init.d/nexus
+  register: nexus_sysv_service_file
+
 - include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
 
