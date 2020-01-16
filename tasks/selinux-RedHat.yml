@@ -3,6 +3,8 @@
 - name: Make sure we have the necessary yum packages available for selinux
   yum:
     name:
-      - libselinux-python
-      - libsemanage-python
+      - libselinux-python{{ py_suffix }}
+      - libsemanage-python{{ py_suffix }}
     state: present
+  vars:
+    py_suffix: '{{ "3" if ansible_python.version.major == 3 else "" }}'
