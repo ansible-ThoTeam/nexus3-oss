@@ -1,4 +1,10 @@
 [![Build Status](https://travis-ci.org/ansible-ThoTeam/nexus3-oss.svg?branch=master)](https://travis-ci.org/ansible-ThoTeam/nexus3-oss)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/releases/latest)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/ansible-ThoTeam/nexus3-oss/latest)
+![Ansible Quality Score](https://img.shields.io/ansible/quality/22637?label=Galaxy%20quality%20score)
+![Ansible Role](https://img.shields.io/ansible/role/d/22637?label=Galaxy%20downloads)
+![GitHub contributors](https://img.shields.io/github/contributors/ansible-ThoTeam/nexus3-oss)
+![GitHub licence](https://img.shields.io/github/license/ansible-ThoTeam/nexus3-oss)
 # Ansible Role: Nexus 3 OSS
 
 This role installs and configures Nexus Repository Manager OSS version 3.x.
