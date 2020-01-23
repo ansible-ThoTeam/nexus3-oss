@@ -16,6 +16,10 @@
   when: ((purge is defined) and (purge | bool))
 
 - include: nexus_install.yml
+  when: not (nexus_docker_install | bool)
+
+- include: nexus_docker_install.yml
+  when: (nexus_docker_install | bool)
 
 - include: install_repository_apt_plugin.yml
 
