@@ -1,4 +1,12 @@
 ---
+nexus_docker_install: False
+nexus_docker_image_version: latest
+nexus_docker_image_name: sonatype/nexus3
+nexus_docker_run_options: ""
+nexus_docker_tmp_dir: "{{ nexus_data_dir }}/tmp"
+nexus_docker_script_dir: "{{ nexus_data_dir }}/etc/scripts"
+nexus_docker_backup_dir: "/nexus-data/nexus-backup"
+
 nexus_version: '3.12.0-01'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 nexus_download_dir: '/tmp'
