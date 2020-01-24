@@ -7,9 +7,9 @@ nexus_docker_tmp_dir: "{{ nexus_data_dir }}/tmp"
 nexus_docker_script_dir: "{{ nexus_data_dir }}/etc/scripts"
 nexus_docker_backup_dir: "/nexus-data/nexus-backup"
 
-nexus_xms: "2G"
-nexus_xmx: "2G"
-nexus_MaxDirectMemorySize: "4G"
+nexus_xms: "2g"
+nexus_xmx: "2g"
+nexus_MaxDirectMemorySize: "3g"
 
 nexus_version: '3.12.0-01'
 nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
