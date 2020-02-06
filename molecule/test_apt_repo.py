@@ -1,3 +1,5 @@
+"""testinfra file for apt specific tests."""
+
 import os
 import testinfra.utils.ansible_runner
 
@@ -8,7 +10,7 @@ These test should only run on debian based destributions
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('nexus')
 
-apt_pub_key="""
+apt_pub_key = """
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQGNBF2Ym3ABDACtu4R3enO2TehVslkRXc4ZcMkaAMIcJgOLo/IQBUnN8dInGLFR
@@ -52,11 +54,14 @@ wfP1H4kG2SRX0Zj07jIqPOvnddF+
 -----END PGP PUBLIC KEY BLOCK-----
 """
 
+
 def test_apt_package_upload(host: testinfra.host.Host):
+    """Test we can upload an apt package to repository."""
     # Copy debian test package
     host.ansible(
         "get_url",
-        "url=https://github.com/ansible-ThoTeam/nexushello-apt-package/releases/download/v1.0.1/nexushello_1.0.1_all.deb dest=/tmp",
+        "url=https://github.com/ansible-ThoTeam/nexushello-apt-package/releases"
+        "/download/v1.0.1/nexushello_1.0.1_all.deb dest=/tmp",
         check=False
     )
 
@@ -86,12 +91,11 @@ EOF"""
     )
 
     # Import gpg key of our repo
-    #host.run('echo "{}" | apt-key add -'.format(apt_pub_key))
     host.run('echo "{}" > /tmp/pub.key'.format(apt_pub_key))
     host.run("apt-key add /tmp/pub.key")
 
     # Install package
-    install_package = host.ansible(
+    host.ansible(
         "apt",
         "name=nexushello state=present update-cache=true",
         check=False,
@@ -99,6 +103,3 @@ EOF"""
     )
 
     assert host.run("nexushello").stdout == "Hello nexus !\n"
-
-
-
