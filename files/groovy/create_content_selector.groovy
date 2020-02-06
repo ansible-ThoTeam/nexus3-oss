@@ -1,21 +1,19 @@
 import groovy.json.JsonSlurper
-import org.sonatype.nexus.selector.SelectorManager
 import org.sonatype.nexus.selector.SelectorConfiguration
+import org.sonatype.nexus.selector.SelectorManager
 
 parsed_args = new JsonSlurper().parseText(args)
 
-selectorManager = container.lookup(SelectorManager.class.name)
+SelectorManager selectorManager = container.lookup(SelectorManager.class.name)
 
-def selectorConfig
 boolean update = true
 
-selectorConfig = selectorManager.browse().find { it -> it.name == parsed_args.name } 
+SelectorConfiguration selectorConfig = selectorManager.browse().find { it -> it.name == parsed_args.name }
 
 if (selectorConfig == null) {
     update = false
-    selectorConfig = new SelectorConfiguration(
-        'name': parsed_args.name
-    )
+    selectorConfig = selectorManager.newSelectorConfiguration()
+    selectorConfig.setName(parsed_args.name)
 }
 
 selectorConfig.setDescription(parsed_args.description)
