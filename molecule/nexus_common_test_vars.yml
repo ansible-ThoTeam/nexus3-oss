@@ -80,6 +80,13 @@ nexus_repos_yum_group:
       - private_yum_centos_7
       - epel_centos_7_x86_64
 
+nexus_repos_docker_hosted:
+  - name: docker-private
+    http_port: "5000"
+    force_basic_auth: true
+    v1_enabled: true
+    write_policy: allow
+
 nexus_repos_apt_hosted:
   - name: private_ubuntu_18.04
     distribution: bionic
@@ -176,6 +183,19 @@ nexus_repos_apt_proxy:
     maximum_metadata_age: -1
     negative_cache_ttl: 60
 
+nexus_content_selectors:
+   # Docker by namespace. For mode details see:
+   # https://help.sonatype.com/repomanager3/formats/docker-registry/content-selectors-and-docker
+   - name: docker-login-search
+     description: Selector for docker login privilege
+     search_expression: format == "docker" and (path == "/v2/" of path == "/v1/search")
+   - name: docker-hosted-team1
+     description: Selector for docker team1
+     search_expression: format == "docker" and path =^ "/v2/team1/"
+   - name: docker-hosted-team1
+     description: Selector for docker team2
+     search_expression: format == "docker" and path =^ "/v2/team2/"
+
 nexus_scheduled_tasks:
   #  Example task to purge maven snapshots with cron schedule
   - name: Purge maven snapshots
@@ -263,6 +283,22 @@ nexus_local_users:
     password: "s3cr3t"
     roles:
       - c-ro-private_yum_centos_7
+  - username: team1
+    first_name: team
+    last_name: one
+    emain: team@one.com
+    password: "theone"
+    roles:
+      - developers
+      - team1
+  - username: team2
+    first_name: team
+    last_name: two
+    emain: team@two.com
+    password: "thetwo"
+    roles:
+      - developers
+      - team2
 
 nexus_privileges:
   - name: all-repos-read
@@ -287,6 +323,23 @@ nexus_privileges:
     script_name: the_script_name
     actions:
       - some actions
+  - name: docker-login-search-all
+    type: repository-content-selector
+    contentSelector: docker-login-search
+    description: "Login to and search docker registry"
+    repository: "*"
+    actions:
+      - read
+  - name: docker-hosted-team1-rw
+    type: repository-content-selector
+    contenSelector: docker-hosted-team1
+    description: write access to /team1 namespace on docker-hosted
+    actions: [read, add, edit, browse]
+  - name: docker-hosted-team2-rw
+    type: repository-content-selector
+    contenSelector: docker-hosted-team2
+    description: write access to /team2 namespace on docker-hosted
+    actions: [read, add, edit, browse]
 
 nexus_roles:
   - name: c-ro-private_yum_centos_7
@@ -301,6 +354,16 @@ nexus_roles:
     privileges:
       - all-repos-read
       - wildcard1
+  - name: team1
+    id: team1
+    description: "team1"
+    privileges:
+      - docker-hosted-team1-rw
+  - name: team2
+    id: team2
+    description: "team2"
+    privileges:
+      - docker-hosted-team1-rw
 
 nexus_repos_cleanup_policies:
   - name: mvn_cleanup
