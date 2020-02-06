@@ -31,6 +31,15 @@ nexus_audit_enabled: true
 nexus_rut_auth_realm: false
 nexus_rut_auth_header: "CUSTOM_RUT_HEADER"
 
+nexus_repos_cleanup_policies:
+  - name: mvn_cleanup
+    format: maven2
+    mode:
+    notes: ""
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+
 nexus_repos_maven_proxy:
   - name: central
     remote_url: 'https://repo1.maven.org/maven2/'
@@ -184,17 +193,127 @@ nexus_repos_apt_proxy:
     negative_cache_ttl: 60
 
 nexus_content_selectors:
-   # Docker by namespace. For mode details see:
-   # https://help.sonatype.com/repomanager3/formats/docker-registry/content-selectors-and-docker
-   - name: docker-login-search
-     description: Selector for docker login privilege
-     search_expression: format == "docker" and (path == "/v2/" of path == "/v1/search")
-   - name: docker-hosted-team1
-     description: Selector for docker team1
-     search_expression: format == "docker" and path =^ "/v2/team1/"
-   - name: docker-hosted-team1
-     description: Selector for docker team2
-     search_expression: format == "docker" and path =^ "/v2/team2/"
+  # Docker by namespace. For mode details see:
+  # https://help.sonatype.com/repomanager3/formats/docker-registry/content-selectors-and-docker
+  - name: docker-login-search
+    description: Selector for docker login privilege
+    search_expression: format == "docker" and (path == "/v2/" of path == "/v1/search")
+  - name: docker-private-team1
+    description: Selector for docker team1
+    search_expression: format == "docker" and path =^ "/v2/team1/"
+  - name: docker-private-team2
+    description: Selector for docker team2
+    search_expression: format == "docker" and path =^ "/v2/team2/"
+
+nexus_privileges:
+  - name: all-repos-read
+    description: 'Read & Browse access to all repos'
+    repository: '*'
+    actions:
+      - read
+      - browse
+  - name: wildcard1
+    type: wildcard
+    description: first wilcard
+    pattern: nexus:repository-view:yum:*
+  - name: some_application
+    type: application
+    description: some nexus configuration
+    domain: some_nexus_domain
+    actions:
+      - some action
+  - name: script1
+    type: script
+    description: first script
+    script_name: the_script_name
+    actions:
+      - some actions
+  - name: docker-login-search-all
+    type: repository-content-selector
+    contentSelector: docker-login-search
+    description: "Login to and search docker registry"
+    repository: "*"
+    actions:
+      - read
+  - name: docker-private-team1-rw
+    type: repository-content-selector
+    contentSelector: docker-private-team1
+    description: write access to /team1 namespace on docker-private
+    repository: docker-private
+    actions:
+      - read,
+      - add
+      - edit
+      - browse
+  - name: docker-private-team2-rw
+    type: repository-content-selector
+    contentSelector: docker-private-team2
+    description: write access to /team2 namespace on docker-hosted
+    repository: docker-private
+    actions:
+      - read
+      - add
+      - edit
+      - browse
+
+nexus_roles:
+  - name: c-ro-private_yum_centos_7
+    id: c-ro-private_yum_centos_7
+    description: "Custrom read-only role for private_yum_centos_7 hosted repository"
+    privileges:
+      - 'nx-repository-view-yum-private_yum_centos_7-read'
+      - 'nx-repository-view-yum-private_yum_centos_7-browse'
+  - name: developers
+    id: developers
+    description: "Developers"
+    privileges:
+      - all-repos-read
+      - wildcard1
+      - docker-login-search-all
+  - name: role-team1
+    id: role-team1
+    description: "team1"
+    privileges:
+      - docker-private-team1-rw
+  - name: role-team2
+    id: role-team2
+    description: "team2"
+    privileges:
+      - docker-private-team2-rw
+
+nexus_local_users:
+  - username: jenkins
+    first_name: Jenkins
+    last_name: CI
+    email: support@company.com
+    password: "s3cr3t"
+    roles:
+      - developers
+  - username: olduser  # make sure this old account is removed
+    state: absent
+  - username: test_roles
+    first_name: Test
+    last_name: Roles
+    email: test@roles.com
+    password: "s3cr3t"
+    roles:
+      - c-ro-private_yum_centos_7
+  - username: team1
+    first_name: team
+    last_name: one
+    email: team@one.com
+    password: "theone"
+    roles:
+      - developers
+      - role-team1
+  - username: team2
+    first_name: team
+    last_name: two
+    email: team@two.com
+    password: "thetwo"
+    roles:
+      - developers
+      - role-team2
 
 nexus_scheduled_tasks:
   #  Example task to purge maven snapshots with cron schedule
@@ -265,114 +384,6 @@ nexus_scheduled_tasks:
     taskProperties:
       repositoryName: "*"
       lastUsed: "7"
-
-nexus_local_users:
-  - username: jenkins
-    first_name: Jenkins
-    last_name: CI
-    email: support@company.com
-    password: "s3cr3t"
-    roles:
-      - developers
-  - username: olduser  # make sure this old account is removed
-    state: absent
-  - username: test_roles
-    first_name: Test
-    last_name: Roles
-    email: test@roles.com
-    password: "s3cr3t"
-    roles:
-      - c-ro-private_yum_centos_7
-  - username: team1
-    first_name: team
-    last_name: one
-    emain: team@one.com
-    password: "theone"
-    roles:
-      - developers
-      - team1
-  - username: team2
-    first_name: team
-    last_name: two
-    emain: team@two.com
-    password: "thetwo"
-    roles:
-      - developers
-      - team2
-
-nexus_privileges:
-  - name: all-repos-read
-    description: 'Read & Browse access to all repos'
-    repository: '*'
-    actions:
-      - read
-      - browse
-  - name: wildcard1
-    type: wildcard
-    description: first wilcard
-    pattern: nexus:repository-view:yum:*
-  - name: some_application
-    type: application
-    description: some nexus configuration
-    domain: some_nexus_domain
-    actions:
-      - some action
-  - name: script1
-    type: script
-    description: first script
-    script_name: the_script_name
-    actions:
-      - some actions
-  - name: docker-login-search-all
-    type: repository-content-selector
-    contentSelector: docker-login-search
-    description: "Login to and search docker registry"
-    repository: "*"
-    actions:
-      - read
-  - name: docker-hosted-team1-rw
-    type: repository-content-selector
-    contenSelector: docker-hosted-team1
-    description: write access to /team1 namespace on docker-hosted
-    actions: [read, add, edit, browse]
-  - name: docker-hosted-team2-rw
-    type: repository-content-selector
-    contenSelector: docker-hosted-team2
-    description: write access to /team2 namespace on docker-hosted
-    actions: [read, add, edit, browse]
-
-nexus_roles:
-  - name: c-ro-private_yum_centos_7
-    id: c-ro-private_yum_centos_7
-    description: "Custrom read-only role for private_yum_centos_7 hosted repository"
-    privileges:
-      - 'nx-repository-view-yum-private_yum_centos_7-read'
-      - 'nx-repository-view-yum-private_yum_centos_7-browse'
-  - name: developers
-    id: developers
-    description: "Developers"
-    privileges:
-      - all-repos-read
-      - wildcard1
-  - name: team1
-    id: team1
-    description: "team1"
-    privileges:
-      - docker-hosted-team1-rw
-  - name: team2
-    id: team2
-    description: "team2"
-    privileges:
-      - docker-hosted-team1-rw
-
-nexus_repos_cleanup_policies:
-  - name: mvn_cleanup
-    format: maven2
-    mode:
-    notes: ""
-    criteria:
-      lastBlobUpdated: 60
-      lastDownloaded: 120
 
 # proxy configuration depending on env
 nexus_with_http_proxy: "{{ lookup('env', 'http_proxy') | length > 0 | bool }}"
