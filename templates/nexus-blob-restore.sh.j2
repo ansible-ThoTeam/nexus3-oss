@@ -14,7 +14,6 @@ blob_dir="blob-backup-${MDATE}"
 backup_dir={{ nexus_backup_dir }}
 data_dir={{ nexus_data_dir }}
 db_restore_dir={{ nexus_db_restore_dir }}
-blob_prefix={{ nexus_blob_prefix |d('blob-') }}
 
 systemctl stop nexus
 return_status=$?
@@ -25,5 +24,8 @@ else
   rm -rf ${data_dir}/db/*
   rm -rf ${data_dir}/blobs/*
   sudo -u {{ nexus_os_user }} cp ${backup_dir}/${blob_dir}/db/* ${db_restore_dir}
-  sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/{${blob_prefix}*,default} ${data_dir}/blobs/
+  {% for item in nexus_blobstores %}
+  sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/{{ item.name }} ${data_dir}/blobs/
+  {% endfor %}
+  sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/default ${data_dir}/blobs/
 fi
