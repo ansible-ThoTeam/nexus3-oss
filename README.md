@@ -56,6 +56,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
             * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
                * [Fix upgrade failing on timeout waiting for nexus port](#fix-upgrade-failing-on-timeout-waiting-for-nexus-port)
             * [Skip provisionning tasks](#skip-provisionning-tasks)
+            * [Force recursive ownership check of blobstores directories](#force-recursive-ownership-check-of-blobstores-directories)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -67,7 +68,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: Thu Nov 28 23:04:38 CET 2019 -->
+<!-- Added by: olcla, at: Thu Feb 13 18:48:38 CET 2020 -->
 
 <!--te-->
 
