@@ -870,6 +870,22 @@ We strongly suggest to use this variable only as an extra var to ansible-playboo
 ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionning=false
 ```
 
+#### Force recursive ownership check of blobstores directories
+_Introduced in version 2.4.9_
+```yaml
+    nexus_blobstores_recurse_owner: true
+```
+In versions prior to 2.4.9, the task creating the blobstores directories was recursively checking the ownership
+of all files. This was not a problem on creation (where dir is empty) or with installations with small
+blobstores, but could lead to extremely long delays for large blobstores with lots of files.
+
+Recursive checking of ownership has been turned off by default to prevent this extra delay. If for some
+reason you need to make sure all files in the blobstore directories are owned by the nexus user, you can
+force the check:
+```bash
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_blobstores_recurse_owner=true
+```
+
 ## Dependencies
 
 The java and httpd requirements /can/ be fulfilled with the following galaxy roles :
