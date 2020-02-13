@@ -107,7 +107,7 @@
             owner: "{{ nexus_os_user }}"
             group: "{{ nexus_os_group }}"
             state: directory
-            recurse: true
+            recurse: "{{ nexus_blobstores_recurse_owner | default(false) | bool }}"
           when: item.path is defined
           loop: "{{ nexus_blobstores }}"
 

@@ -56,6 +56,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
             * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
                * [Fix upgrade failing on timeout waiting for nexus port](#fix-upgrade-failing-on-timeout-waiting-for-nexus-port)
             * [Skip provisionning tasks](#skip-provisionning-tasks)
+            * [Force recursive ownership check of blobstores directories](#force-recursive-ownership-check-of-blobstores-directories)
       * [Dependencies](#dependencies)
       * [Example Playbook](#example-playbook)
       * [Development, Contribution and Testing](#development-contribution-and-testing)
@@ -67,7 +68,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [License](#license)
       * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: Thu Nov 28 23:04:38 CET 2019 -->
+<!-- Added by: olcla, at: Thu Feb 13 18:48:38 CET 2020 -->
 
 <!--te-->
 
@@ -868,6 +869,22 @@ to simply check nexus is correctly installed, or restore a backup, or upgrade ne
 We strongly suggest to use this variable only as an extra var to ansible-playbook call
 ```bash
 ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionning=false
+```
+
+#### Force recursive ownership check of blobstores directories
+_Introduced in version 2.4.9_
+```yaml
+    nexus_blobstores_recurse_owner: true
+```
+In versions prior to 2.4.9, the task creating the blobstores directories was recursively checking the ownership
+of all files. This was not a problem on creation (where dir is empty) or with installations with small
+blobstores, but could lead to extremely long delays for large blobstores with lots of files.
+
+Recursive checking of ownership has been turned off by default to prevent this extra delay. If for some
+reason you need to make sure all files in the blobstore directories are owned by the nexus user, you can
+force the check:
+```bash
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_blobstores_recurse_owner=true
 ```
 
 ## Dependencies
