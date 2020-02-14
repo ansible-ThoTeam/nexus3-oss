@@ -24,8 +24,8 @@ else
   rm -rf ${data_dir}/db/*
   rm -rf ${data_dir}/blobs/*
   sudo -u {{ nexus_os_user }} cp ${backup_dir}/${blob_dir}/db/* ${db_restore_dir}
-  {% for item in nexus_blobstores %}
+{% for item in nexus_blobstores %}
   sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/{{ item.name }} ${data_dir}/blobs/
-  {% endfor %}
+{% endfor %}
   sudo -u {{ nexus_os_user }} cp -r ${backup_dir}/${blob_dir}/default ${data_dir}/blobs/
 fi
