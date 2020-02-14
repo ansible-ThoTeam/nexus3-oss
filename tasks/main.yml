@@ -23,6 +23,10 @@
 - include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
 
+- name: "Digest splited blob list var"
+  include_vars: blob_vars.yml
+  when: nexus_blob_split | bool
+
 - import_tasks: nexus_install.yml
 
 - include_tasks: httpd_reverse_proxy_config.yml
@@ -92,10 +96,6 @@
             {{ result.append(_nexus_privilege_defaults | combine(privilege)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
-
-    - name: "Digest splited blob list var"
-      include_vars: blob_vars.yml
-      when: nexus_blob_split | bool
 
     - name: Create/Check blobstores
       when: nexus_restore_point is undefined
