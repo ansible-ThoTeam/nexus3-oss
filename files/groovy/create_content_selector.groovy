@@ -12,8 +12,13 @@ SelectorConfiguration selectorConfig = selectorManager.browse().find { it -> it.
 
 if (selectorConfig == null) {
     update = false
-    selectorConfig = selectorManager.newSelectorConfiguration()
-    selectorConfig.setName(parsed_args.name)
+    try {
+        selectorConfig = selectorManager.newSelectorConfiguration()
+        selectorConfig.setName(parsed_args.name)
+    } catch (MissingMethodException) {
+        // Compatibility with nexus versions older than 3.20
+        selectorConfig = new SelectorConfiguration('name': parsed_args.name)
+    }
 }
 
 selectorConfig.setDescription(parsed_args.description)
