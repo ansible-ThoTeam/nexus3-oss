@@ -16,25 +16,25 @@
 - name: create environment file for docker
   copy:
     dest: "{{ nexus_data_dir }}/etc/nexus_docker.env"
-    content: |
-      export INSTALL4J_ADD_VM_PARAMS="
-        -Xms{{ nexus_xms }} 
-        -Xmx{{ nexus_xmx }} 
-        -XX:MaxDirectMemorySize={{ nexus_MaxDirectMemorySize }} 
-        -XX:+UnlockDiagnosticVMOptions 
-        -XX:+UnsyncloadClass 
-        -XX:+LogVMOutput 
-        -XX:LogFile=/nexus-data/log/jvm.log 
-        -XX:-OmitStackTraceInFastThrow 
-        -Djava.net.preferIPv4Stack=true 
-        -Dkaraf.home=/nexus-data 
-        -Dkaraf.base=/nexus-data 
-        -Dkaraf.etc=/nexus-data/etc/karaf 
-        -Djava.util.logging.config.file=/nexus-data/etc/karaf/java.util.logging.properties 
-        -Dkaraf.data=/nexus-data  
-        -Djava.io.tmpdir=/nexus-data/tmp/ 
-        -Dkaraf.startLocalConsole=false 
-        -Duser.timezone=UTC"
+    content: >
+      INSTALL4J_ADD_VM_PARAMS=
+      -Xms{{ nexus_xms }} 
+      -Xmx{{ nexus_xmx }} 
+      -XX:MaxDirectMemorySize={{ nexus_MaxDirectMemorySize }} 
+      -XX:+UnlockDiagnosticVMOptions 
+      -XX:+UnsyncloadClass 
+      -XX:+LogVMOutput 
+      -XX:LogFile=/nexus-data/log/jvm.log 
+      -XX:-OmitStackTraceInFastThrow 
+      -Djava.net.preferIPv4Stack=true 
+      -Dkaraf.home=/nexus-data 
+      -Dkaraf.base=/nexus-data 
+      -Dkaraf.etc=/nexus-data/etc/karaf 
+      -Djava.util.logging.config.file=/nexus-data/etc/karaf/java.util.logging.properties 
+      -Dkaraf.data=/nexus-data  
+      -Djava.io.tmpdir=/nexus-data/tmp/ 
+      -Dkaraf.startLocalConsole=false 
+      -Duser.timezone=UTC
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     mode: "0755"
@@ -52,7 +52,7 @@
         ExecStartPre=-/usr/bin/docker stop %n
         ExecStartPre=-/usr/bin/docker rm %n
         ExecStartPre=/usr/bin/docker pull {{nexus_docker_image_name}}:{{nexus_docker_image_version}}
-        ExecStart=/usr/bin/docker run --init --name %n --env-file={{ nexus_data_dir }}/etc/nexus_docker.env -v {{ nexus_data_dir }}:/nexus-data --publish={{nexus_docker_http_port}}:8081 {{nexus_docker_run_options}} {{nexus_docker_image_name}}:{{nexus_docker_image_version}}
+        ExecStart=/usr/bin/docker run --init --name %n --env-file={{ nexus_data_dir }}/etc/nexus_docker.env -v {{ nexus_data_dir }}:/nexus-data --publish={{ nexus_docker_http_port }}:{{ nexus_default_port }} {{nexus_docker_run_options}} {{nexus_docker_image_name}}:{{nexus_docker_image_version}}
         ExecStop=/usr/bin/docker stop %n
         TimeoutStartSec=0
         Restart=always
@@ -62,7 +62,7 @@
     backup: false
     owner: root
     group: root
-    mode: 0755
+    mode: 0644
   notify:
     - systemd-reload
     - docker-nexus-service-restart
@@ -89,7 +89,7 @@
 - name: Get rest API endpoint (v < 3.8.0)
   set_fact:
     nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
-  when: nexunexus_docker_image_versions_version is version_compare('3.8.0', '<') and nexus_docker_image_version != "latest"
+  when: nexus_docker_image_version is version_compare('3.8.0', '<') and nexus_docker_image_version != "latest"
 
 - name: Get rest API endpoint (v >= 3.8.0)
   set_fact:
@@ -105,8 +105,6 @@
   set_fact:
     nexus_db_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
   when: nexus_docker_image_version is version_compare('3.11.0', '>=') or nexus_docker_image_version == "latest"
-
-- name: 
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_data_dir }}/etc
   file:
