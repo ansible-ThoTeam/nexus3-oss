@@ -1076,6 +1076,9 @@ To speed up tests, molecule uses docker hub images with automated build.
 
 #### Molecule selinux scenario
 
+*** Warning: This scenario as been removed for the moment for molecule 3.0 compatibility reason. We it until
+we can decide if it can be re-introduced or not ***
+
 We included a second molecule `selinux` scenario. This one is not run on travis but can be used locally to:
 * test selinux integration (on centos).
 * run test and access the running vms under VirtualBox on you local machine.
