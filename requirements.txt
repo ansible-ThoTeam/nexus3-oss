@@ -22,6 +22,8 @@ molecule
 flake8
 # Yamllint is not in molecule deps anymore
 yamllint
+# Latest testinfra
+testinfra
 # Latest docker
 docker
 # We use json_query in tasks which requires jmespath
