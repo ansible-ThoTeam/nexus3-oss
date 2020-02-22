@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-thisScriptPath=`dirname $(readlink -f $0)`
-rolePath=`dirname $thisScriptPath`
+thisScriptPath="$( dirname "${BASH_SOURCE[0]}" )"
+rolePath="$thisScriptPath/.."
 groovyScriptsPath=${rolePath}/files/groovy
 groovyChecker=$thisScriptPath/syntaxChecking.groovy
 exitStatus=0
