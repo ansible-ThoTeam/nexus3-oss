@@ -10,6 +10,23 @@ scriptResults.put('action_details', actionDetails)
 
 repositoryManager = repository.repositoryManager
 
+private Configuration newConfiguration(final Map map) {
+    Configuration config
+    try {
+        config = repositoryManager.newConfiguration()
+    } catch (MissingMethodException) {
+        // Compatibility with nexus versions older than 3.21
+        config = Configuration.newInstance()
+    }
+    config.with {
+        repositoryName = map.repositoryName
+        recipeName = map.recipeName
+        online = map.online
+        attributes = map.attributes as Map
+    }
+    return config
+}
+
 parsed_args.each { currentRepo ->
 
     Map<String, String> currentResult = [name: currentRepo.name, format: currentRepo.format, type: currentRepo.type]
@@ -22,7 +39,7 @@ parsed_args.each { currentRepo ->
         if (existingRepository == null) {
             log.info('Creating configuration for new repo {} (Format: {},  Type: {})', currentRepo.name, currentRepo.format, currentRepo.type)
             // Default and/or immutable values
-            configuration = new Configuration(
+            configuration = newConfiguration(
                     repositoryName: currentRepo.name,
                     recipeName: recipeName,
                     online: true,
