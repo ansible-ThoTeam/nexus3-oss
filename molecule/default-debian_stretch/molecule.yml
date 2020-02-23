@@ -8,6 +8,7 @@ driver:
     - nexus-downloads
 
 lint: |
+  set -e
   yamllint .
   ansible-lint
   flake8
