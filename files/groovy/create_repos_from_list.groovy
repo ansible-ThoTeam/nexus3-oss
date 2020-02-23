@@ -10,7 +10,7 @@ scriptResults.put('action_details', actionDetails)
 
 repositoryManager = repository.repositoryManager
 
-private Configuration newConfiguration(final Map map) {
+private Configuration newConfiguration(Map map) {
     Configuration config
     try {
         config = repositoryManager.newConfiguration()
