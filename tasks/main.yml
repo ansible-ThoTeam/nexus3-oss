@@ -83,8 +83,12 @@
     - include_tasks: setup_ldap_each.yml
       with_items: "{{ ldap_connections }}"
 
-    - include_tasks: create_content_selector_each.yml
-      with_items: "{{ nexus_content_selectors }}"
+    - name: Create/check content selectors
+      include_tasks: call_script.yml
+      vars:
+        script_name: create_content_selectors_from_list
+        args: "{{ nexus_content_selectors }}"
+      when: nexus_content_selectors | length > 0
 
     - name: apply defaults to privileges
       # @todo: fix with easier syntax once the flip filter is released

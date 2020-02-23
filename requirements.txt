@@ -13,18 +13,12 @@
 ## and produce unwanted errors.
 ##################################
 
-# Latest ansible
-ansible
-# Latest molecule
 molecule
-# git+https://github.com/ansible/molecule.git@96036591b74b5b2475151998df2a145f119d421c
-# latest flake8 (missing dep in latest molecule)
+ansible
+ansible-lint
 flake8
-# Yamllint is not in molecule deps anymore
+flake8-docstrings
 yamllint
-# Latest docker
+testinfra
 docker
-# We use json_query in tasks which requires jmespath
 jmespath
-# Python vagrant only needed for local test for selinux
-# python-vagrant

@@ -7,8 +7,10 @@ driver:
   safe_files:
     - nexus-downloads
 
-lint:
-  name: yamllint
+lint: |
+  yamllint .
+  ansible-lint
+  flake8
 
 platforms:
 
@@ -38,8 +40,6 @@ platforms:
 
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
 
 scenario:
   check_sequence:
@@ -58,5 +58,3 @@ scenario:
 
 verifier:
   name: testinfra
-  lint:
-    name: flake8
