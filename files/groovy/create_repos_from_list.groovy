@@ -27,6 +27,13 @@ private Configuration newConfiguration(final Map map) {
     return config
 }
 
+private boolean configurationChanged(Configuration oldConfig, Configuration newConfig) {
+    if (oldConfig.attributes.httpclient)
+        if (oldConfig.attributes.httpclient.authentication == [:])
+            oldConfig.attributes.httpclient.authentication = null
+    return oldConfig.properties == newConfig.properties
+}
+
 parsed_args.each { currentRepo ->
 
     Map<String, String> currentResult = [name: currentRepo.name, format: currentRepo.format, type: currentRepo.type]
@@ -168,7 +175,7 @@ parsed_args.each { currentRepo ->
             scriptResults['changed'] = true
             log.info('Configuration for repo {} created', currentRepo.name)
         } else {
-            if (!(configuration.properties == existingRepository.configuration.properties)) {
+            if (!configurationChanged(existingRepository.configuration, configuration)) {
                 repositoryManager.update(configuration)
                 currentResult.put('status', 'updated')
                 log.info('Configuration for repo {} saved', currentRepo.name)
