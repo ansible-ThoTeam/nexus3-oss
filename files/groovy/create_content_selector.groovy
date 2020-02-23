@@ -12,7 +12,11 @@ SelectorConfiguration selectorConfig = selectorManager.browse().find { it -> it.
 
 if (selectorConfig == null) {
     update = false
-    selectorConfig = selectorManager.newSelectorConfiguration()
+    try {
+        selectorConfig = selectorManager.newSelectorConfiguration()
+    } catch(MissingMethodException) {
+        selectorConfig = SelectorConfiguration.newInstance()
+    }
     selectorConfig.setName(parsed_args.name)
 }
 
