@@ -16,8 +16,13 @@
   when: ((purge is defined) and (purge | bool))
 
 - include: nexus_install.yml
+  when: not (nexus_docker_install | bool)
+
+- include: nexus_docker_install.yml
+  when: (nexus_docker_install | bool)
 
 - include: install_repository_apt_plugin.yml
+  when: not (nexus_docker_install | bool)
 
 - include: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable
@@ -82,12 +87,15 @@
 
 - include: create_repo_maven_proxy_each.yml
   with_items: "{{ nexus_repos_maven_proxy }}"
+  when: nexus_config_repos
 
 - include: create_repo_maven_hosted_each.yml
   with_items: "{{ nexus_repos_maven_hosted }}"
+  when: nexus_config_repos
 
 - include: create_repo_maven_group_each.yml
   with_items: "{{ nexus_repos_maven_group }}"
+  when: nexus_config_repos
 
 - block:
     - include: create_repo_docker_hosted_each.yml
@@ -98,7 +106,7 @@
 
     - include: create_repo_docker_group_each.yml
       with_items: "{{ nexus_repos_docker_group }}"
-  when: nexus_config_docker
+  when: nexus_config_docker and nexus_config_repos
 
 - block:
     - include: create_repo_pypi_proxy_each.yml
@@ -109,7 +117,7 @@
 
     - include: create_repo_pypi_group_each.yml
       with_items: "{{ nexus_repos_pypi_group }}"
-  when: nexus_config_pypi
+  when: nexus_config_pypi and nexus_config_repos
 
 - block:
     - include: create_repo_raw_proxy_each.yml
@@ -120,7 +128,7 @@
 
     - include: create_repo_raw_group_each.yml
       with_items: "{{ nexus_repos_raw_group }}"
-  when: nexus_config_raw
+  when: nexus_config_raw and nexus_config_repos
 
 - block:
     - include: create_repo_rubygems_proxy_each.yml
@@ -131,7 +139,7 @@
 
     - include: create_repo_rubygems_group_each.yml
       with_items: "{{ nexus_repos_rubygems_group }}"
-  when: nexus_config_rubygems
+  when: nexus_config_rubygems and nexus_config_repos
 
 - block:
     - include: create_repo_bower_proxy_each.yml
@@ -142,7 +150,7 @@
 
     - include: create_repo_bower_group_each.yml
       with_items: "{{ nexus_repos_bower_group }}"
-  when: nexus_config_bower
+  when: nexus_config_bower and nexus_config_repos
 
 - block:
     - include: create_repo_npm_proxy_each.yml
@@ -153,7 +161,7 @@
 
     - include: create_repo_npm_group_each.yml
       with_items: "{{ nexus_repos_npm_group }}"
-  when: nexus_config_npm
+  when: nexus_config_npm and nexus_config_repos
 
 - block:
     - include: create_repo_nuget_proxy_each.yml
@@ -162,23 +170,23 @@
       with_items: "{{ nexus_repos_nuget_hosted }}"
     - include: create_repo_nuget_group_each.yml
       with_items: "{{ nexus_repos_nuget_group }}"
-  when: nexus_config_nuget
+  when: nexus_config_nuget and nexus_config_repos
 
 
 - include: create_repo_gitlfs_hosted_each.yml
   with_items: "{{ nexus_repos_gitlfs_hosted }}"
-  when: nexus_config_gitlfs
+  when: nexus_config_gitlfs and nexus_config_repos
 
 - block:
     - include: create_repo_yum_hosted_each.yml
       with_items: "{{ nexus_repos_yum_hosted }}"
     - include: create_repo_yum_proxy_each.yml
       with_items: "{{ nexus_repos_yum_proxy }}"
-  when: nexus_config_yum
+  when: nexus_config_yum and nexus_config_repos
 
 - include: create_repo_apt_hosted_each.yml
   with_items: "{{ nexus_repos_apt_hosted }}"
-  when: nexus_config_apt
+  when: nexus_config_apt and nexus_config_repos
 
 - include: call_script.yml
   vars:

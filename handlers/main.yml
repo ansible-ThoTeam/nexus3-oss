@@ -2,18 +2,24 @@
 - name: systemd-reload
   systemd:
     daemon-reload: yes
-    name: nexus.service
 
 - name: nexus-service-restart
   systemd:
     name: nexus.service
     state: restarted
+  when: not (nexus_docker_install | bool)
 
 - name: nexus-service-stop
   systemd:
     name: nexus.service
     state: stopped
-  when: nexus_systemd_service_file.stat.exists
+  when: nexus_systemd_service_file.stat.exists and not (nexus_docker_install | bool)
+
+- name: docker-nexus-service-restart
+  service:
+    name: docker.nexus.service
+    state: restarted
+  when: (nexus_docker_install | bool)
 
 - name: wait-for-nexus
   wait_for:
