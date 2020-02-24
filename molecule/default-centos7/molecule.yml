@@ -18,7 +18,6 @@ platforms:
   - name: nexus3-oss-centos-7
     hostname: nexus3-oss-centos7
     image: thoteam/molecule_apache_openjdk8:centos7
-    command: /usr/sbin/init
     pull: true
     pre_build_image: true
     privileged: true
