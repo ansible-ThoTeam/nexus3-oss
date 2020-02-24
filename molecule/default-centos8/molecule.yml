@@ -1,0 +1,70 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+  safe_files:
+    - nexus-downloads
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+
+platforms:
+
+  - name: nexus3-oss-centos-8
+    hostname: nexus3-oss-centos8
+    image: thoteam/molecule_apache_openjdk8:centos8
+    command: /usr/sbin/init
+    pull: true
+    pre_build_image: true
+    privileged: true
+    published_ports:
+      - 8095:443
+    groups:
+      - nexus
+    networks: &nexus_networks
+      - name: nexus-default
+
+  - name: slapd-server-mock
+    hostname: slapd-server-mock
+    image: thoteam/slapd-server-mock:latest
+    override_command: false
+    pull: true
+    pre_build_image: true
+    env:
+      LDAP_DOMAIN: slapd-server-mock
+    groups:
+      - mockldap
+    networks: *nexus_networks
+
+provisioner:
+  name: ansible
+
+scenario:
+  check_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  test_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - check
+    - verify
+    - destroy
+
+verifier:
+  name: testinfra
