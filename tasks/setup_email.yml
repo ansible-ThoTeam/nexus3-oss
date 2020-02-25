@@ -16,3 +16,33 @@
       email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
       email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
       email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+  when: nexus_version is version_compare('3.19.0', '<')
+
+- name: Setting email properties
+  uri:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+      {{ nexus_api_context_path }}{{nexus_rest_api_endpoint_base}}/beta/email"
+    user: 'admin'
+    password: "{{ current_nexus_admin_password }}"
+    headers:
+      Content-Type: "application/json"
+    method: PUT
+    force_basic_auth: yes
+    validate_certs: "{{ nexus_api_validate_certs }}"
+    body: "{{ args | to_json }}"
+    status_code: 200,204
+  vars:
+    args:
+      enabled: "{{ nexus_email_server_enabled }}"
+      host: "{{ nexus_email_server_host }}"
+      port: "{{ nexus_email_server_port }}"
+      username: "{{ nexus_email_server_username }}"
+      password: "{{ nexus_email_server_password }}"
+      fromAddress: "{{ nexus_email_from_address }}"
+      subjectPrefix: "{{ nexus_email_subject_prefix }}"
+      startTlsEnabled: "{{ nexus_email_tls_enabled }}"
+      startTlsRequired: "{{ nexus_email_tls_required }}"
+      sslOnConnectEnabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      sslServerIdentityCheckEnabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      nexusTrustStoreEnabled: "{{ nexus_email_trust_store_enabled }}"
+  when: nexus_version is version_compare('3.19.0', '>=')
