@@ -15,15 +15,17 @@ lint: |
 
 platforms:
 
-  - name: nexus3-oss-centos-7
-    hostname: nexus3-oss-centos7
-    image: thoteam/molecule_apache_openjdk8:centos7
+  - name: nexus3-oss-centos-8
+    hostname: nexus3-oss-centos8
+    image: thoteam/molecule_apache_openjdk8:centos8
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8090:443
+      - 8095:443
     override_command: false
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - nexus
     networks: &nexus_networks
