@@ -23,7 +23,7 @@
         status_code: 302
       register: nexus_latest_uri_call
 
-    - name: get the current nexus version
+    - name: Get the current nexus version
       get_url:
         url: "{{ nexus_latest_uri_call.location }}"
         dest: "{{ molecule_project_dir }}/molecule/.nexus-downloads\
@@ -37,7 +37,7 @@
     molecule_project_dir: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
   tasks:
 
-    - name: copy nexus package(s) do default image location into images
+    - name: Copy nexus package(s) to default location into images
       synchronize:
         src: "{{ molecule_project_dir }}/molecule/.nexus-downloads/"
         dest: "/tmp/"
