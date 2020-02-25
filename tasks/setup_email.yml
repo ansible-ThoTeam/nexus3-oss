@@ -1,0 +1,18 @@
+---
+
+- include_tasks: call_script.yml
+  vars:
+    script_name: setup_email
+    args:
+      email_server_enabled: "{{ nexus_email_server_enabled }}"
+      email_server_host: "{{ nexus_email_server_host }}"
+      email_server_port: "{{ nexus_email_server_port }}"
+      email_server_username: "{{ nexus_email_server_username }}"
+      email_server_password: "{{ nexus_email_server_password }}"
+      email_from_address: "{{ nexus_email_from_address }}"
+      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
+      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
+      email_tls_required: "{{ nexus_email_tls_required }}"
+      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
