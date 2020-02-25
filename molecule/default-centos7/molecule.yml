@@ -23,6 +23,7 @@ platforms:
     privileged: true
     published_ports:
       - 8090:443
+    override_command: false
     groups:
       - nexus
     networks: &nexus_networks
