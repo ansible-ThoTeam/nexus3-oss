@@ -24,6 +24,8 @@ platforms:
     published_ports:
       - 8095:443
     override_command: false
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - nexus
     networks: &nexus_networks
