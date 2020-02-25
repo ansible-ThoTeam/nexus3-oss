@@ -85,8 +85,8 @@ We would like to thank the original authors for the work done.
 
 - Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage
 of new features if needed (and update meta/main.yml for minimum version)
-- Compatible OS. This role is tested through travis CI on CentOS 7, Ubuntu Xenial (16.04) and Bionic (18.04),
-Debian stretch and buster for time being.
+- Compatible OS. This role is tested through molecule on travis CI for CentOS 8, Ubuntu Bionic (18.04),
+ and Debian buster. Other molecule scenarios can be played locally for CentOS 7, Ubuntu Xenial (16.04), and Debian stretch
 - Rsync has to be installed on the target machine (it is not needed on the host running ansible if different)
 - `jmespath` library needs to be installed on the host running the playbook (needed for the `json_query` filter). See `requirements.txt`
 - Java 8 (mandatory)
@@ -1030,12 +1030,16 @@ This role includes tests and CI integration through travis. At time being, we te
 * groovy scripts syntax
 * yaml syntax and coding standard (yamllint)
 * ansible good practices (ansible lint)
-* a set of basic deployments on 5 different linux platforms
-    * centos7
-    * debian stretch
-    * debian buster
-    * ubuntu xenial (16.04)
-    * ubuntu bionic (18.04)
+* a set of basic deployments on 3 different linux platforms
+    * Centos 8
+    * Debian buster
+    * Ubuntu bionic (18.04)
+
+Other tests are available for older platforms but not played on CI for performance reasons:
+* Centos 7
+* Debian stretch
+* Ubuntu xenial (16.04)
+
 
 #### Groovy syntax
 
@@ -1064,6 +1068,7 @@ Please have a look at molecule documentation (a good start is `molecule --help`)
 
 The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
 * default-centos7 => https://localhost:8090
+* default-centos8 => https://localhost:8095
 * default-debian_buster => https://localhost:8091
 * default-debian_stretch => https://localhost:8092
 * default-ubuntu_16.04 => https://localhost:8093
