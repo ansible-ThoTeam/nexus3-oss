@@ -31,8 +31,6 @@
   when: nexus_version is version_compare('3.19.0', '<')
 
 - block:
-  when: nexus_version is version_compare('3.19.0', '>=')
-
   - name: Check existence LDAP connections
     uri:
       url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
@@ -136,3 +134,4 @@
         # Id should be present and so collected
         id: "{{(nexus_ldap_retrieved.content | from_json)['id']}}"
     when: nexus_ldap_retrieved.status == 200
+  when: nexus_version is version_compare('3.19.0', '>=')
