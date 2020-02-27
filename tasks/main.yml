@@ -70,6 +70,7 @@
       | combine(nexus_blob_names)
       | json_query("*.{name: blob}")
       | list
+      | unique
     }}
   when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
 
