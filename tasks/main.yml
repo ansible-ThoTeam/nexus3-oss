@@ -64,19 +64,13 @@
 
 - name: Deleting default blobstore
   include_tasks: delete_blobstore_each.yml
-  with_items:
-    - name: default
-    - name: "{{ nexus_blob_names.raw.blob }}"
-    - name: "{{ nexus_blob_names.pypi.blob }}"
-    - name: "{{ nexus_blob_names.docker.blob }}"
-    - name: "{{ nexus_blob_names.ruby.blob }}"
-    - name: "{{ nexus_blob_names.bower.blob }}"
-    - name: "{{ nexus_blob_names.npm.blob }}"
-    - name: "{{ nexus_blob_names.nuget.blob }}"
-    - name: "{{ nexus_blob_names.mvn.blob }}"
-    - name: "{{ nexus_blob_names.gitlfs.blob }}"
-    - name: "{{ nexus_blob_names.yum.blob }}"
-    - name: "{{ nexus_blob_names.apt.blob }}"
+  with_items: >-
+    {{
+      {'default':{'blob': 'default'}}
+      | combine(nexus_blob_names)
+      | json_query("*.{name: blob}")
+      | list
+    }}
   when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
 
 - block:
