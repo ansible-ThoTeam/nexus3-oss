@@ -315,6 +315,18 @@
   notify:
     - nexus-service-stop
 
+# Note: this one is mandatory until we move all our groovy scripts
+# to REST API calls. Once this is done, we will move this to an
+# optionnal setting defaulting to false as recommended by sonatype
+- name: "Enable creating groovy scripts in nexus"
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^nexus.scripts.allowCreation=.*"
+    line: "nexus.scripts.allowCreation=true"
+  notify:
+    - nexus-service-stop
+  when: nexus_version is version_compare('3.21.2', '>=')
+
 - name: Create systemd service configuration
   template:
     src: "nexus.service"
