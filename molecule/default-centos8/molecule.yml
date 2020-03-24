@@ -30,6 +30,8 @@ platforms:
       - nexus
     networks: &nexus_networks
       - name: nexus-default
+    volumes:
+      - "${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads"
 
   - name: slapd-server-mock
     hostname: slapd-server-mock
@@ -50,18 +52,15 @@ scenario:
   check_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - check
     - destroy
   converge_sequence:
     - create
-    - prepare
     - converge
   test_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - idempotence
     - check
