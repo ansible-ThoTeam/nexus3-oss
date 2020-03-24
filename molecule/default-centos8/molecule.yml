@@ -26,12 +26,11 @@ platforms:
     override_command: false
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - "${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads"
     groups:
       - nexus
     networks: &nexus_networks
       - name: nexus-default
-    volumes:
-      - "${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads"
 
   - name: slapd-server-mock
     hostname: slapd-server-mock
