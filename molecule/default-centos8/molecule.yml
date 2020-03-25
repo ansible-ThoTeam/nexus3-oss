@@ -26,6 +26,7 @@ platforms:
     override_command: false
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - "${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads"
     groups:
       - nexus
     networks: &nexus_networks
@@ -50,18 +51,15 @@ scenario:
   check_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - check
     - destroy
   converge_sequence:
     - create
-    - prepare
     - converge
   test_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - idempotence
     - check
