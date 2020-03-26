@@ -731,7 +731,11 @@ and schedule types, please refer to [the specific section in the repo wiki](http
 ### Backups
 ```yaml
       nexus_backup_configure: false
+      nexus_backup_schedule_type: cron
       nexus_backup_cron: '0 0 21 * * ?'  # See cron expressions definition in nexus create task gui
+      # nexus_backup_start_date_time: "yyyy-MM-dd'T'HH:mm:ss"
+      # nexus_backup_weekly_days: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+      # nexus_backup_monthly_days: {{ range(1,32) | list + [999] }}
       nexus_backup_dir: '/var/nexus-backup'
       nexus_backup_dir_create: true
       nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
@@ -741,8 +745,13 @@ and schedule types, please refer to [the specific section in the repo wiki](http
 ```
 
 Backup will not be configured unless you switch `nexus_backup_configure: true`.
-In this case, a scheduled script task will be configured in nexus to run
-at interval specified by `nexus_backup_cron` (defaults to 21:00 every day).
+In this case, a script task will be configured in nexus.
+
+The script task schedule will be set as `cron` by default and runs every day at 21:00. You can define whatever
+schedule you like by setting accordingly the variables `nexus_backup_schedule_type`, `nexus_backup_cron`,
+`nexus_backup_start_date_time`, `nexus_backup_weekly_days` and `nexus_backup_monthly_days`. To understand
+their usage depending on the type of schedule you choose, please see [Scheduled tasks](#scheduled-tasks)
+
 See [the groovy template for this task](templates/backup.groovy.j2) for details.
 This scheduled task is independent from the other `nexus_scheduled_tasks` you
 declare in your playbook
