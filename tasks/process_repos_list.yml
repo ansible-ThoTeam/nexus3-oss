@@ -455,3 +455,47 @@
             +
             (nexus_repos_apt_hosted | map('combine', {"format": "apt", "type": "hosted"}) | list)
           }}
+
+- name: Process definitions for r
+  when: nexus_config_r | bool
+  block:
+
+    - name: apply defaults to r proxy repos
+      set_fact:
+        nexus_repos_r_proxy: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_r_proxy -%}
+            {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
+
+    - name: apply defaults to r hosted repos
+      set_fact:
+        nexus_repos_r_hosted: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_r_hosted -%}
+            {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
+
+    - name: apply defaults to r group repos
+      set_fact:
+        nexus_repos_r_group: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_r_group -%}
+            {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
+
+    - name: Add r repositories to global repos list
+      set_fact:
+        _nexus_repos_global_list: >-
+          {{
+            _nexus_repos_global_list | default([])
+            +
+            (nexus_repos_r_proxy | map('combine', {"format": "r", "type": "proxy"}) | list)
+            +
+            (nexus_repos_r_hosted | map('combine', {"format": "r", "type": "hosted"}) | list)
+            +
+            (nexus_repos_r_group | map('combine', {"format": "r", "type": "group"}) | list)
+          }}

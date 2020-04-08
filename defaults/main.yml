@@ -177,6 +177,7 @@ nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
 nexus_config_apt: false
+nexus_config_r: false
 
 nexus_content_selectors: []
 # example selector item :
@@ -248,6 +249,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
   yum:
     blob: 'default'
   apt:
+    blob: 'default'
+  r:
     blob: 'default'
 
 
@@ -658,3 +661,34 @@ nexus_repos_apt_proxy: []
 #   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
 #   distribution: jessie
 #   flat: true
+
+# R support
+_nexus_repos_r_defaults:
+  blob_store: "{{ nexus_blob_names.r.blob }}"
+  strict_content_validation: true
+  version_policy: release  # release, snapshot or mixed
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
+nexus_repos_r_proxy:
+  - name: r-proxy
+    remote_url: 'https://cran.r-project.org/'
+    # maximum_component_age: 1440
+    # maximum_metadata_age: 1440
+    # negative_cache_enabled: true
+    # negative_cache_ttl: 1440
+
+nexus_repos_r_hosted:
+  - name: r-internal
+    version_policy: release
+    write_policy: allow  # one of "allow", "allow_once" or "deny"
+
+nexus_repos_r_group:
+  - name: r-all
+    member_repos:
+      - r-internal
+      - r-proxy
