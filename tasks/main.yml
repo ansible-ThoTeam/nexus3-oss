@@ -204,22 +204,62 @@
         httpHeader: "{{ nexus_rut_auth_header }}"
   when: nexus_rut_auth_header is defined
 
-- include_tasks: call_script.yml
-  vars:
-    script_name: setup_email
-    args:
-      email_server_enabled: "{{ nexus_email_server_enabled }}"
-      email_server_host: "{{ nexus_email_server_host }}"
-      email_server_port: "{{ nexus_email_server_port }}"
-      email_server_username: "{{ nexus_email_server_username }}"
-      email_server_password: "{{ nexus_email_server_password }}"
-      email_from_address: "{{ nexus_email_from_address }}"
-      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
-      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
-      email_tls_required: "{{ nexus_email_tls_required }}"
-      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
-      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
-      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+- name: Configure Email
+  nexus_email_api:
+    url: http://{{nexus_interaction_url}}
+    endpoint_version: 'beta'
+    url_username: "{{nexus_administrator_username}}"
+    url_password: "{{current_nexus_admin_password}}"
+    headers: 
+      accept: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    email_info:
+      enabled: "{{ nexus_email_server_enabled }}"
+      host: "{{ nexus_email_server_host }}"
+      port: "{{ nexus_email_server_port }}"
+      from_address: "{{ nexus_email_from_address }}"
+      subject_prefix: "{{ nexus_email_subject_prefix }}"
+      start_tls_enabled: "{{ nexus_email_tls_enabled }}"
+      start_tls_required: "{{ nexus_email_tls_required }}"
+      ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      ssl_server_identity_check_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      nexus_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+      username: "{{ nexus_email_server_username }}"
+      password: "{{ nexus_email_server_password }}"
+
+- name: Test email
+  nexus_email_api:
+    url: http://{{nexus_interaction_url}}
+    endpoint_version: 'beta'
+    url_username: "{{nexus_administrator_username}}"
+    url_password: "{{current_nexus_admin_password}}"
+    headers: 
+      accept: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    email_info:
+      verify_address: "{{ nexus_email_verify_email_address }}"
+    when: nexus_email_send_verify_email = True
+  
+#- include_tasks: call_script.yml
+#  vars:
+#    script_name: setup_email
+#    args:
+#      email_server_enabled: "{{ nexus_email_server_enabled }}"
+#      email_server_host: "{{ nexus_email_server_host }}"
+#      email_server_port: "{{ nexus_email_server_port }}"
+#      email_server_username: "{{ nexus_email_server_username }}"
+#      email_server_password: "{{ nexus_email_server_password }}"
+#      email_from_address: "{{ nexus_email_from_address }}"
+#      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
+#      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
+#      email_tls_required: "{{ nexus_email_tls_required }}"
+#      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+#      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+#      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
 
 - name: Configure branding capability
   include_tasks: call_script.yml
