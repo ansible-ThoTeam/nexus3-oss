@@ -73,6 +73,70 @@ options:
       - If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts.
     type: bool
     default: yes
+  email_info:
+  description: Information for configuring the server.
+    required:
+      'GET': No
+      'PUT': Yes
+      'DELETE': No
+      'Post': Yes
+  type: dict
+  elements: dict
+  suboptions:
+    enabled:
+      description: Should the email server be enabled or disabled?
+      type: bool
+      required: no
+      default: False
+    host:
+      description: URL of email server
+      type: str
+      required: yes
+    port: 
+      description: Port cannot be 0
+      type: int
+      required yes
+    from_address:
+      description: The address for the email to come from
+      type: str
+      required: yes
+    subject_prefix:
+      description: Pre-Pend string for email subject
+      type: str
+      required: no
+    start_tls_enabled: 
+      description: Is start tls enabled on mail server
+      type: bool
+      required: no
+      default: False
+    start_tls_required:
+      description: is start tls required on mail server
+      type: bool
+      required: no
+      default: False
+    ssl_on_connect_enabled:
+      description: is ssl on connect enabled on mail server
+      type: bool
+      required: no
+      default: False
+    ssl_server_identity_check_enabled:
+      description: is ssl server identity check enabled on mail server
+      type: bool
+      required: no
+      default: False
+    nexus_trust_store_enabled:
+      description: Is the nexus trust store enabled
+      type: bool
+      required: no
+      default: False
+    username:
+      description: Email server username
+      type: str
+      required: no
+    password:
+      description: Email server username's password
+      type: str
+      required: no 
 notes:
 #  - The dependency on httplib2 was removed in Ansible 2.1.
   - The module returns all the HTTP headers in lower-case.
@@ -81,7 +145,30 @@ author:
 extends_documentation_fragment: files
 '''
 EXAMPLES = r'''
-
+- name: Configure Email Server
+  nexus_email_api:
+    url: http://{{nexus_interaction_url}}
+    endpoint_version: 'beta'
+    url_username: "{{nexus_administrator_username}}"
+    url_password: "{{current_nexus_admin_password}}"
+    headers: 
+      accept: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    email_info:
+      enabled: "{{ nexus_email_server_enabled }}"
+      host: "{{ nexus_email_server_host }}"
+      port: "{{ nexus_email_server_port }}"
+      from_address: "{{ nexus_email_from_address }}"
+      subject_prefix: "{{ nexus_email_subject_prefix }}"
+      start_tls_enabled: "{{ nexus_email_tls_enabled }}"
+      start_tls_required: "{{ nexus_email_tls_required }}"
+      ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      ssl_server_identity_check_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      nexus_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+      username: "{{ nexus_email_server_username }}"
+      password: "{{ nexus_email_server_password }}"
 '''
 
 RETURN = r'''
@@ -256,7 +343,7 @@ def main():
             host=dict(type='str', default=None),
             port=dict(type='int', default=0),
             username=dict(type='str', default=None),
-            password=dict(type='str', default=None),
+            password=dict(type='str', default=None, no_log=True),
             subject_prefix=dict(type='str', default=None),
             from_address=dict(type='str', default=None),
             start_tls_enabled=dict(type='bool', default=True),

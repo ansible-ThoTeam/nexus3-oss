@@ -3,7 +3,7 @@ class Email:
         if 'start_tls_enabled' in kwargs:
             self.start_tls_enabled = kwargs['start_tls_enabled']
         else:
-            self.start_tls_enabled = None
+            self.start_tls_enabled = False
         if 'start_tls_required' in kwargs:
             self.start_tls_required = kwargs['start_tls_required']
         else:
@@ -161,47 +161,35 @@ class Email:
     def verify_address(self, value):
         self.__verify_address = value
 
+    def boolToLowerString(self, value):
+        if value:
+            return 'true'
+        else:
+            return 'false'
     # the bool vars have to be lower case strings.
     def to_dict(self):
-        dict = {}
-        if self.enabled:
-            dict['enabled'] = 'true'
-        else:
-            dict['enabled'] = 'false'
+        email = {}
+        email['enabled'] = self.boolToLowerString(self.enabled)
         if self.host is not None:
-            dict['host'] = self.host
+            email['host'] = self.host
         if self.port != 0:
-            dict['port'] = self.port
+            email['port'] = self.port
         if self.username is not None:
-            dict['username'] = self.username
+            email['username'] = self.username
         if self.password is not None:
-            dict['password'] = self.password
+            email['password'] = self.password
         if self.from_address is not None:
-            dict['fromAddress'] = self.from_address
+            email['fromAddress'] = self.from_address
         if self.subject_prefix is not None:
-            dict['subjectPrefix'] = self.subject_prefix
-        if self.start_tls_enabled:
-            dict['startTlsEnabled'] = 'true'
-        else:
-            dict['startTlsEnabled'] = 'false'
-        if self.start_tls_required:
-            dict['startTlsRequired'] = 'true'
-        else:
-            dict['startTlsRequired'] = 'false'
-        if self.ssl_on_connect_enabled:
-            dict['sslOnConnectEnabled'] = 'true'
-        else:
-            dict['sslOnConnectEnabled'] = 'false'
-        if self.ssl_server_identity_check_enabled:
-            dict['sslServerIdentityCheckEnabled'] = 'true'
-        else:
-            dict['sslServerIdentityCheckEnabled'] = 'false'
-        if self.nexus_trust_store_enabled:
-            dict['nexusTrustStoreEnabled'] = 'true'
-        else:
-            dict['nexusTrustStoreEnabled'] = 'false'
+            email['subjectPrefix'] = self.subject_prefix
+        email['startTlsEnabled'] = self.boolToLowerString(self.start_tls_enabled)
+        email['startTlsRequired'] = self.boolToLowerString(self.start_tls_required)
+        email['sslOnConnectEnabled'] = self.boolToLowerString(self.ssl_on_connect_enabled)
+        email['sslServerIdentityCheckEnabled'] = self.boolToLowerString(self.ssl_server_identity_check_enabled)
+        email['nexusTrustStoreEnabled'] = self.boolToLowerString(self.nexus_trust_store_enabled)
 
-        return dict
+
+        return email
 
     def is_valid(self):
         if self.host is None or self.port == 0 or self.from_address is None:
