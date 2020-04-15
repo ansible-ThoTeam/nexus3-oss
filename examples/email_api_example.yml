@@ -1,0 +1,27 @@
+- name: test my new module
+  hosts: 127.0.0.1
+  tasks:
+    - name: include Get Tasks
+      include_role: 
+        name: sonatype
+        tasks_from: tests.yml
+      vars:
+        nexus_email_server_enabled: false
+        nexus_email_server_host: "potato.com"
+        nexus_email_server_port: 25
+        nexus_email_server_username: "admin"
+        nexus_email_server_password: "abc234"
+        nexus_email_from_address: "nexus@example.org"
+        nexus_email_subject_prefix: "things and stuffs"
+        nexus_email_tls_enabled: false
+        nexus_email_tls_required: false
+        nexus_email_ssl_on_connect_enabled: false
+        nexus_email_ssl_check_server_identity_enabled: false
+        nexus_email_trust_store_enabled: false
+
+        nexus_email_verify_email_address: "nexus@yourco.org"
+        nexus_email_send_verify_email: True
+        real_email_config: false
+        nexus_interaction_url: 10.10.3.144:8081
+        nexus_administrator_username: admin
+        current_nexus_admin_password: Potato1234
