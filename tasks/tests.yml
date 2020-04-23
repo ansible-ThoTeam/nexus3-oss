@@ -1,0 +1,2 @@
+---
+- import_tasks: ../tests/api/script_test.yml
