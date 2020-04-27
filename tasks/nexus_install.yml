@@ -491,59 +491,17 @@
       See https://github.com/ansible-ThoTeam/nexus3-oss/blob/master/README.md#change-admin-password-after-first-install
   when: current_nexus_admin_password is not defined
 
-- name: Force (re-)registration of groovy scripts (purge reference dir)
-  file:
-    path: "{{ nexus_data_dir }}/groovy-raw-scripts"
-    state: absent
-  when: nexus_force_groovy_scripts_registration | default(false)
-
-- name: Create directories to hold current groovy scripts for reference
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-  with_items:
-    - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
-    - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
-
-- name: Archive scripts
-  become: no
-  archive:
-    path: "{{ role_path }}/files/groovy/*"
-    dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
-  run_once: true
+- name: Locate All Scripts
+  find:
+    paths: "{{role_path}}/files/groovy/"
+    file_type: file
+    patterns: '*.groovy'
+  register: files_found
   delegate_to: localhost
 
-- name: Upload new scripts
-  unarchive:
-    src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
-    dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
-
-- block:
-    - name: Sync new scripts to old and get differences
-      shell: >
-        set -o pipefail &&
-        rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
-        | cut -d" " -f 2 | sed "s/\.groovy//g"
-      register: nexus_groovy_files_changed
-      check_mode: no
-      changed_when: false
-      # simple check on changed files kept on host
-      # skip ansible lint (we don't want to use synchronize module for this)
-      args:
-        warn: false
-        executable: /bin/bash
-  rescue:
-    - name: Fail with information on rsync error
-      fail:
-        msg: >-
-          A task involving running rsync on the host just failed, most probably because rsync is not installed.
-          Please make sure rsync is installed on your host or double check the above error and try again.
-
-- name: Declare new or changed groovy scripts in nexus
-  include_tasks: declare_script_each.yml
-  with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
+- name: Upload Scripts
+  include_tasks: upload_scripts.yml
+  with_items: "{{ files_found.files }}"
 
 - name: Change admin password if we are still using default
   block:

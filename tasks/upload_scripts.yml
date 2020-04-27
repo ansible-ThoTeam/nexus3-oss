@@ -1,0 +1,20 @@
+---
+- set_fact:
+    file_name: "{{ item.path.split('/')[-1] | regex_replace('.groovy', '') }}"
+
+- name: Upload all scripts
+  nexus_script_api:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
+    endpoint_version: 'v1'
+    url_username: "admin"
+    url_password: "{{ current_nexus_admin_password }}"
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    script_info:
+      name: "{{file_name}}"
+      content: "{{ lookup('file', 'groovy/' + file_name + '.groovy') }}"
+      content_type: 'groovy'

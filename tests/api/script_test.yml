@@ -1,10 +1,9 @@
 ---
 - name: Get All scripts
   nexus_script_api:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'v1'
-    url_username: "{{ nexus_administrator_username }}"
+    url_username: "admin"
     url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
@@ -13,10 +12,9 @@
     method: GET
 - name: Get create task scripts
   nexus_script_api:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'v1'
-    url_username: "{{ nexus_administrator_username }}"
+    url_username: "admin"
     url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
@@ -27,10 +25,9 @@
       name: create_task
 - name: Get create task scripts
   nexus_script_api:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'v1'
-    url_username: "{{ nexus_administrator_username }}"
+    url_username: "admin"
     url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
@@ -41,10 +38,9 @@
       name: create_blobstores_from_list
 - name: Post a script
   nexus_script_api:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'v1'
-    url_username: "{{ nexus_administrator_username }}"
+    url_username: "admin"
     url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
@@ -58,10 +54,9 @@
       content_type: 'groovy'
 - name: Put a script without it previously existing
   nexus_script_api:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'v1'
-    url_username: "{{ nexus_administrator_username }}"
+    url_username: "admin"
     url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
@@ -75,10 +70,9 @@
       content_type: 'groovy'
 - name: Delete a script
   nexus_script_api:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'v1'
-    url_username: "{{ nexus_administrator_username }}"
+    url_username: "admin"
     url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"

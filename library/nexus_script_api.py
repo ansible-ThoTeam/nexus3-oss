@@ -339,7 +339,7 @@ def main():
     argument_spec.update(
         url_username=dict(type='str', aliases=['user']),
         url_password=dict(type='str', aliases=['password'], no_log=True),
-        method=dict(type='str', default='GET', choices=['GET', 'DELETE', 'POST']),
+        method=dict(type='str', default='GET', choices=['GET', 'DELETE', 'POST', 'PUT']),
         return_content=dict(type='bool', default=False),
         status_code=dict(type='list', default=[200, 204]),
         timeout=dict(type='int', default=30),
