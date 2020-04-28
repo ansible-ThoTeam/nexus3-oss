@@ -493,7 +493,7 @@
 
 - name: Locate All Scripts
   find:
-    paths: "{{role_path}}/files/groovy/"
+    paths: "{{ role_path }}/files/groovy/"
     file_type: file
     patterns: '*.groovy'
   register: files_found

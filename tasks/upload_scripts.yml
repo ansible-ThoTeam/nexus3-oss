@@ -1,5 +1,6 @@
 ---
-- set_fact:
+- name: split and regex to get script name
+  set_fact:
     file_name: "{{ item.path.split('/')[-1] | regex_replace('.groovy', '') }}"
 
 - name: Upload all scripts
@@ -13,8 +14,8 @@
       Content-Type: "application/json"
     force_basic_auth: yes
     validate_certs: false
-    method: PUT
+    method: POST
     script_info:
-      name: "{{file_name}}"
+      name: "{{ file_name }}"
       content: "{{ lookup('file', 'groovy/' + file_name + '.groovy') }}"
       content_type: 'groovy'
