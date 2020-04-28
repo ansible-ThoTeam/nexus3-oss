@@ -5,7 +5,6 @@ nexus_version: ''
 # will hold the currently installed version if any
 # /!\ It should never be set directly /!\
 # nexus_version_running: <unset>
-nexus_interaction_url: 10.10.3.144:8081
 nexus_administrator_username: admin
 nexus_download_dir: '/tmp'
 nexus_download_url: 'https://download.sonatype.com/nexus/3'

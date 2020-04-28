@@ -147,7 +147,7 @@ extends_documentation_fragment: files
 EXAMPLES = r'''
 - name: Configure Email Server
   nexus_email_api:
-    url: http://{{nexus_interaction_url}}
+    url: http://{{nexus_application_host}}
     endpoint_version: 'beta'
     url_username: "{{nexus_administrator_username}}"
     url_password: "{{current_nexus_admin_password}}"

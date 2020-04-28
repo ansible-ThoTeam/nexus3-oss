@@ -1,8 +1,9 @@
+---
 - name: test my new module
   hosts: 127.0.0.1
   tasks:
     - name: include Get Tasks
-      include_role: 
+      include_role:
         name: sonatype
         tasks_from: tests.yml
       vars:
@@ -18,10 +19,9 @@
         nexus_email_ssl_on_connect_enabled: false
         nexus_email_ssl_check_server_identity_enabled: false
         nexus_email_trust_store_enabled: false
-
         nexus_email_verify_email_address: "nexus@yourco.org"
         nexus_email_send_verify_email: True
         real_email_config: false
-        nexus_interaction_url: 10.10.3.144:8081
+        nexus_application_host: 10.10.3.144:8081
         nexus_administrator_username: admin
         current_nexus_admin_password: Potato1234
