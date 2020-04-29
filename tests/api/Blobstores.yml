@@ -1,20 +1,20 @@
 ---
 - name: Get All Blobstores
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
     force_basic_auth: yes
     method: GET
 - name: Get single Blobstore
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
     force_basic_auth: yes
@@ -23,10 +23,10 @@
       name: 'company-artifacts'
 - name: Get Blobstore Quota status
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
 #      endpoint_version: 'v1'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
     force_basic_auth: yes
@@ -35,10 +35,10 @@
       path: 'company-artifacts'
 - name: Test Soft Quota Enabled enforcement
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
 #      endpoint_version: 'v1'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
     force_basic_auth: yes
@@ -50,10 +50,10 @@
   failed_when: output.msg != 'Quota is Enabled, Type and Limit must be defined'
 - name: Test Post Creation of Blob
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -64,10 +64,10 @@
       path: 'ewrtth546'
 - name: Test Post Creation of Blob with SoftQuota
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -82,10 +82,10 @@
       soft_quota_limit: 64
 - name: Change soft Quota type.
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -100,10 +100,10 @@
       soft_quota_limit: 64
 - name: Check Maintain works on enabled soft quota
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -118,10 +118,10 @@
 #    seconds: 30
 - name: Disable Soft Quota
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -134,10 +134,10 @@
       soft_quota_enabled: 'Disabled'
 - name: Check Maintain works on disabled soft quota
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -150,10 +150,10 @@
       soft_quota_enabled: 'Maintain'
 - name: Delete BlobStore
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -164,10 +164,10 @@
       name: 'YeetYeet'
 - name: Delete BlobStore Again
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: '"{{ current_nexus_admin_password }}"'
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -178,10 +178,10 @@
       name: 'YeetYeet'
 - name: Check Maintain works on null soft quota
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
       Content-Type: "application/json"
@@ -194,10 +194,10 @@
       soft_quota_enabled: 'Maintain'
 - name: Delete BlobStore that has data
   nexus_blob_api:
-    url: http://10.10.3.144:8081
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
     endpoint_version: 'beta'
     url_username: 'admin'
-    url_password: 'Potato1234'
+    url_password: "{{ current_nexus_admin_password }}"
     headers:
       accept: "application/json"
       Content-Type: "application/json"
