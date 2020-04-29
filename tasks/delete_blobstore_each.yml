@@ -1,5 +1,0 @@
----
-- include_tasks: call_script.yml
-  vars:
-    script_name: delete_blobstore
-    args: "{{ item }}"

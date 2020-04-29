@@ -63,15 +63,19 @@
   when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_repos
 
 - name: Deleting default blobstore
-  include_tasks: delete_blobstore_each.yml
-  with_items: >-
-    {{
-      {'default':{'blob': 'default'}}
-      | combine(nexus_blob_names)
-      | json_query("*.{name: blob}")
-      | list
-      | unique
-    }}
+  nexus_blob_api:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: "{{ current_nexus_admin_password }}"
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: DELETE
+    blob_info:
+      name: 'default'
   when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
 
 - block:
@@ -99,22 +103,25 @@
     - name: Create/Check blobstores
       when: nexus_restore_point is undefined
       block:
-
-        - name: Create directories for blob stores.
-          file:
-            path: "{{ item['path'] }}"
-            owner: "{{ nexus_os_user }}"
-            group: "{{ nexus_os_group }}"
-            state: directory
-            recurse: "{{ nexus_blobstores_recurse_owner | default(false) | bool }}"
-          when: item.path is defined
-          loop: "{{ nexus_blobstores }}"
-
         - name: Create/Check blobstores
-          include_tasks: call_script.yml
-          vars:
-            script_name: create_blobstores_from_list
-            args: "{{ nexus_blobstores }}"
+          nexus_blob_api:
+            url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
+            endpoint_version: 'beta'
+            url_username: 'admin'
+            url_password: "{{ current_nexus_admin_password }}"
+            headers:
+              accept: "application/json"
+              Content-Type: "application/json"
+            force_basic_auth: yes
+            validate_certs: false
+            method: POST
+            blob_info:
+              name: "{{ item.name }}"
+              path: "{{ item.path }}"
+              soft_quota_enabled: "{{ item.soft_quota_enabled | default(omit) }}"
+              soft_quota_type: "{{ item.soft_quota_type | default (omit) }}"
+              soft_quota_limit: "{{ item.soft_quota_limit | default(omit) }}"
+          loop: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
 

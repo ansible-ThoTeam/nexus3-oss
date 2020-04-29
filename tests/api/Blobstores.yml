@@ -1,0 +1,210 @@
+---
+- name: Get All Blobstores
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+    force_basic_auth: yes
+    method: GET
+- name: Get single Blobstore
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+    force_basic_auth: yes
+    method: GET
+    blob_info:
+      name: 'company-artifacts'
+- name: Get Blobstore Quota status
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+#      endpoint_version: 'v1'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+    force_basic_auth: yes
+    method: GET
+    blob_info:
+      path: 'company-artifacts'
+- name: Test Soft Quota Enabled enforcement
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+#      endpoint_version: 'v1'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+    force_basic_auth: yes
+    method: GET
+    blob_info:
+      path: 'company-artifacts'
+      soft_quota_enabled: 'Enabled'
+  register: output
+  failed_when: output.msg != 'Quota is Enabled, Type and Limit must be defined'
+- name: Test Post Creation of Blob
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    method: POST
+    blob_info:
+      name: 'qwerasdf'
+      path: 'ewrtth546'
+- name: Test Post Creation of Blob with SoftQuota
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: POST
+    blob_info:
+      name: 'YeetYeet'
+      path: 'End-Of-The-World'
+      soft_quota_enabled: 'Enabled'
+      soft_quota_type: 'Space-Remaining'
+      soft_quota_limit: 64
+- name: Change soft Quota type.
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    blob_info:
+      name: 'YeetYeet'
+      path: 'End-Of-The-World'
+      soft_quota_enabled: 'Enabled'
+      soft_quota_type: 'Space-Used'
+      soft_quota_limit: 64
+- name: Check Maintain works on enabled soft quota
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    blob_info:
+      name: 'YeetYeet'
+      path: 'End-Of-The-World'
+      soft_quota_enabled: 'Maintain'
+#- pause: 
+#    seconds: 30
+- name: Disable Soft Quota
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    blob_info:
+      name: 'YeetYeet'
+      path: 'End-Of-The-World'
+      soft_quota_enabled: 'Disabled'
+- name: Check Maintain works on disabled soft quota
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    blob_info:
+      name: 'YeetYeet'
+      path: 'End-Of-The-World'
+      soft_quota_enabled: 'Maintain'
+- name: Delete BlobStore
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: DELETE
+    blob_info:
+      name: 'YeetYeet'
+- name: Delete BlobStore Again
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: DELETE
+    blob_info:
+      name: 'YeetYeet'
+- name: Check Maintain works on null soft quota
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: PUT
+    blob_info:
+      name: 'company-artifacts'
+      path: 'company-artifacts'
+      soft_quota_enabled: 'Maintain'
+- name: Delete BlobStore that has data
+  nexus_blob_api:
+    url: http://10.10.3.144:8081
+    endpoint_version: 'beta'
+    url_username: 'admin'
+    url_password: 'Potato1234'
+    headers:
+      accept: "application/json"
+      Content-Type: "application/json"
+    force_basic_auth: yes
+    validate_certs: false
+    method: DELETE
+    blob_info:
+      name: 'company-artifacts'
+  register: output
+  failed_when: output.msg != 'Blobstore contains data and cannot be deleted'
