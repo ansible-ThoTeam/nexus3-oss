@@ -71,11 +71,9 @@
       proxy_url used to be the variable to configure docker proxy repositories in nexus3-oss role. Since version 2.3.0,
       all repository configuration use the same standard var remote_url. Please review your configurations
       in nexus_repos_docker_proxy and rename the variable accordingly.
-  when: >-
-    nexus_repos_docker_proxy
-    | json_query('[?proxy_url]')
-    | list
-    | length > 0
+  when:
+    - nexus_repos_docker_proxy | length > 0
+    - nexus_repos_docker_proxy | json_query('[?proxy_url]') | list | length > 0
 
 # @requirement: new internal var _nexus_repos_global_List must be undefined
 # @version: 2.4.0
