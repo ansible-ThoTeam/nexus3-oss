@@ -651,6 +651,7 @@ see `defaults/main.yml` for these options:
       nexus_config_npm: false
       nexus_config_gitlfs: false
       nexus_config_yum: false
+      nexus_config_maven: false
 ```
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.

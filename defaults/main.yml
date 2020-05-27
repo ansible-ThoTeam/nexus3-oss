@@ -177,6 +177,7 @@ nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
 nexus_config_apt: false
+nexus_config_maven: false
 
 nexus_content_selectors: []
 # example selector item :

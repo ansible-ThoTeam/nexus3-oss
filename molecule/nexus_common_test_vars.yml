@@ -25,6 +25,7 @@ nexus_config_nuget: true
 nexus_config_gitlfs: true
 nexus_config_yum: true
 nexus_config_apt: true
+nexus_config_maven: true
 
 nexus_anonymous_access: true
 
