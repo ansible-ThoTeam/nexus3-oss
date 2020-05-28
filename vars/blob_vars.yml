@@ -23,7 +23,8 @@ nexus_blob_names:
     blob: '{{ nexus_blob_prefix }}yum'
   apt:
     blob: '{{ nexus_blob_prefix }}apt'
-
+  conda:
+    blob: '{{ nexus_blob_prefix }}conda'
 
 nexus_blobstores:
   - name: '{{ nexus_blob_prefix }}raw'
@@ -48,3 +49,5 @@ nexus_blobstores:
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.yum.blob }}"
   - name: '{{ nexus_blob_prefix }}apt'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.apt.blob }}"
+  - name: '{{ nexus_blob_prefix }}conda'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.conda.blob }}"
