@@ -69,6 +69,11 @@
   set_fact:
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
 
+- name: Check if file already exists
+  stat: 
+    path: "{{ nexus_download_dir }}/{{ nexus_package }}"
+  register: nexus_tarball
+
 - name: Download nexus_package
   get_url:
     url: "{{ nexus_download_url }}/{{ nexus_package }}"
@@ -77,6 +82,8 @@
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
   notify:
     - nexus-service-stop
+  when:
+    - nexus_tarball.stat.exists == false
 
 - name: Ensure Nexus o/s group exists
   group:
