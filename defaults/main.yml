@@ -671,5 +671,5 @@ _nexus_repos_go_defaults:
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
-nexus_repos_go_hosted: []
+nexus_repos_go_group: []
 nexus_repos_go_proxy: []

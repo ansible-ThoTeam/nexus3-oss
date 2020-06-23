@@ -469,11 +469,11 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to go hosted repos
+    - name: apply defaults to go group repos
       set_fact:
-        nexus_repos_apt_hosted: >-
+        nexus_repos_go_group: >-
           {%- set result=[] -%}
-          {%- for repo in nexus_repos_go_hosted -%}
+          {%- for repo in nexus_repos_go_group -%}
             {{ result.append(_nexus_repos_go_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
@@ -486,6 +486,6 @@
             +
             (nexus_repos_go_proxy | map('combine', {"format": "go", "type": "proxy"}) | list)
             +
-            (nexus_repos_go_hosted | map('combine', {"format": "go", "type": "hosted"}) | list)
+            (nexus_repos_go_group | map('combine', {"format": "go", "type": "group"}) | list)
           }}
 
