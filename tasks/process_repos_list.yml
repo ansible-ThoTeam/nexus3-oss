@@ -488,4 +488,3 @@
             +
             (nexus_repos_go_group | map('combine', {"format": "go", "type": "group"}) | list)
           }}
-
