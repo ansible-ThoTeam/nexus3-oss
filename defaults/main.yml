@@ -177,6 +177,7 @@ nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
 nexus_config_apt: false
+nexus_config_p2: false
 
 nexus_content_selectors: []
 # example selector item :
@@ -248,6 +249,8 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
   yum:
     blob: 'default'
   apt:
+    blob: 'default'
+  p2:
     blob: 'default'
 
 
@@ -658,3 +661,14 @@ nexus_repos_apt_proxy: []
 #   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
 #   distribution: jessie
 #   flat: true
+
+# p2 support (available natively from Nexus 3.21.0 version)
+_nexus_repos_p2_defaults:
+  blob_store: "{{ nexus_blob_names.p2.blob }}"
+  strict_content_validation: true
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
+nexus_repos_p2_proxy: []
