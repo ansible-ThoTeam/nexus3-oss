@@ -36,7 +36,7 @@
     - name: Check existence LDAP connections
       uri:
         url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{item.ldap_name|urlencode}}"
+          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{ item.ldap_name | urlencode }}"
         user: 'admin'
         password: "{{ current_nexus_admin_password }}"
         method: GET
@@ -94,7 +94,7 @@
     - name: Updating LDAP connections
       uri:
         url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{item.ldap_name|urlencode}}"
+          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{ item.ldap_name | urlencode }}"
         user: 'admin'
         password: "{{ current_nexus_admin_password }}"
         headers:
@@ -134,5 +134,5 @@
           connectionRetryDelaySeconds: "{{ item.ldap_connection_retry_delay | default(0) }}"
           maxIncidentsCount: "{{ item.ldap_max_incidents_count | default(0) }}"
           # Id should be present and so collected
-          id: "{{(nexus_ldap_retrieved.content | from_json)['id']}}"
+          id: "{{ (nexus_ldap_retrieved.content | from_json)['id'] }}"
       when: nexus_ldap_retrieved.status == 200
