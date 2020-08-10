@@ -30,108 +30,109 @@
       group_subtree: "{{ item.ldap_group_subtree | default(false) }}"
   when: nexus_version is version_compare('3.19.0', '<')
 
-- block:
-  - name: Check existence LDAP connections
-    uri:
-      url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-        {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{item.ldap_name|urlencode}}"
-      user: 'admin'
-      password: "{{ current_nexus_admin_password }}"
-      method: GET
-      force_basic_auth: yes
-      validate_certs: "{{ nexus_api_validate_certs }}"
-      status_code: 200,404
-      return_content: yes
-    register: nexus_ldap_retrieved
-    check_mode: no
+- when: nexus_version is version_compare('3.19.0', '>=')
+  block:
 
-  - name: Creating LDAP connections
-    uri:
-      url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-        {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap"
-      user: 'admin'
-      password: "{{ current_nexus_admin_password }}"
-      headers:
-        Content-Type: "application/json"
-      method: POST
-      force_basic_auth: yes
-      validate_certs: "{{ nexus_api_validate_certs }}"
-      body: "{{ args | to_json }}"
-      status_code: 200,201,204
-    vars:
-      args:
-        name: "{{ item.ldap_name }}"
-        protocol: "{{ item.ldap_protocol }}"
-        host: "{{ item.ldap_hostname }}"
-        port: "{{ item.ldap_port }}"
-        authScheme: "{{ item.ldap_auth | default('NONE') }}"
-        authUsername: "{{ item.ldap_auth_username | default('') }}"
-        authPassword: "{{ item.ldap_auth_password | default('') }}"
-        searchBase: "{{ item.ldap_search_base }}"
-        userBaseDn: "{{ item.ldap_user_base_dn | default('ou=users') }}"
-        userLdapFilter: "{{ item.ldap_user_filter | default('') }}"
-        userObjectClass: "{{ item.ldap_user_object_class }}"
-        userIdAttribute: "{{ item.ldap_user_id_attribute }}"
-        userRealNameAttribute: "{{ item.ldap_user_real_name_attribute }}"
-        userEmailAddressAttribute: "{{ item.ldap_user_email_attribute }}"
-        ldapGroupsAsRoles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
-        groupType: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
-        userMemberOfAttribute: "{{ item.ldap_user_memberof_attribute | default('memberOf') }}"
-        groupBaseDn: "{{ item.ldap_group_base_dn | default('ou=groups') }}"
-        groupObjectClass: "{{ item.ldap_group_object_class | default('groupOfNames') }}"
-        groupIdAttribute: "{{ item.ldap_group_id_attribute | default('cn') }}"
-        groupMemberAttribute: "{{ item.ldap_group_member_attribute | default('member') }}"
-        groupMemberFormat: "{{ item.ldap_group_member_format | default('uid=${username},ou=users,dc=yourcompany') }}"
-        userSubtree: "{{ item.ldap_user_subtree | default(false) }}"
-        groupSubtree: "{{ item.ldap_group_subtree | default(false) }}"
-        connectionTimeoutSeconds: "{{ item.ldap_connection_timeout | default(1) }}"
-        connectionRetryDelaySeconds: "{{ item.ldap_connection_retry_delay | default(0) }}"
-        maxIncidentsCount: "{{ item.ldap_max_incidents_count | default(0) }}"
-    when: nexus_ldap_retrieved.status == 404
+    - name: Check existence LDAP connections
+      uri:
+        url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{item.ldap_name|urlencode}}"
+        user: 'admin'
+        password: "{{ current_nexus_admin_password }}"
+        method: GET
+        force_basic_auth: yes
+        validate_certs: "{{ nexus_api_validate_certs }}"
+        status_code: 200,404
+        return_content: yes
+      register: nexus_ldap_retrieved
+      check_mode: no
 
-  - name: Updating LDAP connections
-    uri:
-      url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-        {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{item.ldap_name|urlencode}}"
-      user: 'admin'
-      password: "{{ current_nexus_admin_password }}"
-      headers:
-        Content-Type: "application/json"
-      method: PUT
-      force_basic_auth: yes
-      validate_certs: "{{ nexus_api_validate_certs }}"
-      body: "{{ args | to_json }}"
-      status_code: 200,201,204
-    vars:
-      args:
-        name: "{{ item.ldap_name }}"
-        protocol: "{{ item.ldap_protocol }}"
-        host: "{{ item.ldap_hostname }}"
-        port: "{{ item.ldap_port }}"
-        authScheme: "{{ item.ldap_auth | default('NONE') }}"
-        authUsername: "{{ item.ldap_auth_username | default('') }}"
-        authPassword: "{{ item.ldap_auth_password | default('') }}"
-        searchBase: "{{ item.ldap_search_base }}"
-        userBaseDn: "{{ item.ldap_user_base_dn | default('ou=users') }}"
-        userLdapFilter: "{{ item.ldap_user_filter | default('') }}"
-        userObjectClass: "{{ item.ldap_user_object_class }}"
-        userIdAttribute: "{{ item.ldap_user_id_attribute }}"
-        userRealNameAttribute: "{{ item.ldap_user_real_name_attribute }}"
-        userEmailAddressAttribute: "{{ item.ldap_user_email_attribute }}"
-        ldapGroupsAsRoles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
-        groupType: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
-        userMemberOfAttribute: "{{ item.ldap_user_memberof_attribute | default('memberOf') }}"
-        groupBaseDn: "{{ item.ldap_group_base_dn | default('ou=groups') }}"
-        groupObjectClass: "{{ item.ldap_group_object_class | default('groupOfNames') }}"
-        groupIdAttribute: "{{ item.ldap_group_id_attribute | default('cn') }}"
-        groupMemberAttribute: "{{ item.ldap_group_member_attribute | default('member') }}"
-        groupMemberFormat: "{{ item.ldap_group_member_format | default('uid=${username},ou=users,dc=yourcompany') }}"
-        userSubtree: "{{ item.ldap_user_subtree | default(false) }}"
-        groupSubtree: "{{ item.ldap_group_subtree | default(false) }}"
-        connectionTimeoutSeconds: "{{ item.ldap_connection_timeout | default(1) }}"
-        connectionRetryDelaySeconds: "{{ item.ldap_connection_retry_delay | default(0) }}"
-        maxIncidentsCount: "{{ item.ldap_max_incidents_count | default(0) }}"
-        # Id should be present and so collected
-        id: "{{(nexus_ldap_retrieved.content | from_json)['id']}}"
-    when: nexus_ldap_retrieved.status == 200
-  when: nexus_version is version_compare('3.19.0', '>=')
+    - name: Creating LDAP connections
+      uri:
+        url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap"
+        user: 'admin'
+        password: "{{ current_nexus_admin_password }}"
+        headers:
+          Content-Type: "application/json"
+        method: POST
+        force_basic_auth: yes
+        validate_certs: "{{ nexus_api_validate_certs }}"
+        body: "{{ args | to_json }}"
+        status_code: 200,201,204
+      vars:
+        args:
+          name: "{{ item.ldap_name }}"
+          protocol: "{{ item.ldap_protocol }}"
+          host: "{{ item.ldap_hostname }}"
+          port: "{{ item.ldap_port }}"
+          authScheme: "{{ item.ldap_auth | default('NONE') }}"
+          authUsername: "{{ item.ldap_auth_username | default('') }}"
+          authPassword: "{{ item.ldap_auth_password | default('') }}"
+          searchBase: "{{ item.ldap_search_base }}"
+          userBaseDn: "{{ item.ldap_user_base_dn | default('ou=users') }}"
+          userLdapFilter: "{{ item.ldap_user_filter | default('') }}"
+          userObjectClass: "{{ item.ldap_user_object_class }}"
+          userIdAttribute: "{{ item.ldap_user_id_attribute }}"
+          userRealNameAttribute: "{{ item.ldap_user_real_name_attribute }}"
+          userEmailAddressAttribute: "{{ item.ldap_user_email_attribute }}"
+          ldapGroupsAsRoles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
+          groupType: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
+          userMemberOfAttribute: "{{ item.ldap_user_memberof_attribute | default('memberOf') }}"
+          groupBaseDn: "{{ item.ldap_group_base_dn | default('ou=groups') }}"
+          groupObjectClass: "{{ item.ldap_group_object_class | default('groupOfNames') }}"
+          groupIdAttribute: "{{ item.ldap_group_id_attribute | default('cn') }}"
+          groupMemberAttribute: "{{ item.ldap_group_member_attribute | default('member') }}"
+          groupMemberFormat: "{{ item.ldap_group_member_format | default('uid=${username},ou=users,dc=yourcompany') }}"
+          userSubtree: "{{ item.ldap_user_subtree | default(false) }}"
+          groupSubtree: "{{ item.ldap_group_subtree | default(false) }}"
+          connectionTimeoutSeconds: "{{ item.ldap_connection_timeout | default(1) }}"
+          connectionRetryDelaySeconds: "{{ item.ldap_connection_retry_delay | default(0) }}"
+          maxIncidentsCount: "{{ item.ldap_max_incidents_count | default(0) }}"
+      when: nexus_ldap_retrieved.status == 404
+
+    - name: Updating LDAP connections
+      uri:
+        url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint_base }}/beta/security/ldap/{{item.ldap_name|urlencode}}"
+        user: 'admin'
+        password: "{{ current_nexus_admin_password }}"
+        headers:
+          Content-Type: "application/json"
+        method: PUT
+        force_basic_auth: yes
+        validate_certs: "{{ nexus_api_validate_certs }}"
+        body: "{{ args | to_json }}"
+        status_code: 200,201,204
+      vars:
+        args:
+          name: "{{ item.ldap_name }}"
+          protocol: "{{ item.ldap_protocol }}"
+          host: "{{ item.ldap_hostname }}"
+          port: "{{ item.ldap_port }}"
+          authScheme: "{{ item.ldap_auth | default('NONE') }}"
+          authUsername: "{{ item.ldap_auth_username | default('') }}"
+          authPassword: "{{ item.ldap_auth_password | default('') }}"
+          searchBase: "{{ item.ldap_search_base }}"
+          userBaseDn: "{{ item.ldap_user_base_dn | default('ou=users') }}"
+          userLdapFilter: "{{ item.ldap_user_filter | default('') }}"
+          userObjectClass: "{{ item.ldap_user_object_class }}"
+          userIdAttribute: "{{ item.ldap_user_id_attribute }}"
+          userRealNameAttribute: "{{ item.ldap_user_real_name_attribute }}"
+          userEmailAddressAttribute: "{{ item.ldap_user_email_attribute }}"
+          ldapGroupsAsRoles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
+          groupType: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
+          userMemberOfAttribute: "{{ item.ldap_user_memberof_attribute | default('memberOf') }}"
+          groupBaseDn: "{{ item.ldap_group_base_dn | default('ou=groups') }}"
+          groupObjectClass: "{{ item.ldap_group_object_class | default('groupOfNames') }}"
+          groupIdAttribute: "{{ item.ldap_group_id_attribute | default('cn') }}"
+          groupMemberAttribute: "{{ item.ldap_group_member_attribute | default('member') }}"
+          groupMemberFormat: "{{ item.ldap_group_member_format | default('uid=${username},ou=users,dc=yourcompany') }}"
+          userSubtree: "{{ item.ldap_user_subtree | default(false) }}"
+          groupSubtree: "{{ item.ldap_group_subtree | default(false) }}"
+          connectionTimeoutSeconds: "{{ item.ldap_connection_timeout | default(1) }}"
+          connectionRetryDelaySeconds: "{{ item.ldap_connection_retry_delay | default(0) }}"
+          maxIncidentsCount: "{{ item.ldap_max_incidents_count | default(0) }}"
+          # Id should be present and so collected
+          id: "{{(nexus_ldap_retrieved.content | from_json)['id']}}"
+      when: nexus_ldap_retrieved.status == 200
