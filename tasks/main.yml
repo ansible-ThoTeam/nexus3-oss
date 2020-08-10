@@ -64,19 +64,14 @@
 
 - name: Deleting default blobstore
   include_tasks: delete_blobstore_each.yml
-  with_items:
-    - name: default
-    - name: "{{ nexus_blob_names.raw.blob }}"
-    - name: "{{ nexus_blob_names.pypi.blob }}"
-    - name: "{{ nexus_blob_names.docker.blob }}"
-    - name: "{{ nexus_blob_names.ruby.blob }}"
-    - name: "{{ nexus_blob_names.bower.blob }}"
-    - name: "{{ nexus_blob_names.npm.blob }}"
-    - name: "{{ nexus_blob_names.nuget.blob }}"
-    - name: "{{ nexus_blob_names.mvn.blob }}"
-    - name: "{{ nexus_blob_names.gitlfs.blob }}"
-    - name: "{{ nexus_blob_names.yum.blob }}"
-    - name: "{{ nexus_blob_names.apt.blob }}"
+  with_items: >-
+    {{
+      {'default':{'blob': 'default'}}
+      | combine(nexus_blob_names)
+      | json_query("*.{name: blob}")
+      | list
+      | unique
+    }}
   when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
 
 - block:
@@ -233,19 +228,22 @@
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}
 
-- include_tasks: create_task_each.yml
-  with_items: "{{ nexus_scheduled_tasks }}"
-  when: nexus_run_provisionning | default(true) | bool
-
-- name: Configure nexus backup task
-  include_tasks: call_script.yml
-  vars:
-    script_name: create_task
-    args:
-      name: db and blobstores backup
-      typeId: script
-      cron: "{{ nexus_backup_cron }}"
-      taskProperties:
-        language: groovy
-        source: "{{ lookup('template', './templates/backup.groovy.j2') }}"
+- name: Define backup task if backup is configured
+  set_fact:
+    _nexus_backup_task:
+      - name: db and blobstores backup
+        typeId: script
+        schedule_type: "{{ nexus_backup_schedule_type }}"
+        cron: "{{ nexus_backup_cron }}"
+        start_date_time: "{{ nexus_backup_start_date_time | default('') }}"
+        weekly_days: "{{ nexus_backup_weekly_days | default([]) }}"
+        monthly_days: "{{ nexus_backup_monthly_days | default([]) }}"
+        taskProperties:
+          language: groovy
+          source: "{{ lookup('template', './templates/backup.groovy.j2') }}"
   when: nexus_backup_configure | bool
+
+- name: Create scheduled tasks (with backup task if relevant)
+  include_tasks: create_task_each.yml
+  with_items: "{{ nexus_scheduled_tasks + _nexus_backup_task | default([]) }}"
+  when: nexus_run_provisionning | default(true) | bool

@@ -18,16 +18,18 @@ platforms:
   - name: nexus3-oss-centos-7
     hostname: nexus3-oss-centos7
     image: thoteam/molecule_apache_openjdk8:centos7
-    command: /usr/sbin/init
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
       - 8090:443
+    override_command: false
     groups:
       - nexus
     networks: &nexus_networks
       - name: nexus-default
+    volumes:
+      - "${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads"
 
   - name: slapd-server-mock
     hostname: slapd-server-mock
@@ -48,18 +50,15 @@ scenario:
   check_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - check
     - destroy
   converge_sequence:
     - create
-    - prepare
     - converge
   test_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - idempotence
     - check
