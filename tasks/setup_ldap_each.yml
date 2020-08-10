@@ -78,7 +78,7 @@
           userEmailAddressAttribute: "{{ item.ldap_user_email_attribute }}"
           ldapGroupsAsRoles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
           # 'static', 'dynamic' or none
-          groupType: "{{ item.ldap_map_groups_as_roles_type | default(none) }}"
+          groupType: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
           userMemberOfAttribute: "{{ item.ldap_user_memberof_attribute | default('memberOf') }}"
           groupBaseDn: "{{ item.ldap_group_base_dn | default('ou=groups') }}"
           groupObjectClass: "{{ item.ldap_group_object_class | default('groupOfNames') }}"
