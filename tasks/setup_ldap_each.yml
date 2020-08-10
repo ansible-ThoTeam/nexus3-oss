@@ -79,32 +79,32 @@
           ldapGroupsAsRoles: "{{ item.ldap_map_groups_as_roles | default(false) }}"
           # 'static', 'dynamic' or none
           groupType: "{{ item.ldap_map_groups_as_roles_type | default('static') }}"
-          userMemberOfAttribute: "{% if item.ldap_map_groups_as_roles_type == 'dynamic' %}\
+          userMemberOfAttribute: "{% if item.ldap_map_groups_as_roles_type is defined and item.ldap_map_groups_as_roles_type == 'dynamic' %}\
             {{ item.ldap_user_memberof_attribute | default('memberOf') }}\
             {% else %}\
             {{ (omit) }}\
             {% endif %}"
-          groupBaseDn: "{% if item.ldap_map_groups_as_roles_type == 'static' %}\
+          groupBaseDn: "{% if item.ldap_map_groups_as_roles_type is not defined or item.ldap_map_groups_as_roles_type == 'static' %}\
             {{ item.ldap_group_base_dn | default('ou=groups') }}\
             {% else %}\
             {{ (omit) }}\
             {% endif %}"
-          groupObjectClass: "{% if item.ldap_map_groups_as_roles_type == 'static' %}\
+          groupObjectClass: "{% if item.ldap_map_groups_as_roles_type is not defined or item.ldap_map_groups_as_roles_type == 'static' %}\
             {{ item.ldap_group_object_class | default('groupOfNames') }}\
             {% else %}\
             {{ (omit) }}\
             {% endif %}"
-          groupIdAttribute: "{% if item.ldap_map_groups_as_roles_type == 'static' %}\
+          groupIdAttribute: "{% if item.ldap_map_groups_as_roles_type is not defined or item.ldap_map_groups_as_roles_type == 'static' %}\
             {{ item.ldap_group_id_attribute | default('cn') }}\
             {% else %}\
             {{ (omit) }}\
             {% endif %}"
-          groupMemberAttribute: "{% if item.ldap_map_groups_as_roles_type == 'static' %}\
+          groupMemberAttribute: "{% if item.ldap_map_groups_as_roles_type is not defined or item.ldap_map_groups_as_roles_type == 'static' %}\
             {{ item.ldap_group_member_attribute | default('member') }}\
             {% else %}\
             {{ (omit) }}\
             {% endif %}"
-          groupMemberFormat: "{% if item.ldap_map_groups_as_roles_type == 'static' %}\
+          groupMemberFormat: "{% if item.ldap_map_groups_as_roles_type is not defined or item.ldap_map_groups_as_roles_type == 'static' %}\
             {{ item.ldap_group_member_format | default('uid=${username},ou=users,dc=yourcompany') }}\
             {% else %}\
             {{ (omit) }}\
