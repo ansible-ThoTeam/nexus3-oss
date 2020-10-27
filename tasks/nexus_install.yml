@@ -95,14 +95,15 @@
   file:
     path: "{{ nexus_installation_dir }}"
     state: "directory"
+    mode: 0755
 
 - name: Unpack Nexus download
   unarchive:
     src: "{{ nexus_download_dir }}/{{ nexus_package }}"
     dest: "{{ nexus_installation_dir }}"
     creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-    force: no
     copy: false
+    mode: 0755
   notify:
     - nexus-service-stop
 
@@ -199,6 +200,7 @@
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    mode: 0750
 
 - name: Setup Nexus data directory
   lineinfile:
@@ -250,6 +252,7 @@
     path: "{{ nexus_default_settings_file }}"
     line: "nexus.onboarding.enabled={{ nexus_onboarding_wizard }}"
     create: true
+    mode: 0644
   when: nexus_version is version_compare('3.17.0', '>=')
 
 - name: Create Nexus tmp directory
@@ -258,6 +261,7 @@
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    mode: 0750
 
 - name: Create Nexus backup directory
   file:
@@ -265,6 +269,7 @@
     state: "directory"
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    mode: 0750
   when: nexus_backup_dir_create | bool
 
 - name: Setup Nexus tmp directory
@@ -331,6 +336,7 @@
   template:
     src: "nexus.service"
     dest: "/etc/systemd/system"
+    mode: 0644
   notify:
     - systemd-reload
   when: "ansible_service_mgr == 'systemd'"
@@ -503,6 +509,7 @@
     state: directory
     owner: root
     group: root
+    mode: 0755
   with_items:
     - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
     - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
@@ -512,6 +519,7 @@
   archive:
     path: "{{ role_path }}/files/groovy/*"
     dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+    mode: 0644
   run_once: true
   delegate_to: localhost
 
@@ -519,6 +527,7 @@
   unarchive:
     src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+    mode: 0644
 
 - block:
     - name: Sync new scripts to old and get differences
