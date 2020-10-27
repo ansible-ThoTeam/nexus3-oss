@@ -14,6 +14,7 @@
 ##################################
 
 molecule
+molecule-docker
 ansible
 ansible-lint
 flake8
