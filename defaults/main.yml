@@ -167,6 +167,7 @@ nexus_proxy_exclude_hosts:
   - "127.*"
   - "[::1]"
 
+nexus_config_maven: true
 nexus_config_pypi: false
 nexus_config_docker: false
 nexus_config_raw: false

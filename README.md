@@ -639,10 +639,12 @@ All three repository types are combined with the following default values :
       negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 ```
 
-Docker, Pypi, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm and r repository types:
-see `defaults/main.yml` for these options:
+Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm and r repository types:
+see `defaults/main.yml` for these options. For historical reasons and to keep backward compatibility,
+maven is configured by default
 
 ```yaml
+      nexus_config_maven: true
       nexus_config_pypi: false
       nexus_config_docker: false
       nexus_config_raw: false

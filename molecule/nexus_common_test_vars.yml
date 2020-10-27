@@ -15,6 +15,7 @@ nexus_delete_default_blobstore: true
 
 nexus_blob_split: true
 
+nexus_config_maven: true
 nexus_config_pypi: true
 nexus_config_docker: true
 nexus_config_raw: true
