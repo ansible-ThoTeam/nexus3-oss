@@ -362,7 +362,7 @@
   when: nexus_backup_configure | bool
 
 - name: 'Check if data directory is empty (first-time install)'
-  command: "ls {{ nexus_data_dir }}"
+  command: "ls --ignore=lost+found {{ nexus_data_dir }}"
   register: nexus_data_dir_contents
   check_mode: no
   changed_when: false
