@@ -25,6 +25,8 @@ nexus_blob_names:
     blob: '{{ nexus_blob_prefix }}apt'
   helm:
     blob: '{{ nexus_blob_prefix }}helm'
+  r:
+    blob: '{{ nexus_blob_prefix }}r'
 
 
 nexus_blobstores:
@@ -52,3 +54,5 @@ nexus_blobstores:
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.apt.blob }}"
   - name: '{{ nexus_blob_prefix }}helm'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.helm.blob }}"
+  - name: '{{ nexus_blob_prefix }}r'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.r.blob }}"
