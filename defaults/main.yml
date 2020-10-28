@@ -262,7 +262,7 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
     blob: 'default'
   conda:
     blob: 'default'
-    
+
 nexus_blobstores: []
 # example blobstore item :
 # - name: separate-storage
@@ -740,7 +740,7 @@ _nexus_repos_conda_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
-  
+
 nexus_repos_conda_proxy: []
 #   - name: conda-proxy
 #     remote_url: 'https://repo.continuum.io/pkgs/'

@@ -556,7 +556,7 @@
             +
             (nexus_repos_p2_proxy | map('combine', {"format": "p2", "type": "proxy"}) | list)
           }}
-          
+
 - name: Process definitions for conda
   when: nexus_config_conda | bool
   block:
