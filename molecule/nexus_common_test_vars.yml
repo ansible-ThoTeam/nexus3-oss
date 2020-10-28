@@ -101,6 +101,8 @@ nexus_repos_docker_hosted:
     v1_enabled: true
     write_policy: allow
 
+nexus_repos_docker_proxy: []
+
 nexus_repos_apt_hosted:
   - name: private_ubuntu_18.04
     distribution: bionic
