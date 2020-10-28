@@ -4,6 +4,7 @@
   template:
     src: "nexus-vhost.conf"
     dest: "{{ httpd_config_dir }}"
+    mode: 0644
   notify:
     - httpd-service-reload
     - wait-for-httpd
