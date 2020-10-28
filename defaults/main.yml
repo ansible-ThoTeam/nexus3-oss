@@ -741,6 +741,6 @@ _nexus_repos_conda_defaults:
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
   
-nexus_repos_conda_proxy:
-  - name: conda-proxy
-    remote_url: 'https://repo.continuum.io/pkgs/'
+nexus_repos_conda_proxy: []
+#   - name: conda-proxy
+#     remote_url: 'https://repo.continuum.io/pkgs/'

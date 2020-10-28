@@ -28,6 +28,7 @@ nexus_config_yum: true
 nexus_config_apt: true
 nexus_config_helm: true
 nexus_config_r: true
+nexus_config_conda: true
 
 nexus_anonymous_access: true
 
@@ -220,6 +221,10 @@ nexus_repos_r_group:
     member_repos:
       - r-internal
       - r-proxy
+
+nexus_repos_conda_proxy:
+  - name: conda-proxy
+    remote_url: 'https://repo.continuum.io/pkgs/'
 
 nexus_content_selectors:
   # Docker by namespace. For mode details see:
