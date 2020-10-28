@@ -639,7 +639,7 @@ All three repository types are combined with the following default values :
       negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 ```
 
-Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm, r, p2 and conda repository types:
+Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm, r, p2, conda and go repository types:
 see `defaults/main.yml` for these options. For historical reasons and to keep backward compatibility,
 maven is configured by default
 
@@ -658,6 +658,7 @@ maven is configured by default
       nexus_config_r: false
       nexus_config_p2: false
       nexus_config_conda: false
+      nexus_config_go: false
 ```
 
 These are all false unless you override them from playbook / group_var / cli, these all utilize the same mechanism as maven.

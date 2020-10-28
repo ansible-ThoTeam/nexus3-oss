@@ -29,6 +29,7 @@ nexus_config_apt: true
 nexus_config_helm: true
 nexus_config_r: true
 nexus_config_conda: true
+nexus_config_go: true
 
 nexus_anonymous_access: true
 
@@ -225,6 +226,10 @@ nexus_repos_r_group:
 nexus_repos_conda_proxy:
   - name: conda-proxy
     remote_url: 'https://repo.continuum.io/pkgs/'
+
+nexus_repos_go_proxy:
+  - name: go-proxy
+    remote_url: 'https://golang.org/pkg/'
 
 nexus_content_selectors:
   # Docker by namespace. For mode details see:
