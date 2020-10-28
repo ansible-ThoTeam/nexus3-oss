@@ -167,6 +167,7 @@ nexus_proxy_exclude_hosts:
   - "127.*"
   - "[::1]"
 
+nexus_config_maven: true
 nexus_config_pypi: false
 nexus_config_docker: false
 nexus_config_raw: false
@@ -177,6 +178,8 @@ nexus_config_nuget: false
 nexus_config_gitlfs: false
 nexus_config_yum: false
 nexus_config_apt: false
+nexus_config_helm: false
+nexus_config_r: false
 nexus_config_p2: false
 
 nexus_content_selectors: []
@@ -250,9 +253,12 @@ nexus_blob_names:           # Splited blob name list @ blob_vars.yml
     blob: 'default'
   apt:
     blob: 'default'
+  helm:
+    blob: 'default'
+  r:
+    blob: 'default'
   p2:
     blob: 'default'
-
 
 nexus_blobstores: []
 # example blobstore item :
@@ -661,6 +667,57 @@ nexus_repos_apt_proxy: []
 #   remote_url: http://download.fedoraproject.org/pub/epel/7/x86_64
 #   distribution: jessie
 #   flat: true
+
+# helm support
+# More on how to work with helm repos https://help.sonatype.com/repomanager3/formats/helm-repositories
+_nexus_repos_helm_defaults:
+  blob_store: "{{ nexus_blob_names.helm.blob }}"
+  strict_content_validation: true
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  flat: false  # Nexus gui default. For proxies only
+
+nexus_repos_helm_hosted: []
+# - name: helm-hosted
+
+nexus_repos_helm_proxy: []
+# - name: helm-proxy
+#   remote_url: https://kubernetes-charts.storage.googleapis.com/
+
+# R support
+_nexus_repos_r_defaults:
+  blob_store: "{{ nexus_blob_names.r.blob }}"
+  strict_content_validation: true
+  version_policy: release  # release, snapshot or mixed
+  layout_policy: strict  # strict or permissive
+  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440  # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
+  negative_cache_enabled: true  # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+
+nexus_repos_r_proxy: []
+# - name: r-proxy
+#   remote_url: 'https://cran.r-project.org/'
+#   maximum_component_age: 1440
+#   maximum_metadata_age: 1440
+#   negative_cache_enabled: true
+#   negative_cache_ttl: 1440
+
+nexus_repos_r_hosted: []
+# - name: r-internal
+#   version_policy: release
+#   write_policy: allow  # one of "allow", "allow_once" or "deny"
+
+nexus_repos_r_group: []
+# - name: r-all
+#   member_repos:
+#     - r-internal
+#     - r-proxy
 
 # p2 support (available natively from Nexus 3.21.0 version)
 _nexus_repos_p2_defaults:

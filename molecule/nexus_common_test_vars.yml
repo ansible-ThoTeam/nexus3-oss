@@ -15,6 +15,7 @@ nexus_delete_default_blobstore: true
 
 nexus_blob_split: true
 
+nexus_config_maven: true
 nexus_config_pypi: true
 nexus_config_docker: true
 nexus_config_raw: true
@@ -25,6 +26,8 @@ nexus_config_nuget: true
 nexus_config_gitlfs: true
 nexus_config_yum: true
 nexus_config_apt: true
+nexus_config_helm: true
+nexus_config_r: true
 
 nexus_anonymous_access: true
 
@@ -193,6 +196,28 @@ nexus_repos_apt_proxy:
     maximum_component_age: -1
     maximum_metadata_age: -1
     negative_cache_ttl: 60
+
+nexus_repos_helm_hosted:
+  - name: helm-hosted
+
+nexus_repos_helm_proxy:
+  - name: helm-proxy
+    remote_url: https://kubernetes-charts.storage.googleapis.com/
+
+nexus_repos_r_proxy:
+  - name: r-proxy
+    remote_url: 'https://cran.r-project.org/'
+
+nexus_repos_r_hosted:
+  - name: r-internal
+    version_policy: release
+    write_policy: allow
+
+nexus_repos_r_group:
+  - name: r-all
+    member_repos:
+      - r-internal
+      - r-proxy
 
 nexus_content_selectors:
   # Docker by namespace. For mode details see:
