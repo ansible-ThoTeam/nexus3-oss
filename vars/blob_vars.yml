@@ -23,6 +23,14 @@ nexus_blob_names:
     blob: '{{ nexus_blob_prefix }}yum'
   apt:
     blob: '{{ nexus_blob_prefix }}apt'
+  helm:
+    blob: '{{ nexus_blob_prefix }}helm'
+  r:
+    blob: '{{ nexus_blob_prefix }}r'
+  p2:
+    blob: '{{ nexus_blob_prefix }}p2'
+  conda:
+    blob: '{{ nexus_blob_prefix }}conda'
   go:
     blob: '{{ nexus_blob_prefix }}go'
 
@@ -50,5 +58,13 @@ nexus_blobstores:
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.yum.blob }}"
   - name: '{{ nexus_blob_prefix }}apt'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.apt.blob }}"
+  - name: '{{ nexus_blob_prefix }}helm'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.helm.blob }}"
+  - name: '{{ nexus_blob_prefix }}r'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.r.blob }}"
+  - name: '{{ nexus_blob_prefix }}p2'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.p2.blob }}"
+  - name: '{{ nexus_blob_prefix }}conda'
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.conda.blob }}"
   - name: '{{ nexus_blob_prefix }}go'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.go.blob }}"
