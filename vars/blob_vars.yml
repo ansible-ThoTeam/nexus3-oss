@@ -30,6 +30,7 @@ nexus_blob_names:
   p2:
     blob: '{{ nexus_blob_prefix }}p2'
 
+
 nexus_blobstores:
   - name: '{{ nexus_blob_prefix }}raw'
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.raw.blob }}"
