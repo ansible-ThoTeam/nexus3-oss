@@ -534,3 +534,25 @@
             +
             (nexus_repos_r_group | map('combine', {"format": "r", "type": "group"}) | list)
           }}
+
+- name: Process definitions for p2 repositories
+  when: nexus_config_p2 | bool
+  block:
+
+    - name: apply defaults to p2 proxy repos
+      set_fact:
+        nexus_repos_p2_proxy: >-
+          {%- set result=[] -%}
+          {%- for repo in nexus_repos_p2_proxy -%}
+            {{ result.append(_nexus_repos_p2_defaults | combine(repo)) }}
+          {%- endfor -%}
+          {{ result | to_json | from_json }}
+
+    - name: Add p2 repositories to global repos list
+      set_fact:
+        _nexus_repos_global_list: >-
+          {{
+            _nexus_repos_global_list | default([])
+            +
+            (nexus_repos_p2_proxy | map('combine', {"format": "p2", "type": "proxy"}) | list)
+          }}
