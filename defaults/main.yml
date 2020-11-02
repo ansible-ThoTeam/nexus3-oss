@@ -14,7 +14,7 @@ nexus_os_user: 'nexus'
 nexus_os_user_home_dir: '/home/{{ nexus_os_user }}'
 nexus_os_max_filedescriptors: 65536  # minimum value for nexus > 3.5.x
 nexus_installation_dir: '/opt'
-nexus_data_dir: '{{ '' | default(nexus_tmp_dir) }}'  # TODO: it was '/var/nexus' before
+nexus_data_dir: '/var/nexus'
 nexus_timezone: 'UTC'  # java timezone
 nexus_tmp_dir: "{{ (ansible_os_family == 'RedHat') | ternary('/var/nexus-tmp', '/tmp/nexus') }}"
 nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
@@ -168,7 +168,7 @@ nexus_proxy_exclude_hosts:
   - "127.*"
   - "[::1]"
 
-#nexus_config_maven: true  # TODO: Commented out in WIP
+nexus_config_maven: true
 nexus_config_pypi: false
 nexus_config_docker: false
 nexus_config_raw: false

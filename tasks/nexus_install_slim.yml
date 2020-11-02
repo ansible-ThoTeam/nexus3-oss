@@ -1,10 +1,45 @@
 ---
 
-- name: Create Nexus data/tmp directory.
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_data_dir }}/etc/nexus.properties"
+
+- name: Get rest API endpoint (v < 3.8.0)
+  set_fact:
+    nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
+  when: nexus_version is version_compare('3.8.0', '<')
+
+- name: Get rest API endpoint (v >= 3.8.0)
+  set_fact:
+    nexus_rest_api_endpoint: "service/rest/v1/script"
+  when: nexus_version is version_compare('3.8.0', '>=')
+
+- name: Create Nexus data directory.
   file:
     path: "{{ nexus_data_dir }}"
     state: "directory"
-  delegate_to: localhost
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    mode: 0750
+  delegate_to: "{{ 'localhost' if config_kubectl == True else inventory_hostname }}"
+
+# Note: this one is mandatory until we move all our groovy scripts
+# to REST API calls. Once this is done, we will move this to an
+# optionnal setting defaulting to false as recommended by sonatype
+- name: "Enable creating groovy scripts in nexus"
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^nexus.scripts.allowCreation=.*"
+    line: "nexus.scripts.allowCreation=true"
+  notify:
+    - nexus-container-restart
+  when: nexus_version is version_compare('3.21.2', '>=')
+
+- name: 'Check if data directory is empty (first-time install)'
+  command: "ls --ignore=lost+found {{ nexus_data_dir }}"
+  register: nexus_data_dir_contents
+  check_mode: no
+  changed_when: false
 
 - name: Access scripts API endpoint with defined admin password
   uri:
@@ -24,6 +59,26 @@
     current_nexus_admin_password: "{{ nexus_admin_password }}"
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
+
+- name: Check if admin.password file exists
+  stat:
+    path: "{{ nexus_data_dir }}/admin.password"
+  register: admin_password_file
+
+- name: Get generated admin password from file (nexus >= 3.17)
+  when:
+    - admin_password_file.stat.exists
+    - nexus_api_head_with_defined_password.status == 401
+    - nexus_version is version_compare('3.17.0', '>=')
+  block:
+    - name: Slurp content of remote generated password file
+      slurp:
+        src: "{{ nexus_data_dir }}/admin.password"
+      register: _slurpedpass
+
+    - name: Set default password from slurped content
+      set_fact:
+        nexus_default_admin_password: "{{ _slurpedpass.content | b64decode }}"
 
 - name: Access scripts API endpoint with default admin password
   uri:
@@ -65,6 +120,8 @@
       file:
         path: "{{ item }}"
         state: directory
+        #owner: "{{ nexus_os_user }}"
+        #group: "{{ nexus_os_group }}"
       with_items:
         - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
         - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
@@ -81,8 +138,10 @@
       unarchive:
         src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
         dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+        #owner: "{{ nexus_os_user }}"
+        #group: "{{ nexus_os_group }}"
 
-  delegate_to: localhost
+  delegate_to: "{{ 'localhost' if config_kubectl == True else inventory_hostname }}"
 
 - block:
     - name: Sync new scripts to old and get differences
@@ -99,7 +158,7 @@
         warn: false
         executable: /bin/bash
 
-  delegate_to: localhost
+  delegate_to: "{{ 'localhost' if config_kubectl == True else inventory_hostname }}"
   rescue:
     - name: Fail with information on rsync error
       fail:
@@ -123,5 +182,11 @@
       set_fact:
         current_nexus_admin_password: "{{ nexus_admin_password }}"
       no_log: true
+
+    - name: Clear generated password file from install (nexus > 3.17)
+      file:
+        path: "{{ nexus_data_dir }}/admin.password"
+        state: absent
+      when: nexus_version is version_compare('3.17.0', '>=')
 
   when: (nexus_api_head_with_default_password.status | default(false)) == 200

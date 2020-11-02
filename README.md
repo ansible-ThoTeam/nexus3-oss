@@ -644,7 +644,7 @@ see `defaults/main.yml` for these options. For historical reasons and to keep ba
 maven is configured by default
 
 ```yaml
-      #nexus_config_maven: true  # TODO: This was not there in WIP
+      nexus_config_maven: true
       nexus_config_pypi: false
       nexus_config_docker: false
       nexus_config_raw: false
@@ -867,7 +867,7 @@ ansible-playbook -i your/inventory.ini your_playbook.yml \
 
 #### Skip provisionning tasks
 ```yaml
-    nexus_run_provisionning: false
+    nexus_run_provisioning: false
 ```
 This var is unset by default and will default to `true`. Setting it to `false` will cause the role to skip all of the
 provisionning tasks and will therefore *not create/update*:
@@ -885,7 +885,7 @@ to simply check nexus is correctly installed, or restore a backup, or upgrade ne
 
 We strongly suggest to use this variable only as an extra var to ansible-playbook call
 ```bash
-ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionning=false
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisioning=false
 ```
 
 #### Force recursive ownership check of blobstores directories
