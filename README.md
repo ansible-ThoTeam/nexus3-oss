@@ -644,7 +644,7 @@ see `defaults/main.yml` for these options. For historical reasons and to keep ba
 maven is configured by default
 
 ```yaml
-      nexus_config_maven: true
+      #nexus_config_maven: true  # TODO: This was not there in WIP
       nexus_config_pypi: false
       nexus_config_docker: false
       nexus_config_raw: false

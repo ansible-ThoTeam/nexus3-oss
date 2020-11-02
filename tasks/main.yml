@@ -1,7 +1,20 @@
+# {{ '--context='+k8s.context if k8s.context else '' }}
 ---
-
 - name: Check requirements and deprecated features/vars
   import_tasks: "requirements_and_deprecated.yml"
+
+- set_fact:
+    tun_pid_file: /tmp/nexus_tunnel_pid
+  when: config-only == True and config-kubectl == True
+
+- name: Forward port to the deployment/pod.
+  shell: |
+      nohup kubectl port-forward deployment/sonatype-nexus {{ nexus_api_port }}:{{ nexus_default_port }} --namespace="{{ k8s.namespace }}" </dev/null >/dev/null 2>&1 &
+      echo "$!" >{{ tun_pid_file|quote }}
+  args:
+    creates: "{{ tun_pid_file }}"
+  changed_when: false
+  when: config-only == True and config-kubectl == True
 
 - name: Include OS specific variables.
   include_vars: "configure-{{ ansible_os_family }}.yml"
@@ -50,6 +63,12 @@
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
   when: nexus_with_http_proxy or nexus_with_https_proxy
 
+# delete unwanted repos anyways
+- name: Deleting unwanted repositories
+  include_tasks: delete_repo_each.yml
+  with_items: "{{ nexus_always_delete_repos }}"
+  when: (nexus_always_delete_repos | length > 0)
+
 - name: Deleting default repositories
   include_tasks: delete_repo_each.yml
   with_items:
@@ -60,7 +79,7 @@
     - nuget-group
     - nuget-hosted
     - nuget.org-proxy
-  when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_repos
+  when: config-only != True and (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_repos
 
 - name: Deleting default blobstore
   include_tasks: delete_blobstore_each.yml
@@ -72,7 +91,7 @@
       | list
       | unique
     }}
-  when: (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
+  when: config-only != True and (nexus_data_dir_contents.stdout | length == 0) and nexus_delete_default_blobstore
 
 - block:
     - include_tasks: setup_ldap_each.yml
@@ -262,3 +281,12 @@
   include_tasks: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks + _nexus_backup_task | default([]) }}"
   when: nexus_run_provisionning | default(true) | bool
+
+- name: Close forwarding.
+  shell: |
+    kill "$(cat {{ tun_pid_file|quote }})" || true
+    rm -f {{ tun_pid_file|quote }}
+  args:
+    removes: "{{ tun_pid_file }}"
+  changed_when: false
+  when: config-only == True and config-kubectl == True

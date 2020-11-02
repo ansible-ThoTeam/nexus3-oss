@@ -32,7 +32,7 @@
       Starting from version 2.2.0 of this role, this is not compatible
       with the new nexus latest version detection feature and is not
       supported anymore. Please use the nexus_version variable only.
-  when: nexus_package is defined
+  when: config-only != True and nexus_package is defined
 
 # @deprecated: purge was refactored to nexus_purge
 # @version: 2.2.3
@@ -43,7 +43,7 @@
       Starting from version 2.2.3 of this role, this variable
       has been renamed nexus_purge. Please fix the var name accordingly
       on you command line call.
-  when: purge is defined
+  when: config-only != True and purge is defined
 
 # @deprecated: public_hostname was renamed to nexus_public_hostname
 # @version: 2.3.0
@@ -56,6 +56,8 @@
       Fix this by setting a correct value for nexus_public_hostname and remove public_hostname if
       possible.
   when: >-
+    config-only != True
+    and
     public_hosname | default('') | length > 0
     and
     public_hostname != nexus_public_hostname
@@ -72,13 +74,14 @@
       all repository configuration use the same standard var remote_url. Please review your configurations
       in nexus_repos_docker_proxy and rename the variable accordingly.
   when:
+    - config-only != True
     - nexus_repos_docker_proxy | length > 0
     - nexus_repos_docker_proxy | json_query('[?proxy_url]') | list | length > 0
 
 # @requirement: new internal var _nexus_repos_global_List must be undefined
 # @version: 2.4.0
 - name: "Make sure our internal var for repos is unset"
-  when: _nexus_repos_global_list is defined
+  when: config-only != True and _nexus_repos_global_list is defined
   block:
     - name: Print debug message about our internal var
       vars:
