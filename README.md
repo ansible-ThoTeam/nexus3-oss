@@ -24,6 +24,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [Requirements](#requirements)
       * [Role Variables](#role-variables)
          * [General variables](#general-variables)
+         * [Docker variables](#docker-variables)
          * [Download dir for nexus package](#download-dir-for-nexus-package)
          * [Nexus port, context path ans listening IP](#nexus-port-context-path-ans-listening-ip)
          * [Nexus OS user and group](#nexus-os-user-and-group)
@@ -139,6 +140,17 @@ you can set `nexus_download_ssl_verify: false`.
 `nexus_version_running` is a variable used internally. **As such, it should never be set directly**
 It will exist only if nexus is currently installed on the host and will register the current version prior to running
 the role. It can be used later in your playbook if needed (e.g. for an upgrade notification email)
+
+### Docker variables
+```yaml
+nexus_dockerized: False
+nexus_docker_container_name: nexus
+```
+
+You can also use this role to configure a Nexus instance that is running inside a Docker container on the target host.
+Only commands that operate on the Nexus API are executed then. By default, this behaviour is disabled.
+To configure a Dockerized Nexus, set `nexus_dockerized: True` and `nexus_docker_container_name: <container_name>`. The
+role will then automatically retrieve the container's IP address and use it to set `nexus_api_hostname`.
 
 ### Download dir for nexus package
 ```yaml

@@ -1,5 +1,16 @@
 ---
 
+- name: Get IP address of Nexus container
+  shell: |
+    docker inspect {{ nexus_docker_container_name }} | grep -Po -m1 '^\s*"IPAddress": "\K([\d.]+)'
+  register: _nexus_ip
+  changed_when: no
+
+- name: Set Nexus hostname
+  set_fact:
+    nexus_api_hostname: "{{ _nexus_ip.stdout }}"
+  changed_when: no
+
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_data_dir }}/etc/nexus.properties"

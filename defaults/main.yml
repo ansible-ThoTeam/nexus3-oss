@@ -761,3 +761,7 @@ _nexus_repos_go_defaults:
 
 nexus_repos_go_group: []
 nexus_repos_go_proxy: []
+
+# Docker support
+nexus_dockerized: False
+nexus_docker_container_name: nexus
