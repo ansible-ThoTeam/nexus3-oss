@@ -148,10 +148,48 @@ nexus_docker_container_name: nexus
 ```
 
 You can also use this role to configure a Nexus instance that is running inside a Docker container on the target host.
-Only commands that operate on the Nexus API are executed then. By default, this behaviour is disabled.
+This container must exist _before_ this role gets executed. Only commands that operate on the Nexus API will be executed
+then. By default, this behaviour is disabled.
 To configure a Dockerized Nexus, set `nexus_dockerized: True` and `nexus_docker_container_name: <container_name>`. The
 role will then automatically retrieve the container's IP address and use it to set `nexus_api_hostname`. All steps that
-are tailored to address a "real" Nexus instance on the host are skipped.
+are tailored to address a "real" Nexus instance on the host will be skipped. Below you can find an example playbook to
+demonstrate this feature.
+
+```yaml
+---
+
+- hosts: your-docker-host
+  become: yes
+  vars:
+    nexus_dockerized: True
+    nexus_version: 3.28.1
+    nexus_data_dir: /opt/volumes/nexus/data
+    nexus_os_user: "200"
+    nexus_os_group: "200"
+    nexus_docker_container_name: nexus
+  tasks:
+
+    - name: Make sure the volume directory is present
+      file:
+        path: "{{ nexus_data_dir }}"
+        state: directory
+        owner: "{{ nexus_os_user }}"
+        group: "{{ nexus_os_group }}"
+        mode: "0750"
+
+    - name: Start Nexus container
+      docker_container:
+        name: "{{ nexus_docker_container_name }}"
+        image: "sonatype/nexus3:{{ nexus_version }}"
+        state: started
+        restart_policy: unless-stopped
+        volumes:
+          - "{{ nexus_data_dir }}:/nexus-data"
+
+    - name: Configure Nexus Docker container
+      import_role:
+        name: ansible-thoteam.nexus3-oss
+```
 
 ### Download dir for nexus package
 ```yaml
