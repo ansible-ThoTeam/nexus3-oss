@@ -60,4 +60,4 @@
     delay: 5
 
 - name: nexus-container-restart
-  command: "docker restart nexus"
+  command: "docker restart {{ nexus_docker_container_name }}"

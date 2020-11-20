@@ -1,6 +1,5 @@
 ---
 nexus_version: ''
-nexus_rest_api_endpoint: "service/rest/v1/script"
 
 # This var is calculated dynamically by the role and
 # will hold the currently installed version if any
