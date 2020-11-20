@@ -119,8 +119,8 @@
       file:
         path: "{{ item }}"
         state: directory
-        #owner: "{{ nexus_os_user }}"
-        #group: "{{ nexus_os_group }}"
+        owner: "{{ nexus_os_user }}"
+        group: "{{ nexus_os_group }}"
       with_items:
         - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
         - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
@@ -137,8 +137,8 @@
       unarchive:
         src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
         dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
-        #owner: "{{ nexus_os_user }}"
-        #group: "{{ nexus_os_group }}"
+        owner: "{{ nexus_os_user }}"
+        group: "{{ nexus_os_group }}"
 
 
 - block:
