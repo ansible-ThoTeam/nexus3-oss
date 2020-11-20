@@ -1,5 +1,18 @@
 ---
 
+- name: Get IP address of Nexus container
+  shell: |
+    docker inspect {{ nexus_docker_container_name }} | grep -Po -m1 '^\s*"IPAddress": "\K([\d.]+)'
+  register: _nexus_ip
+  changed_when: no
+  when: nexus_dockerized == True
+
+- name: Set Nexus hostname
+  set_fact:
+    nexus_api_hostname: "{{ _nexus_ip.stdout }}"
+  changed_when: no
+  when: nexus_dockerized == True
+
 - name: Set detection method to fixed if we have a var
   set_fact:
     nexus_version_detected_from: fixed
@@ -10,6 +23,7 @@
     path: "{{ nexus_installation_dir }}/nexus-latest"
   register: nexus_latest_link
   check_mode: no
+  when: nexus_dockerized == False
 
 - name: Register current running version if any
   set_fact:
@@ -19,8 +33,16 @@
         | regex_replace('^.*/nexus-(\d*\.\d*\.\d*-\d*)', '\1')
       }}
   when:
+    - nexus_dockerized == False
     - nexus_latest_link.stat.exists | default(false)
     - nexus_latest_link.stat.islnk | default(false)
+
+# This task depends on the "version" label of the container, which is set for the official Sonatype Nexus Docker images
+- name: Register current running version if any (Docker)
+  shell: |
+    docker inspect {{ nexus_docker_container_name }} | grep -P "version.*?\K([\d\.-]+)"
+  register: nexus_version_running
+  when: nexus_dockerized == True
 
 - name: No version given => Version detection
   block:
@@ -68,6 +90,7 @@
 - name: Register nexus package name
   set_fact:
     nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+  when: nexus_dockerized == False
 
 - name: Download nexus_package
   get_url:
@@ -77,11 +100,13 @@
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Ensure Nexus o/s group exists
   group:
     name: "{{ nexus_os_group }}"
     state: present
+  when: nexus_dockerized == False
 
 - name: Ensure Nexus o/s user exists
   user:
@@ -90,12 +115,14 @@
     home: "{{ nexus_os_user_home_dir }}"
     shell: "/bin/bash"
     state: present
+  when: nexus_dockerized == False
 
 - name: Ensure Nexus installation directory exists
   file:
     path: "{{ nexus_installation_dir }}"
     state: "directory"
     mode: 0755
+  when: nexus_dockerized == False
 
 - name: Unpack Nexus download
   unarchive:
@@ -106,12 +133,14 @@
     mode: 0755
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Ensure proper ownership of nexus installation directory
   file:
     path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     recurse: yes
     mode: "u=rwX,g=rX,o=rX"
+  when: nexus_dockerized == False
 
 - name: Update symlink nexus-latest
   file:
@@ -124,29 +153,42 @@
   register: nexus_latest_version
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - meta: flush_handlers
+  when: nexus_dockerized == False
 
 - name: Delete unpacked data directory
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest/data"
     state: absent
+  when: nexus_dockerized == False
 
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
-  when: nexus_version is version_compare('3.1.0', '<')
+  when: nexus_dockerized == False and nexus_version is version_compare('3.1.0', '<')
 
 - name: Get path to default settings
   set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
-  when: nexus_version is version_compare('3.1.0', '>=')
+  when: nexus_dockerized == False and nexus_version is version_compare('3.1.0', '>=')
+
+- name: Get path to default settings (Docker)
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_data_dir }}/etc/org.sonatype.nexus.cfg"
+  when: nexus_dockerized == True and nexus_version is version_compare('3.1.0', '<')
+
+- name: Get path to default settings (Docker)
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_data_dir }}/etc/nexus.properties"
+  when: nexus_dockerized == True and nexus_version is version_compare('3.1.0', '>=')
 
 - name: Get application settings directories
   set_fact:
     nexus_app_dir_settings_dirs:
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
-  when: nexus_version is version_compare('3.1.0', '<')
+  when: nexus_dockerized == False and nexus_version is version_compare('3.1.0', '<')
 
 - name: Get application settings directories
   set_fact:
@@ -157,7 +199,7 @@
       - "{{ nexus_installation_dir }}/nexus-latest/etc/fabric"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/logback"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/scripts"
-  when: nexus_version is version_compare('3.1.0', '>=')
+  when: nexus_dockerized == False and nexus_version is version_compare('3.1.0', '>=')
 
 - name: Get rest API endpoint (v < 3.8.0)
   set_fact:
@@ -188,7 +230,7 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
-  when: nexus_latest_version.changed
+  when: nexus_dockerized == False and nexus_latest_version.changed
   register: chown_config_first_time
   tags:
     # hard to run as a handler for time being
@@ -209,6 +251,7 @@
     line: "-Dkaraf.data={{ nexus_data_dir }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Setup JVM logfile directory
   lineinfile:
@@ -217,6 +260,7 @@
     line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Setup Nexus default timezone
   lineinfile:
@@ -225,6 +269,7 @@
     line: "-Duser.timezone={{ nexus_timezone }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Setup Nexus JVM min heap size
   lineinfile:
@@ -232,6 +277,7 @@
     regexp: "^-Xms.*"
     line: "-Xms{{ nexus_min_heap_size }}"
   notify: nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Setup Nexus JVM max heap size
   lineinfile:
@@ -239,6 +285,7 @@
     regexp: "^-Xmx.*"
     line: "-Xmx{{ nexus_max_heap_size }}"
   notify: nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Setup Nexus JVM max direct memory
   lineinfile:
@@ -246,6 +293,7 @@
     regexp: "^-XX:MaxDirectMemorySize=.*"
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
   notify: nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Stop the admin wizard from running
   lineinfile:
@@ -262,6 +310,7 @@
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     mode: 0750
+  when: nexus_dockerized == False
 
 - name: Create Nexus backup directory
   file:
@@ -270,7 +319,7 @@
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     mode: 0750
-  when: nexus_backup_dir_create | bool
+  when: nexus_dockerized == False and nexus_backup_dir_create | bool
 
 - name: Setup Nexus tmp directory
   lineinfile:
@@ -279,6 +328,7 @@
     line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Set NEXUS_HOME for the service user
   lineinfile:
@@ -287,6 +337,7 @@
     line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Set nexus user
   lineinfile:
@@ -295,6 +346,7 @@
     line: "run_as_user=\"{{ nexus_os_user }}\""
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Set nexus port
   lineinfile:
@@ -303,6 +355,7 @@
     line: "application-port={{ nexus_default_port }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: Set nexus context path
   lineinfile:
@@ -311,6 +364,7 @@
     line: "nexus-context-path={{ nexus_default_context_path }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 - name: "Set nexus service listening ip to {{ nexus_application_host }}"
   lineinfile:
@@ -319,6 +373,7 @@
     line: "application-host={{ nexus_application_host }}"
   notify:
     - nexus-service-stop
+  when: nexus_dockerized == False
 
 # Note: this one is mandatory until we move all our groovy scripts
 # to REST API calls. Once this is done, we will move this to an
@@ -329,7 +384,7 @@
     regexp: "^nexus.scripts.allowCreation=.*"
     line: "nexus.scripts.allowCreation=true"
   notify:
-    - nexus-service-stop
+    - "{{ 'nexus-service-stop' if nexus_dockerized != True else 'nexus-container-restart' }}"
   when: nexus_version is version_compare('3.21.2', '>=')
 
 - name: Create systemd service configuration
@@ -339,14 +394,14 @@
     mode: 0644
   notify:
     - systemd-reload
-  when: "ansible_service_mgr == 'systemd'"
+  when: "nexus_dockerized == False and ansible_service_mgr == 'systemd'"
 
 - name: Create sysv service configuration
   file:
     path: "/etc/init.d/nexus"
     src: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus"
     state: link
-  when: "ansible_service_mgr != 'systemd'"
+  when: "nexus_dockerized == False and ansible_service_mgr != 'systemd'"
 
 - block:
     - name: "Deploy backup restore script"
@@ -359,7 +414,7 @@
         src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
         dest: "/sbin/nexus-blob-restore.sh"
         state: link
-  when: nexus_backup_configure | bool
+  when: nexus_dockerized == False and nexus_backup_configure | bool
 
 - name: 'Check if data directory is empty (first-time install)'
   command: "ls --ignore=lost+found {{ nexus_data_dir }}"
@@ -387,7 +442,7 @@
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: "ansible_service_mgr == 'systemd'"
+  when: "nexus_dockerized == False and ansible_service_mgr == 'systemd'"
 
 - name: Enable nexus sysv service and make sure it is started
   service:
@@ -397,7 +452,7 @@
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: "ansible_service_mgr != 'systemd'"
+  when: "nexus_dockerized == False and ansible_service_mgr != 'systemd'"
 
 - meta: flush_handlers
 
@@ -408,7 +463,7 @@
     group: "root"
     mode: a=rX,u+w
     recurse: true
-  when: chown_config_first_time.changed
+  when: nexus_dockerized == False and chown_config_first_time.changed
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
@@ -422,12 +477,14 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
+  when: nexus_dockerized == False
 
 - name: Install plugins from remote source
   get_url:
     url: "{{ item }}"
     dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
   with_items: "{{ nexus_plugin_urls }}"
+  when: nexus_dockerized == False
 
 - name: Access scripts API endpoint with defined admin password
   uri:
