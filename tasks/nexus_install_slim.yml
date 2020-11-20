@@ -21,7 +21,6 @@
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     mode: 0750
-  delegate_to: "{{ 'localhost' if config_kubectl == True else inventory_hostname }}"
 
 # Note: this one is mandatory until we move all our groovy scripts
 # to REST API calls. Once this is done, we will move this to an
@@ -141,7 +140,6 @@
         #owner: "{{ nexus_os_user }}"
         #group: "{{ nexus_os_group }}"
 
-  delegate_to: "{{ 'localhost' if config_kubectl == True else inventory_hostname }}"
 
 - block:
     - name: Sync new scripts to old and get differences
@@ -158,7 +156,6 @@
         warn: false
         executable: /bin/bash
 
-  delegate_to: "{{ 'localhost' if config_kubectl == True else inventory_hostname }}"
   rescue:
     - name: Fail with information on rsync error
       fail:

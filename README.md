@@ -867,7 +867,7 @@ ansible-playbook -i your/inventory.ini your_playbook.yml \
 
 #### Skip provisionning tasks
 ```yaml
-    nexus_run_provisioning: false
+    nexus_run_provisionning: false
 ```
 This var is unset by default and will default to `true`. Setting it to `false` will cause the role to skip all of the
 provisionning tasks and will therefore *not create/update*:
@@ -885,7 +885,7 @@ to simply check nexus is correctly installed, or restore a backup, or upgrade ne
 
 We strongly suggest to use this variable only as an extra var to ansible-playbook call
 ```bash
-ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisioning=false
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionning=false
 ```
 
 #### Force recursive ownership check of blobstores directories
