@@ -40,7 +40,7 @@
 # This task depends on the "version" label of the container, which is set for the official Sonatype Nexus Docker images
 - name: Register current running version if any (Docker)
   shell: |
-    docker inspect {{ nexus_docker_container_name }} | grep -P "version.*?\K([\d\.-]+)"
+    docker inspect {{ nexus_docker_container_name }} | grep -Po "version.*?\K([\d\.-]+)"
   register: nexus_version_running
   when: nexus_dockerized == True
 
