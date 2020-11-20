@@ -150,7 +150,8 @@ nexus_docker_container_name: nexus
 You can also use this role to configure a Nexus instance that is running inside a Docker container on the target host.
 Only commands that operate on the Nexus API are executed then. By default, this behaviour is disabled.
 To configure a Dockerized Nexus, set `nexus_dockerized: True` and `nexus_docker_container_name: <container_name>`. The
-role will then automatically retrieve the container's IP address and use it to set `nexus_api_hostname`.
+role will then automatically retrieve the container's IP address and use it to set `nexus_api_hostname`. All steps that
+are tailored to address a "real" Nexus instance on the host are skipped.
 
 ### Download dir for nexus package
 ```yaml

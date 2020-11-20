@@ -41,6 +41,7 @@
 - name: Register current running version if any (Docker)
   shell: |
     docker inspect {{ nexus_docker_container_name }} | grep -Po "version.*?\K([\d\.-]+)"
+  changed_when: no
   register: nexus_version_running
   when: nexus_dockerized == True
 
