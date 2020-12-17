@@ -1,0 +1,7 @@
+---
+# probably don't need these since not applicable to Windows
+httpd_package_name: "httpd"
+httpd_config_dir: "/etc/{{ httpd_package_name }}/conf.d"
+certificate_file_dest: "/etc/pki/tls/certs"
+certificate_key_dest: "/etc/pki/tls/private"
+

@@ -3,6 +3,7 @@
   systemd:
     daemon-reload: yes
     name: nexus.service
+  when: ansible_os_family != "Windows"
 
 - name: nexus systemd service restart
   systemd:
@@ -10,34 +11,70 @@
     state: restarted
     no_block: yes
   listen: nexus-service-restart
-  when: "ansible_service_mgr == 'systemd'"
+  when: 
+  - ansible_os_family != "Windows"
+  - ansible_service_mgr == 'systemd'
+
 
 - name: nexus sysv service restart
   service:
     name: nexus
     state: restarted
   listen: nexus-service-restart
-  when: "ansible_service_mgr != 'systemd'"
+  when: 
+  - ansible_os_family != "Windows"
+  - ansible_service_mgr != 'systemd'
+
+
+- name: nexus win service restart
+  win_service:
+    name: nexus
+    state: restarted
+  listen: nexus-service-restart
+  when: ansible_os_family == "Windows"
 
 - name: nexus systemd service stop
   systemd:
     name: nexus.service
     state: stopped
   listen: nexus-service-stop
-  when: nexus_systemd_service_file.stat.exists
+  when: 
+  - ansible_os_family != "Windows"
+  - nexus_systemd_service_file.stat.exists
 
 - name: nexus sysv service stop
   service:
     name: nexus
     state: stopped
   listen: nexus-service-stop
-  when: nexus_sysv_service_file.stat.exists
+  when: 
+  - ansible_os_family != "Windows"
+  - nexus_sysv_service_file.stat.exists
+
+- name: nexus win service stop
+  win_service:
+    name: nexus
+    state: stopped
+  listen: nexus-service-stop
+  when: 
+  - ansible_os_family == "Windows"
+  - nexus_win_service.exists 
 
 - name: wait-for-nexus
   wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
     search_regex: "Started Sonatype Nexus .*"
     timeout: 1800
+  listen: wait-for-nexus
+  when: ansible_os_family != "Windows"
+
+- name: wait-for-nexus (Windows)
+  win_wait_for:
+    path: '{{ nexus_data_dir }}\log\nexus.log'
+    search_regex: "Started Sonatype Nexus .*"
+    timeout: 1800
+  listen: wait-for-nexus
+  when: ansible_os_family == "Windows"
 
 - name: wait-for-nexus-port
   wait_for:
@@ -46,6 +83,18 @@
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
   register: wait_for_result
   until: wait_for_result is success
+  listen: wait-for-nexus-port
+  when: ansible_os_family != "Windows"
+
+- name: wait-for-nexus-port (Windows)
+  win_wait_for:
+    port: "{{ nexus_default_port }}"
+    timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
+  retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
+  register: wait_for_result
+  until: wait_for_result is success
+  listen: wait-for-nexus-port
+  when: ansible_os_family == "Windows"
 
 - name: httpd-service-reload
   systemd:
@@ -53,6 +102,7 @@
     state: reloaded
     enabled: yes
     no_block: yes
+  when: ansible_os_family != "Windows"
 
 - name: wait-for-httpd
   wait_for:

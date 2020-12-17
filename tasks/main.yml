@@ -8,17 +8,25 @@
 
 - name: Include OS specific selinux libs and utils if needed
   include_tasks: "selinux-{{ ansible_os_family }}.yml"
-  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled" 
 
 - name: Check if SystemD service is installed
   stat:
     path: /etc/systemd/system/nexus.service
   register: nexus_systemd_service_file
+  when: ansible_os_family != "Windows"
 
 - name: Check if sysv service is installed
   stat:
     path: /etc/init.d/nexus
   register: nexus_sysv_service_file
+  when: ansible_os_family != "Windows"
+
+- name: Check if windows service exists
+  win_service:
+    name: nexus
+  register: nexus_win_service
+  when: ansible_os_family == "Windows"
 
 - include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
@@ -28,6 +36,10 @@
   when: nexus_blob_split | bool
 
 - import_tasks: nexus_install.yml
+  when: ansible_os_family != "Windows"
+
+- import_tasks: nexus_install-Windows.yml
+  when: ansible_os_family == "Windows"
 
 - include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
@@ -97,7 +109,9 @@
           {{ result | to_json | from_json }}
 
     - name: Create/Check blobstores
-      when: nexus_restore_point is undefined
+      when: 
+      - nexus_restore_point is undefined
+      - ansible_os_family != "Windows"
       block:
 
         - name: Create directories for blob stores.
@@ -117,6 +131,25 @@
             args: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
+    - name: Create/Check blobstores (Windows)
+      when: 
+      - nexus_restore_point is undefined
+      - ansible_os_family == "Windows"
+      block:
+        - name: Create directories for blob stores.
+          win_file:
+            path: "{{ item['path'] }}"
+            state: directory
+            recurse: "{{ nexus_blobstores_recurse_owner | default(false) | bool }}"
+          when: item.path is defined
+          loop: "{{ nexus_blobstores }}"
+
+        - name: Create/Check blobstores
+          include_tasks: call_script.yml
+          vars:
+            script_name: create_blobstores_from_list
+            args: "{{ nexus_blobstores }}"
+          when: nexus_blobstores | length > 0
 
   when: nexus_run_provisionning | default(true) | bool
 
