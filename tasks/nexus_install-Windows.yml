@@ -237,7 +237,6 @@
     line: "-Xmx{{ nexus_max_heap_size }}"
   notify: nexus-service-stop
   
-
 - name: Setup Nexus JVM max direct memory 
   win_lineinfile:
     dest: '{{ nexus_installation_dir }}\nexus-latest\bin\nexus.vmoptions'
@@ -245,7 +244,6 @@
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
   notify: nexus-service-stop
   
-
 - name: Stop the admin wizard from running 
   win_lineinfile:
     path: "{{ nexus_default_settings_file }}"
@@ -275,7 +273,6 @@
   notify:
     - nexus-service-stop
   
-
 - name: Set NEXUS_HOME for the service user 
   win_environment:
     state: present
@@ -285,16 +282,70 @@
   notify:
     - nexus-service-stop
   
-
 - name: Set nexus port 
   win_lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-port=.*"
     line: "application-port={{ nexus_default_port }}"
+  when: not ( nexus_enable_ssl | default(false) )
   notify:
     - nexus-service-stop
   
+- name: Copy SSL certificate file to node
+  win_copy:
+    src: "{{ nexus_ssl_certificate_file }}"
+    dest: '{{ temp_download_dir.path }}\ssl.cer'
+  when: 
+  - ( nexus_copy_ssl_certificate_file | default(false) )
+  - ( nexus_ssl_certificate_file is defined )
 
+- name: Import SSL certificate into keystore
+  when: ( nexus_ssl_certificate_file is defined )
+  block:
+  - name: Create keystore directory
+    win_file:
+      path: '{{ nexus_data_dir }}\etc\ssl\'
+      state: "directory"
+  - name: Build keystore file path variable
+    # keytool did not like how ansible added double backslash to paths so doing replace
+    set_fact:
+      _keystore_filepath: "{{ nexus_data_dir | regex_replace('\\\\', '/') }}/etc/ssl/keystore.jks"
+  - name: Build cert file path variable
+    # keytool did not like how ansible added double backslash to paths so doing replace
+    set_fact:
+      _cert_filepath: "{{ temp_download_dir.path | regex_replace('\\\\', '/') }}/ssl.cer"
+      
+  - name: Run keytool
+    # could not get the java_cert or java_keystore modules working on Windows, so running command directly
+    win_shell: |
+      keytool -list -keystore {{ _keystore_filepath }} -storepass password -noprompt -alias {{ nexus_public_hostname }}
+      if(!$?) {
+        keytool -importcert -trustcacerts -file {{ _cert_filepath }} -keystore {{ _keystore_filepath }} -storepass password -noprompt -alias {{ nexus_public_hostname }}
+      }
+
+- name: Enable Nexus config files for SSL
+  when: 
+  - ( nexus_enable_ssl | default(false) )
+  block:
+  - name: Add application-port-ssl
+    win_lineinfile:
+      dest: "{{ nexus_default_settings_file }}"
+      regexp: "^application-port-ssl=.*"
+      line: "application-port-ssl={{ nexus_default_port }}"
+  - name: Update nexus-args
+    win_lineinfile:
+      #dest: '{{ nexus_data_dir }}\etc\nexus.properties'
+      dest: "{{ nexus_default_settings_file }}"
+      regexp: "^nexus-args=.*"
+      line: "nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml"
+  - name: Update karafa ssl
+    win_lineinfile:
+      #dest: '{{ nexus_data_dir }}\etc\nexus.properties'
+      dest: "{{ nexus_default_settings_file }}"
+      regexp: "^ssl.etc=.*"
+      line: "ssl.etc=${karaf.data}/etc/ssl"
+
+  
 - name: Set nexus context path 
   win_lineinfile:
     dest: "{{ nexus_default_settings_file }}"
