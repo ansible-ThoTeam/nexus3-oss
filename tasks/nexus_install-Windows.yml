@@ -111,8 +111,13 @@
 
 - name: Update symlink nexus-latest 
   block:
+    - name: Delete unpacked data directory 
+      win_file:
+        path: '{{ nexus_installation_dir }}\nexus-latest\data'
+        state: absent
+
     - name: Run mklink
-      win_command: cmd.exe /k mklink /D {{ nexus_installation_dir }}\nexus-latest {{ nexus_installation_dir }}\nexus-{{ nexus_version }}
+      win_command: cmd.exe /k mklink /d "{{ nexus_installation_dir }}\nexus-latest" "{{ nexus_installation_dir }}\nexus-{{ nexus_version }}"
 
     - name: Check for success
       win_file:
@@ -287,57 +292,69 @@
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^application-port=.*"
     line: "application-port={{ nexus_default_port }}"
-  when: not ( nexus_enable_ssl | default(false) )
   notify:
     - nexus-service-stop
-  
-- name: Copy SSL certificate file to node
-  win_copy:
-    src: "{{ nexus_ssl_certificate_file }}"
-    dest: '{{ temp_download_dir.path }}\ssl.cer'
+  when:
+    - nexus_default_port is defined
+    - nexus_default_port > 0
+
+- name: "Make sure all vars defined for SSL setup"
+  fail:
+    msg: >-
+      if nexus_ssl_port is defined both: 
+      nexus_ssl_certificate and nexus_ssl_certificate_password
+      must be defined in order to setup ssl
   when: 
-  - ( nexus_copy_ssl_certificate_file | default(false) )
-  - ( nexus_ssl_certificate_file is defined )
+  - nexus_ssl_port is defined
+  - (nexus_ssl_certificate is not defined or nexus_ssl_certificate_password is not defined)
+
+- name: Decode SSL cert to file
+  shell: echo "{{ nexus_ssl_certificate }}" | tr -d [:space:] | base64 --decode > /tmp/ssl.pfx
+  when: 
+  - ( nexus_ssl_certificate is defined )
+  delegate_to: localhost
 
 - name: Import SSL certificate into keystore
-  when: ( nexus_ssl_certificate_file is defined )
+  when: ( nexus_ssl_certificate is defined )
   block:
+  - name: Copy SSL certificate file to node
+    win_copy:
+      src: '/tmp/ssl.pfx'
+      dest: '{{ temp_download_dir.path }}\ssl.cer'
   - name: Create keystore directory
     win_file:
       path: '{{ nexus_data_dir }}\etc\ssl\'
       state: "directory"
+  # keytool did not like backslash in paths so replace with forward
   - name: Build keystore file path variable
-    # keytool did not like how ansible added double backslash to paths so doing replace
     set_fact:
       _keystore_filepath: "{{ nexus_data_dir | regex_replace('\\\\', '/') }}/etc/ssl/keystore.jks"
   - name: Build cert file path variable
-    # keytool did not like how ansible added double backslash to paths so doing replace
     set_fact:
       _cert_filepath: "{{ temp_download_dir.path | regex_replace('\\\\', '/') }}/ssl.cer"
-      
   - name: Run keytool
     # could not get the java_cert or java_keystore modules working on Windows, so running command directly
     win_shell: |
-      keytool -list -keystore {{ _keystore_filepath }} -storepass password -noprompt -alias {{ nexus_public_hostname }}
+      {{ nexus_installation_dir }}\nexus-latest\jre\bin\keytool -list -keystore '{{ _keystore_filepath }}' -storepass password -noprompt
       if(!$?) {
-        keytool -importcert -trustcacerts -file {{ _cert_filepath }} -keystore {{ _keystore_filepath }} -storepass password -noprompt -alias {{ nexus_public_hostname }}
+        {{ nexus_installation_dir }}\nexus-latest\jre\bin\keytool -importkeystore -srckeystore '{{ _cert_filepath }}' -srcstoretype PKCS12 -srcstorepass '{{ nexus_ssl_certificate_password }}' -destkeystore '{{ _keystore_filepath }}' -deststorepass password -deststoretype JKS -noprompt
       }
 
 - name: Enable Nexus config files for SSL
   when: 
-  - ( nexus_enable_ssl | default(false) )
+  - ( nexus_ssl_port | default(false) )
   block:
   - name: Add application-port-ssl
     win_lineinfile:
       dest: "{{ nexus_default_settings_file }}"
       regexp: "^application-port-ssl=.*"
-      line: "application-port-ssl={{ nexus_default_port }}"
+      line: "application-port-ssl={{ nexus_ssl_port }}"
   - name: Update nexus-args
     win_lineinfile:
       #dest: '{{ nexus_data_dir }}\etc\nexus.properties'
       dest: "{{ nexus_default_settings_file }}"
       regexp: "^nexus-args=.*"
-      line: "nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml"
+      line: "nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml,${jetty.etc}/jetty-https.xml"
   - name: Update karafa ssl
     win_lineinfile:
       #dest: '{{ nexus_data_dir }}\etc\nexus.properties'
@@ -379,6 +396,13 @@
 - name: Create win service configuration
   win_command: '{{ nexus_installation_dir }}\nexus-latest\bin\nexus.exe /install nexus'
   
+  # Sonatype docs highly encourage not modifying nexus-default.properties
+  # but this role does that, so added this to make sure that get's copied into data directory
+- name: 'Copy default setting files to data directory'
+  win_copy:
+    remote_src: 'yes'
+    src: "{{ nexus_default_settings_file }}"
+    dest: '{{ nexus_data_dir }}\etc\nexus.properties'
 
 #TODO make similar to below in order to handle upgrades on Windows
 # - block:
@@ -415,15 +439,46 @@
 
 - name: "Firewall rule to allow incoming connections on {{ nexus_default_port }}"
   win_firewall_rule:
-    name: Nexus Sonatype
+    name: Nexus Sonatype HTTP
     localport: "{{ nexus_default_port }}"
-    program: '{{ nexus_installation_dir }}\nexus-latest\bin\nexus.exe'
     action: allow
     direction: in
     protocol: tcp
-    profiles: public
     state: present
     enabled: yes 
+
+- name: "Firewall rule to allow incoming connections on {{ nexus_ssl_port }}"
+  win_firewall_rule:
+    name: Nexus Sonatype HTTPS
+    localport: "{{ nexus_ssl_port }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes 
+  when: nexus_ssl_port is defined
+
+- name: "Firewall rules to allow incoming connections for hosted docker repo"
+  include_tasks: windows_firewall_config.yml
+  loop: "{{ nexus_repos_docker_proxy }}"
+  when: 
+  - nexus_config_docker | bool
+  - nexus_repos_docker_hosted is defined
+
+- name: "Firewall rules to allow incoming connections for proxy docker repo"
+  include_tasks: windows_firewall_config.yml
+  loop: "{{ nexus_repos_docker_proxy }}"
+  when: 
+  - nexus_config_docker | bool
+  - nexus_repos_docker_proxy is defined
+
+- name: "Firewall rules to allow incoming connections for group docker repo"
+  include_tasks: windows_firewall_config.yml
+  loop: "{{ nexus_repos_docker_group }}"
+  when:
+  - nexus_config_docker | bool
+  - nexus_repos_docker_group is defined
+
 
 - meta: flush_handlers
 

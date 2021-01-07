@@ -86,7 +86,7 @@
   listen: wait-for-nexus-port
   when: ansible_os_family != "Windows"
 
-- name: wait-for-nexus-port (Windows)
+- name: wait-for-nexus-port HTTP (Windows)
   win_wait_for:
     port: "{{ nexus_default_port }}"
     timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
@@ -94,7 +94,22 @@
   register: wait_for_result
   until: wait_for_result is success
   listen: wait-for-nexus-port
-  when: ansible_os_family == "Windows"
+  when: 
+  - ansible_os_family == "Windows"
+  - nexus_default_port is defined 
+  - nexus_default_port > 0
+
+- name: wait-for-nexus-port HTTPS (Windows)
+  win_wait_for:
+    port: "{{ nexus_ssl_port }}"
+    timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
+  retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
+  register: wait_for_result
+  until: wait_for_result is success
+  listen: wait-for-nexus-port
+  when: 
+  - ansible_os_family == "Windows"
+  - nexus_ssl_port is defined
 
 - name: httpd-service-reload
   systemd:

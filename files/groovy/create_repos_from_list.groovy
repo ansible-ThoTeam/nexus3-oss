@@ -165,7 +165,8 @@ parsed_args.each { currentRepo ->
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : currentRepo.get('http_port', '')
+                    httpPort      : currentRepo.get('http_port', ''),
+                    httpsPort      : currentRepo.get('https_port', '')
             ]
         }
 

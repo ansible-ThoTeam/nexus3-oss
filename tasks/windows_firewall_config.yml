@@ -1,0 +1,27 @@
+---
+- name: "Open port for {{ item.name }} HTTP"
+  win_firewall_rule:
+    name: "Nexus Sonatype {{ item.name }} HTTP"
+    localport: "{{ item.http_port }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes 
+  when: 
+  - item.http_port is defined
+  - item.http_port > 0
+
+- name: "Open port for {{ item.name }} HTTPS"
+  win_firewall_rule:
+    name: "Nexus Sonatype {{ item.name }} HTTPS"
+    localport: "{{ item.https_port }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes 
+  when: 
+  - item.https_port is defined
+  - item.https_port > 0
+
