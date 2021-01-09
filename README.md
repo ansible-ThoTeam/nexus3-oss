@@ -86,10 +86,10 @@ We would like to thank the original authors for the work done.
 - Fairly Up-to-date version of ansible. We follow ansible versions during maintenance/development and will take advantage
 of new features if needed (and update meta/main.yml for minimum version)
 - Compatible OS. This role is tested through molecule on travis CI for CentOS 8, Ubuntu Bionic (18.04),
- and Debian buster. Other molecule scenarios can be played locally for CentOS 7, Ubuntu Xenial (16.04), and Debian stretch
+ and Debian buster. Other molecule scenarios can be played locally for CentOS 7, Ubuntu Xenial (16.04), and Debian stretch.  Windows is also supported by this role.  If you are installing on Windows, be sure to read about the [Windows caveats](./WINDOWS.md).
 - Rsync has to be installed on the target machine (it is not needed on the host running ansible if different)
 - `jmespath` library needs to be installed on the host running the playbook (needed for the `json_query` filter). See `requirements.txt`
-- Java 8 (mandatory)
+- Java 8 (mandatory on Linux)
     - **Oracle announced Java 8 EOL. Sonatype is now recommending openjdk8**
     - For more information see [nexus3 system requirements](https://help.sonatype.com/display/NXRM3/System+Requirements)
 - Apache HTTPD (optional)
@@ -151,7 +151,7 @@ Directory on target where the nexus package will be downloaded.
 sure the downloaded files will persists between run. On RHEL/Centos specifically, you should change this dir to a location that
 is not cleaned up automatically. If the package file does not persit, it will be downloaded again which might cause an unnecessary restart of nexus.
 
-### Nexus port, context path ans listening IP
+### Nexus port, context path and listening IP
 ```yaml
     nexus_default_port: 8081
     nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }}'
