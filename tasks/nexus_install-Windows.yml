@@ -70,20 +70,7 @@
 
 - name: Register nexus package name 
   set_fact:
-    nexus_package: "nexus-{{ nexus_version }}-win64.zip"
-   
-
-- name: Create temporary download directory 
-  win_tempfile:
-    state: directory
-    suffix: nexus-download
-  register: temp_download_dir
-   
-
-- name: Register nexus download dir 
-  set_fact:
-    nexus_download_dir: "{{ temp_download_dir.path }}"
-   
+    nexus_package: "nexus-{{ nexus_version }}-win64.zip"   
 
 - name: Download nexus_package 
   win_get_url:
@@ -320,7 +307,7 @@
   - name: Copy SSL certificate file to node
     win_copy:
       src: '/tmp/ssl.pfx'
-      dest: '{{ temp_download_dir.path }}\ssl.cer'
+      dest: '{{ nexus_download_dir }}\ssl.cer'
   - name: Create keystore directory
     win_file:
       path: '{{ nexus_data_dir }}\etc\ssl\'
@@ -331,7 +318,7 @@
       _keystore_filepath: "{{ nexus_data_dir | regex_replace('\\\\', '/') }}/etc/ssl/keystore.jks"
   - name: Build cert file path variable
     set_fact:
-      _cert_filepath: "{{ temp_download_dir.path | regex_replace('\\\\', '/') }}/ssl.cer"
+      _cert_filepath: "{{ nexus_download_dir | regex_replace('\\\\', '/') }}/ssl.cer"
   - name: Run keytool
     # could not get the java_cert or java_keystore modules working on Windows, so running command directly
     win_shell: |
@@ -600,11 +587,11 @@
 - name: Copy groovy scripts from controller to node
   win_copy:
     src: "/tmp/nexus-upload-groovy-scripts.zip"
-    dest: '{{ temp_download_dir.path }}\nexus-upload-groovy-scripts.zip'
+    dest: '{{ nexus_download_dir }}\nexus-upload-groovy-scripts.zip'
 
 - name: Unpack groovy scripts
   win_unzip:
-    src: '{{ temp_download_dir.path }}\nexus-upload-groovy-scripts.zip'
+    src: '{{ nexus_download_dir }}\nexus-upload-groovy-scripts.zip'
     dest: '{{ nexus_data_dir }}\groovy-raw-scripts\current\'
 
 - name: Find all groovy scripts on controller
