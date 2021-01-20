@@ -518,14 +518,14 @@
   become: no
   archive:
     path: "{{ role_path }}/files/groovy/*"
-    dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+    dest: "{{ nexus_tmp_dir }}/nexus-upload-groovy-scripts.tar.gz"
     mode: 0644
   run_once: true
   delegate_to: localhost
 
 - name: Upload new scripts
   unarchive:
-    src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+    src: "{{ nexus_tmp_dir }}/nexus-upload-groovy-scripts.tar.gz"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
     mode: 0644
 
