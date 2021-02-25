@@ -56,7 +56,7 @@
       Fix this by setting a correct value for nexus_public_hostname and remove public_hostname if
       possible.
   when: >-
-    public_hosname | default('') | length > 0
+    public_hostname | default('') | length > 0
     and
     public_hostname != nexus_public_hostname
     and
