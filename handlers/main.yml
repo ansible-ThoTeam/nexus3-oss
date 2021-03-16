@@ -41,6 +41,7 @@
 
 - name: wait-for-nexus-port
   wait_for:
+    host: "{{ (nexus_application_host == '0.0.0.0') | ternary('127.0.0.1', nexus_application_host) }}"
     port: "{{ nexus_default_port }}"
     timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
