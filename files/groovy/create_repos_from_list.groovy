@@ -28,11 +28,14 @@ private Configuration newConfiguration(Map map) {
 }
 
 private boolean configurationChanged(Configuration oldConfig, Configuration newConfig) {
-    if (oldConfig.attributes.httpclient)
-        if (oldConfig.attributes.httpclient.authentication == [:])
+    if (oldConfig.attributes.httpclient) {
+        if (oldConfig.attributes.httpclient.authentication == [:]) {
             oldConfig.attributes.httpclient.authentication = null
-    return oldConfig.properties == newConfig.properties
+        }
+    }
+    return oldConfig.properties != newConfig.properties
 }
+
 
 parsed_args.each { currentRepo ->
 
@@ -104,20 +107,21 @@ parsed_args.each { currentRepo ->
 
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
-            authentication = currentRepo.remote_username == null ? null : [
-                    type    : 'username',
-                    username: currentRepo.remote_username,
-                    password: currentRepo.remote_password
-            ]
-
             configuration.attributes['httpclient'] = [
-                    authentication: authentication,
                     blocked       : false,
                     autoBlock     : true,
                     connection    : [
                             useTrustStore: false
                     ]
             ]
+
+            if (currentRepo.remote_username) {
+                configuration.attributes['httpclient']['authentication'] = [
+                    type    : 'username',
+                    username: currentRepo.remote_username,
+                    password: currentRepo.remote_password
+                ]
+            }
 
             configuration.attributes['proxy'] = [
                     remoteUrl     : currentRepo.remote_url,
@@ -175,7 +179,7 @@ parsed_args.each { currentRepo ->
             scriptResults['changed'] = true
             log.info('Configuration for repo {} created', currentRepo.name)
         } else {
-            if (!configurationChanged(existingRepository.configuration, configuration)) {
+            if (configurationChanged(existingRepository.configuration, configuration)) {
                 repositoryManager.update(configuration)
                 currentResult.put('status', 'updated')
                 log.info('Configuration for repo {} saved', currentRepo.name)
