@@ -8,7 +8,7 @@
 # - https://github.com/ansible/ansible/pull/46255
 # - https://github.com/ansible/ansible/issues/46215
 # - https://github.com/pallets/jinja/pull/906
-- name: reset the _nexus_repos_global_list variable
+- name: reset the _nexus_repos_global_list variable value
   set_fact:
     _nexus_repos_global_list: []
     
