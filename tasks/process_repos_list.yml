@@ -11,7 +11,7 @@
 - name: reset the _nexus_repos_global_list variable value
   set_fact:
     _nexus_repos_global_list: []
-    
+
 - name: Process definitions for maven
   when: nexus_config_maven | bool
   block:
