@@ -25,7 +25,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [Role Variables](#role-variables)
          * [General variables](#general-variables)
          * [Download dir for nexus package](#download-dir-for-nexus-package)
-         * [Nexus port, context path ans listening IP](#nexus-port-context-path-ans-listening-ip)
+         * [Nexus port, context path and listening IP](#nexus-port-context-path-and-listening-ip)
          * [Nexus OS user and group](#nexus-os-user-and-group)
          * [Nexus instance directories](#nexus-instance-directories)
          * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
@@ -151,7 +151,7 @@ Directory on target where the nexus package will be downloaded.
 sure the downloaded files will persists between run. On RHEL/Centos specifically, you should change this dir to a location that
 is not cleaned up automatically. If the package file does not persit, it will be downloaded again which might cause an unnecessary restart of nexus.
 
-### Nexus port, context path ans listening IP
+### Nexus port, context path and listening IP
 ```yaml
     nexus_default_port: 8081
     nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }}'
