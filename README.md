@@ -466,7 +466,7 @@ Those items are combined with the following default values :
 ### Roles
 ```yaml
     nexus_roles:
-      - id: Developpers # can map to a LDAP group id, also used as a key to update a role
+      - id: Developers # can map to a LDAP group id, also used as a key to update a role
         name: developers
         description: All developers
         privileges:
