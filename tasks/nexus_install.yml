@@ -399,6 +399,12 @@
     - wait-for-nexus-port
   when: "ansible_service_mgr != 'systemd'"
 
+- name: Install plugins from remote source
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
+  with_items: "{{ nexus_plugin_urls }}"
+
 - meta: flush_handlers
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
@@ -422,12 +428,6 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
-
-- name: Install plugins from remote source
-  get_url:
-    url: "{{ item }}"
-    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
-  with_items: "{{ nexus_plugin_urls }}"
 
 - name: Access scripts API endpoint with defined admin password
   uri:
