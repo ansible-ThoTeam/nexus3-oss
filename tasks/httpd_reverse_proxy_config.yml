@@ -37,4 +37,5 @@
     state: yes
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers

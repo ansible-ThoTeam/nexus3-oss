@@ -6,7 +6,8 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Flush Handlers
+  meta: flush_handlers
 
 - name: get target path of current installed nexus version
   command: 'readlink {{ nexus_installation_dir }}/nexus-latest'

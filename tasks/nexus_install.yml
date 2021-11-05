@@ -125,7 +125,8 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Flush Handlers
+  meta: flush_handlers
 
 - name: Delete unpacked data directory
   file:
@@ -376,7 +377,8 @@
     # hard to run as a handler for time being
     - skip_ansible_lint
 
-- meta: flush_handlers
+- name: Flush Handlers
+  meta: flush_handlers
 
 - name: Enable nexus systemd service and make sure it is started
   systemd:
@@ -399,7 +401,8 @@
     - wait-for-nexus-port
   when: "ansible_service_mgr != 'systemd'"
 
-- meta: flush_handlers
+- name: Flush Handlers
+  meta: flush_handlers
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:
