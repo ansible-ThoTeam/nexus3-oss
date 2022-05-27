@@ -592,6 +592,7 @@ _nexus_repos_nuget_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  nuget_proxy_version: V3 # Nexus gui default. For proxies only
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
