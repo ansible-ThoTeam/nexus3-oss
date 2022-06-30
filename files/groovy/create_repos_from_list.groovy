@@ -146,6 +146,13 @@ parsed_args.each { currentRepo ->
             }
         }
 
+        // Configs for nuget proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'nuget') {
+            configuration.attributes['nugetProxy'] = [
+                    nugetVersion: currentRepo.nuget_version.toUpperCase()
+            ]
+        }
+
         // Configs for docker proxy repos
         if (currentRepo.type == 'proxy' && currentRepo.format == 'docker') {
             configuration.attributes['dockerProxy'] = [
