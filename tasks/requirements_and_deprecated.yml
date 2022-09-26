@@ -2,7 +2,7 @@
 # This file contains all requirements and deprecation checks
 # that can be run before the role starts.
 
-# @requirement: jmespath module must be installe on ansible host
+# @requirement: jmespath module must be installed on ansible host
 # @version: 2.4.0
 - name: Check presence of jmespath python module on ansible host
   block:
