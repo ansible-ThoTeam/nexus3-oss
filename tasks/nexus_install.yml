@@ -214,7 +214,15 @@
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:LogFile=.*"
-    line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
+    line: "-XX:LogFile={{ nexus_data_dir }}log/jvm.log"
+  notify:
+    - nexus-service-stop
+
+- name: Setup Karaf log directory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Dkaraf.log=.*"
+    line: "-Dkaraf.log={{ nexus_data_dir }}log/jvm.log"
   notify:
     - nexus-service-stop
 
