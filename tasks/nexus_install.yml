@@ -247,6 +247,16 @@
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
   notify: nexus-service-stop
 
+- name: Setup additional and custom vm options if present (or remove them if none)
+  vars:
+    options: "{{ nexus_custom_jvm_settings | d([]) }}"
+  blockinfile:
+    path: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    marker: "# {mark} - Custom nexus settings managed by ansible"
+    block: "{{ options | join('\n') }}"
+    state: "{{ 'present' if options | length > 0 else 'absent' }}"
+  notify: nexus-service-stop
+
 - name: Stop the admin wizard from running
   lineinfile:
     path: "{{ nexus_default_settings_file }}"
