@@ -64,12 +64,10 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [Testing](#testing)
          * [Groovy syntax](#groovy-syntax)
          * [Molecule default-xxxx scenarii](#molecule-default-xxxx-scenarii)
-         * [Molecule selinux scenario](#molecule-selinux-scenario)
    * [License](#license)
    * [Author Information](#author-information)
 
-<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: olcla, at: lun. 26 sept. 2022 17:46:55 CEST -->
+<!-- Added by: olcla, at: jeu 06 oct 2022 23:38:13 CEST -->
 
 <!--te-->
 
@@ -1104,41 +1102,17 @@ Please have a look at molecule documentation (a good start is `molecule --help`)
 
 The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
 * default-centos7 => https://localhost:8090
-* default-centos8 => https://localhost:8095
-* default-debian_buster => https://localhost:8091
-* default-debian_stretch => https://localhost:8092
-* default-ubuntu_16.04 => https://localhost:8093
-* default-ubuntu_18.04 => https://localhost:8094
+* default-centos8 => https://localhost:8091
+* efault-debian_bullseye => https://localhost:8092
+* default-debian_buster => https://localhost:8093
+* default-ubuntu_20.04 => https://localhost:8094
+* default-ubuntu_22.04 => https://localhost:8095
 
-To speed up tests, molecule uses docker hub images with automated build.
+To speed up tests, molecule uses prebuilt docker hub images.
 * Git repo: https://github.com/docker-ThoTeam/molecule_apache_openjdk8
 * Docker hub registry: https://hub.docker.com/repository/docker/thoteam/molecule_apache_openjdk8
 
-
-#### Molecule selinux scenario
-
-*** Warning: This scenario as been removed for the moment for molecule 3.0 compatibility reason. We it until
-we can decide if it can be re-introduced or not ***
-
-We included a second molecule `selinux` scenario. This one is not run on travis but can be used locally to:
-* test selinux integration (on centos).
-* run test and access the running vms under VirtualBox on you local machine.
-
-If you wish to use this scenario you will need
-* VirtualBox
-* Vagrant
-* molecule
-
-A typical workflow runs like this:
-* `molecule create -s selinux`. Once this is complete, you will see two vagrant vms (centos7 and debian-stretch) in your VirtualBox console.
-These Vagrant box are taken from http://vagrant.thoteam.com
-* `molecule converge -s selinux` will run the [scenario test playbook](molecule/selinux/playbook.yml) against the two vms.
-You can pass additionnal variables to ansible on the command line to override playbook or default vars
-(e.g. `molecule converge -s selinux -- -e nexus_backup_rotate=true`). You can converge as many times as you want.
-* You can now access the gui with https://localhost:9101 (centos7) or https://localhost:9102 (debian-stretch).
-You will need to add a security exception for the self signed ssl certificate. If you did not change it with a
-command line var above, the default role admin password is "changeme"
-* When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
+Note that these images are built and pushed on a best effort basis whenever required for changes on this repo
 
 ## License
 

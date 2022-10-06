@@ -23,7 +23,7 @@ platforms:
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8094:443
+      - 8095:443
     groups:
       - nexus
     networks: &nexus_networks
