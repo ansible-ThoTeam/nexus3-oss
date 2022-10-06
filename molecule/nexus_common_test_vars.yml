@@ -6,6 +6,14 @@ httpd_ssl_cert_file_location: "{{ default_cert }}"
 httpd_ssl_cert_key_location: "{{ default_key }}"
 nexus_public_hostname: localhost
 
+nexus_custom_jvm_settings:
+  - XX:+UseG1GC
+  - XX:+PrintGCDetails
+  - Xloggc:{{ nexus_installation_dir }}log/gc.log
+  - XX:+UseGCLogFileRotation
+  - XX:NumberOfGCLogFiles=10
+  - XX:GCLogFileSize=50m
+
 nexus_download_dir: '/nexus-downloads'
 
 nexus_backup_configure: true
