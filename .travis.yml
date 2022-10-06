@@ -24,7 +24,6 @@ env:
   - SCENARIO=default
   - SCENARIO=default-centos7
   - SCENARIO=default-debian_bullseye
-  #- SCENARIO=default-ubuntu_22.04
 
 script: |
   if [ "${SCENARIO}" == "default" ]; then
