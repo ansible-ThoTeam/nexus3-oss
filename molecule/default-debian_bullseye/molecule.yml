@@ -15,15 +15,15 @@ lint: |
 
 platforms:
 
-  - name: nexus3-oss-centos-7
-    hostname: nexus3-oss-centos7
-    image: thoteam/molecule_apache_openjdk8:centos7
+  - name: nexus3-oss-debian-bullseye
+    hostname: nexus3-oss-debian-bullseye
+    image: thoteam/molecule_apache_openjdk8:debian_bullseye
+    command: lib/systemd/systemd
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8090:443
-    override_command: false
+      - 8091:443
     groups:
       - nexus
     networks: &nexus_networks

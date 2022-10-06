@@ -66,3 +66,5 @@ scenario:
 
 verifier:
   name: testinfra
+
+role_name_check: 2
