@@ -7,7 +7,7 @@ sudo: required
 
 language: python
 
-python: 3.8
+python: 3.9
 
 cache:
   pip: true
@@ -22,9 +22,9 @@ install:
 
 env:
   - SCENARIO=default
-  - SCENARIO=default-centos8
-  - SCENARIO=default-debian_buster
-  - SCENARIO=default-ubuntu_18.04
+  - SCENARIO=default-centos7
+  - SCENARIO=default-debian_bullseye
+  #- SCENARIO=default-ubuntu_22.04
 
 script: |
   if [ "${SCENARIO}" == "default" ]; then
