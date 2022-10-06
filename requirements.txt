@@ -20,6 +20,6 @@ ansible-lint
 flake8
 flake8-docstrings
 yamllint
-testinfra
+pytest-testinfra
 docker
 jmespath
