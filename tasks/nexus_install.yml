@@ -261,7 +261,7 @@
   blockinfile:
     path: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     marker: "# {mark} - Custom nexus settings managed by ansible"
-    block: "{{ options | join('\n') }}"
+    block: "-{{ options | join('\n-') }}"
     state: "{{ 'present' if options | length > 0 else 'absent' }}"
   notify: nexus-service-stop
 
