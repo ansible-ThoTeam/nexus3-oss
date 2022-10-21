@@ -208,6 +208,9 @@ nexus_repos_apt_proxy:
     maximum_component_age: -1
     maximum_metadata_age: -1
     negative_cache_ttl: 60
+    # Allow redeploy to allow repeated failing tests when debugging
+    # !! Don't do this for a release repo on produciton
+    write_policy: allow
 
 nexus_repos_helm_hosted:
   - name: helm-hosted
