@@ -68,8 +68,8 @@ def test_apt_package_upload(host: testinfra.host.Host):
     upload = host.run(
         'curl -X POST "https://localhost/service/rest/v1/components?repository=private_ubuntu_18.04" -k '
         '-u admin:changeme '
-        '-H  "accept: application/json" '
-        '-H  "Content-Type: multipart/form-data" '
+        '-H "accept: application/json" '
+        '-H "Content-Type: multipart/form-data" '
         '-F "apt.asset=@/tmp/nexushello_1.0.1_all.deb;type=application/vnd.debian.binary-package"'
     )
     assert upload.exit_status == 0
