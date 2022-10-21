@@ -92,7 +92,7 @@ EOF"""
     )
 
     # Import gpg key of our repo
-    host.run('echo "{}" > /tmp/pub.key'.format(apt_pub_key))
+    host.run(f'echo "{apt_pub_key}" > /tmp/pub.key')
     host.run("apt-key add /tmp/pub.key")
 
     # Install package
