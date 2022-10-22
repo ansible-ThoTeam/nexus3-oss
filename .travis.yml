@@ -14,12 +14,16 @@ cache:
   directories:
     - molecule/.nexus-downloads/
 
+env:
+  global:
+    TRAVIS_BUILD_DIR: /home/travis/build/ansible-thoteam.nexus3-oss
+
 services:
   - docker
 
-before_install:
-  - mv $TRAVIS_BUILD_DIR ansible-thoteam.nexus3-oss
-  - cd ansible-thoteam.nexus3-oss
+# before_install:
+  #- mv $TRAVIS_BUILD_DIR ansible-thoteam.nexus3-oss
+  #- cd ansible-thoteam.nexus3-oss
 
 install:
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
