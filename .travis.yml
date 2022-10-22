@@ -23,7 +23,7 @@ services:
 
 before_install:
   - cd ..
-  - mv nexu3-oss $TRAVIS_BUILD_DIR
+  - mv nexus3-oss $TRAVIS_BUILD_DIR
   - cd ..
   - rmdir ansible-ThoTeam
   - cd $TRAVIS_BUILD_DIR
