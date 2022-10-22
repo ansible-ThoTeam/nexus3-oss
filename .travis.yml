@@ -21,9 +21,12 @@ env:
 services:
   - docker
 
-# before_install:
-  #- mv $TRAVIS_BUILD_DIR ansible-thoteam.nexus3-oss
-  #- cd ansible-thoteam.nexus3-oss
+before_install:
+  - cd ..
+  - mv nexu3-oss $TRAVIS_BUILD_DIR
+  - cd ..
+  - rmdir ansible-ThoTeam
+  - cd $TRAVIS_BUILD_DIR
 
 install:
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
