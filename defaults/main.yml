@@ -28,6 +28,9 @@ nexus_onboarding_wizard: false
 nexus_min_heap_size: "2703M"
 nexus_max_heap_size: "{{ nexus_min_heap_size }}"
 nexus_max_direct_memory: "{{ nexus_min_heap_size }}"
+# The below list should not contain any setting related to the above memory setting
+# (aka -Xms -Xmx and -XX:MaxDirectMemorySize=)
+nexus_custom_jvm_settings: []
 
 # Nexus Backup
 nexus_backup_dir: '/var/nexus-backup'

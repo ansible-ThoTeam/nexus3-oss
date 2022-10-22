@@ -7,32 +7,49 @@ sudo: required
 
 language: python
 
-python: 3.8
+python: 3.9
 
 cache:
   pip: true
   directories:
     - molecule/.nexus-downloads/
 
+env:
+  global:
+    TRAVIS_BUILD_DIR: /home/travis/build/ansible-thoteam.nexus3-oss
+
 services:
   - docker
+
+before_install:
+  - cd ..
+  - mv nexus3-oss $TRAVIS_BUILD_DIR
+  - cd ..
+  - rmdir ansible-ThoTeam
+  - cd $TRAVIS_BUILD_DIR
 
 install:
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
-env:
-  - SCENARIO=default
-  - SCENARIO=default-centos8
-  - SCENARIO=default-debian_buster
-  - SCENARIO=default-ubuntu_18.04
+stages:
+  - lint
+  - test
 
-script: |
-  if [ "${SCENARIO}" == "default" ]; then
-    ./tests/test_groovySyntax.sh
-    molecule test
-  else
-    molecule test -s "${SCENARIO}"
-  fi
+jobs:
+  include:
+    - stage: lint
+      name: Checking overall syntax (groovy, yaml, python)
+      script: |-
+        ./tests/test_groovySyntax.sh
+        molecule test
+    - stage: test
+      name: Test on centos7
+      script: |-
+        molecule test -s default-centos7
+    - stage: test
+      name: Test on Debian Bullseye
+      script: |-
+        molecule test -s default-debian_bullseye
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

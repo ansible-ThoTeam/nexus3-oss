@@ -18,57 +18,56 @@ All configuration can be updated by re-running the role, except for the [blobsto
 _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
 <!-- Run gh-md-toc --insert README.md to update -->
 <!--ts-->
-   * [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
-      * [Table of Contents](#table-of-contents)
-      * [History / Credits](#history--credits)
-      * [Requirements](#requirements)
-      * [Role Variables](#role-variables)
-         * [General variables](#general-variables)
-         * [Download dir for nexus package](#download-dir-for-nexus-package)
-         * [Nexus port, context path and listening IP](#nexus-port-context-path-and-listening-ip)
-         * [Nexus OS user and group](#nexus-os-user-and-group)
-         * [Nexus instance directories](#nexus-instance-directories)
-         * [Nexus JVM Ram setting](#nexus-jvm-ram-setting)
-         * [Plugin installation](#plugin-installation)
-         * [Onboarding Wizard](#onboarding-wizard)
-         * [Admin password](#admin-password)
-         * [Default anonymous access](#default-anonymous-access)
-         * [Public hostname](#public-hostname)
-         * [API access for this role](#api-access-for-this-role)
-         * [Branding capabalities](#branding-capabalities)
-         * [Audit capability](#audit-capability)
-         * [Reverse proxy setup](#reverse-proxy-setup)
-         * [LDAP configuration](#ldap-configuration)
-         * [Privileges](#privileges)
-         * [Roles](#roles)
-         * [Users](#users)
-         * [Content selectors](#content-selectors)
-         * [Cleanup policies](#cleanup-policies)
-         * [Blobstores and repositories](#blobstores-and-repositories)
-         * [Scheduled tasks](#scheduled-tasks)
-         * [Backups](#backups)
-            * [Restore procedure](#restore-procedure)
-            * [Possible limitations](#possible-limitations)
-         * [Special maintenance/debug variables](#special-maintenancedebug-variables)
-            * [Purge nexus](#purge-nexus)
-            * [Force groovy scripts registration](#force-groovy-scripts-registration)
-            * [Change admin password after first install](#change-admin-password-after-first-install)
-            * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
-               * [Fix upgrade failing on timeout waiting for nexus port](#fix-upgrade-failing-on-timeout-waiting-for-nexus-port)
-            * [Skip provisionning tasks](#skip-provisionning-tasks)
-            * [Force recursive ownership check of blobstores directories](#force-recursive-ownership-check-of-blobstores-directories)
-      * [Dependencies](#dependencies)
-      * [Example Playbook](#example-playbook)
-      * [Development, Contribution and Testing](#development-contribution-and-testing)
-         * [Contributions](#contributions)
-         * [Testing](#testing)
-            * [Groovy syntax](#groovy-syntax)
-            * [Molecule default-xxxx scenarii](#molecule-default-xxxx-scenarii)
-            * [Molecule selinux scenario](#molecule-selinux-scenario)
-      * [License](#license)
-      * [Author Information](#author-information)
+* [Ansible Role: Nexus 3 OSS](#ansible-role-nexus-3-oss)
+   * [Table of Contents](#table-of-contents)
+   * [History / Credits](#history--credits)
+   * [Requirements](#requirements)
+   * [Role Variables](#role-variables)
+      * [General variables](#general-variables)
+      * [Download dir for nexus package](#download-dir-for-nexus-package)
+      * [Nexus port, context path and listening IP](#nexus-port-context-path-and-listening-ip)
+      * [Nexus OS user and group](#nexus-os-user-and-group)
+      * [Nexus instance directories](#nexus-instance-directories)
+      * [Nexus JVM setting](#nexus-jvm-setting)
+      * [Plugin installation](#plugin-installation)
+      * [Onboarding Wizard](#onboarding-wizard)
+      * [Admin password](#admin-password)
+      * [Default anonymous access](#default-anonymous-access)
+      * [Public hostname](#public-hostname)
+      * [API access for this role](#api-access-for-this-role)
+      * [Branding capabalities](#branding-capabalities)
+      * [Audit capability](#audit-capability)
+      * [Reverse proxy setup](#reverse-proxy-setup)
+      * [LDAP configuration](#ldap-configuration)
+      * [Privileges](#privileges)
+      * [Roles](#roles)
+      * [Users](#users)
+      * [Content selectors](#content-selectors)
+      * [Cleanup policies](#cleanup-policies)
+      * [Blobstores and repositories](#blobstores-and-repositories)
+      * [Scheduled tasks](#scheduled-tasks)
+      * [Backups](#backups)
+         * [Restore procedure](#restore-procedure)
+         * [Possible limitations](#possible-limitations)
+      * [Special maintenance/debug variables](#special-maintenancedebug-variables)
+         * [Purge nexus](#purge-nexus)
+         * [Force groovy scripts registration](#force-groovy-scripts-registration)
+         * [Change admin password after first install](#change-admin-password-after-first-install)
+         * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
+            * [Fix upgrade failing on timeout waiting for nexus port](#fix-upgrade-failing-on-timeout-waiting-for-nexus-port)
+         * [Skip provisionning tasks](#skip-provisionning-tasks)
+         * [Force recursive ownership check of blobstores directories](#force-recursive-ownership-check-of-blobstores-directories)
+   * [Dependencies](#dependencies)
+   * [Example Playbook](#example-playbook)
+   * [Development, Contribution and Testing](#development-contribution-and-testing)
+      * [Contributions](#contributions)
+      * [Testing](#testing)
+         * [Groovy syntax](#groovy-syntax)
+         * [Molecule default-xxxx scenarii](#molecule-default-xxxx-scenarii)
+   * [License](#license)
+   * [Author Information](#author-information)
 
-<!-- Added by: olcla, at: Thu Feb 13 18:48:38 CET 2020 -->
+<!-- Added by: olcla, at: jeu 06 oct 2022 23:38:13 CEST -->
 
 <!--te-->
 
@@ -193,7 +192,7 @@ of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
 * `nexus_tmp_dir` contains all temporary files. Default path for redhat has been moved out of `/tmp` to overcome
 potential problems with automatic cleaning procedures. See #168.
 
-### Nexus JVM Ram setting
+### Nexus JVM setting
 ```yaml
     nexus_min_heap_size: "1200M"
     nexus_max_heap_size: "{{ nexus_min_heap_size }}"
@@ -203,6 +202,24 @@ These are the defaults for Nexus. **Please do not modify those values** _unless 
 
 As a second warning, here is an extract from the above document:
 > Increasing the JVM heap memory larger than recommended values in an attempt to improve performance is not recommended. This actually can have the opposite effect, causing the operating system to thrash needlessly.
+
+```yaml
+    nexus_custom_jvm_settings: []
+```
+Additionnal settings to pass to the jvm. Those are empty by default and should not contain any option related to memory above
+(i.e. anything which starts with Xms, Xmx, or XX:MaxDirectMemorySize=). Each option should be set as an item of the list
+without the leading dash (`-`).
+
+Here is an example to change the Garbabe collector to G1 and set GC logs with rotation.
+```yaml
+    nexus_custom_jvm_settings:
+      - XX:+UseG1GC
+      - XX:+PrintGCDetails
+      - Xloggc:{{ nexus_installation_dir }}log/gc.log
+      - XX:+UseGCLogFileRotation
+      - XX:NumberOfGCLogFiles=10
+      - XX:GCLogFileSize=50m
+```
 
 ### Plugin installation
 ```yaml
@@ -1085,41 +1102,17 @@ Please have a look at molecule documentation (a good start is `molecule --help`)
 
 The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
 * default-centos7 => https://localhost:8090
-* default-centos8 => https://localhost:8095
-* default-debian_buster => https://localhost:8091
-* default-debian_stretch => https://localhost:8092
-* default-ubuntu_16.04 => https://localhost:8093
-* default-ubuntu_18.04 => https://localhost:8094
+* default-centos8 => https://localhost:8091
+* efault-debian_bullseye => https://localhost:8092
+* default-debian_buster => https://localhost:8093
+* default-ubuntu_20.04 => https://localhost:8094
+* default-ubuntu_22.04 => https://localhost:8095
 
-To speed up tests, molecule uses docker hub images with automated build.
+To speed up tests, molecule uses prebuilt docker hub images.
 * Git repo: https://github.com/docker-ThoTeam/molecule_apache_openjdk8
 * Docker hub registry: https://hub.docker.com/repository/docker/thoteam/molecule_apache_openjdk8
 
-
-#### Molecule selinux scenario
-
-*** Warning: This scenario as been removed for the moment for molecule 3.0 compatibility reason. We it until
-we can decide if it can be re-introduced or not ***
-
-We included a second molecule `selinux` scenario. This one is not run on travis but can be used locally to:
-* test selinux integration (on centos).
-* run test and access the running vms under VirtualBox on you local machine.
-
-If you wish to use this scenario you will need
-* VirtualBox
-* Vagrant
-* molecule
-
-A typical workflow runs like this:
-* `molecule create -s selinux`. Once this is complete, you will see two vagrant vms (centos7 and debian-stretch) in your VirtualBox console.
-These Vagrant box are taken from http://vagrant.thoteam.com
-* `molecule converge -s selinux` will run the [scenario test playbook](molecule/selinux/playbook.yml) against the two vms.
-You can pass additionnal variables to ansible on the command line to override playbook or default vars
-(e.g. `molecule converge -s selinux -- -e nexus_backup_rotate=true`). You can converge as many times as you want.
-* You can now access the gui with https://localhost:9101 (centos7) or https://localhost:9102 (debian-stretch).
-You will need to add a security exception for the self signed ssl certificate. If you did not change it with a
-command line var above, the default role admin password is "changeme"
-* When you're happy with your testing, you can recycle the used space with `molecule destroy -s selinux`
+Note that these images are built and pushed on a best effort basis whenever required for changes on this repo
 
 ## License
 

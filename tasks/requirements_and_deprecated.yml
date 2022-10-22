@@ -2,7 +2,7 @@
 # This file contains all requirements and deprecation checks
 # that can be run before the role starts.
 
-# @requirement: jmespath module must be installe on ansible host
+# @requirement: jmespath module must be installed on ansible host
 # @version: 2.4.0
 - name: Check presence of jmespath python module on ansible host
   block:
@@ -92,3 +92,24 @@
     - name: Fail as we cannot run correctly with internal var set
       fail:
         msg: "Unset _nexus_repos_global_list. See debug message above"
+
+# @requirement: new variable nexus_custom_jvm_setting must be a list
+# and must not contain other memory settings
+# @version: 2.4.16
+- name: "Make sure nexus_custom_jvm_settings follow our contraints"
+  vars:
+    options: "{{ nexus_custom_jvm_settings | d([]) }}"
+    option_blacklist:
+      - Xms
+      - Xmx
+      - XX:MaxDirectMemorySize=
+    option_blacklist_regex: "-({{ option_blacklist | map('regex_escape') | join('|') }})"
+  assert:
+    that:
+      - options | type_debug == 'list'
+      - options | select('match', option_blacklist_regex) | length == 0
+    quiet: true
+    fail_msg:
+      - nexus_custom_jvm_settings must be list
+      - and cannot contain any settings related to memory
+      - (-{{ option_blacklist | join(', -') }})
