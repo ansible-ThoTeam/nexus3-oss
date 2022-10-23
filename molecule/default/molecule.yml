@@ -10,7 +10,7 @@ driver:
 lint: |
   set -e
   yamllint .
-  ansible-lint
+  # ansible-lint
   flake8
 
 platforms:
@@ -59,3 +59,5 @@ scenario:
 
 verifier:
   name: testinfra
+
+role_name_check: 2

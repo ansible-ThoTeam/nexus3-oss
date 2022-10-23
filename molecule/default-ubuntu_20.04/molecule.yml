@@ -15,15 +15,15 @@ lint: |
 
 platforms:
 
-  - name: nexus3-oss-debian-stretch
-    hostname: nexus3-oss-debian-stretch
-    image: thoteam/molecule_apache_openjdk8:debian_stretch
+  - name: nexus3-oss-ubuntu-20.04
+    hostname: nexus3-oss-ubuntu-20.04
+    image: thoteam/molecule_apache_openjdk8:ubuntu_20.04
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8092:443
+      - 8094:443
     groups:
       - nexus
     networks: &nexus_networks
@@ -50,7 +50,6 @@ scenario:
   check_sequence:
     - destroy
     - create
-    - converge
     - check
     - destroy
   converge_sequence:
@@ -67,3 +66,5 @@ scenario:
 
 verifier:
   name: testinfra
+
+role_name_check: 2

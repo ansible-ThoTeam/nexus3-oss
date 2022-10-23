@@ -13,7 +13,7 @@
     </description>
 
     <properties>
-        <nx-version>3.22.0-02</nx-version>
+        <nx-version>3.41.1-01</nx-version>
     </properties>
 
     <build>
