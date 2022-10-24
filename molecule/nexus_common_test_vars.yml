@@ -247,10 +247,24 @@ nexus_repos_go_proxy:
   - name: go-proxy
     remote_url: 'https://golang.org/pkg/'
 
+nexus_repos_nuget_hosted:
+  - name: nuget-internal
+    blob_store: "{{ nexus_blob_names.nuget.blob }}"
+
+nexus_repos_nuget_group:
+  - name: nuget-all
+    blob_store: "{{ nexus_blob_names.nuget.blob }}"
+    member_repos:
+      - nuget-internal
+      - nuget-proxy
+
 nexus_repos_nuget_proxy:
-  - name: test-nuget-proxy
+  - name: nuget-proxy-with-version
+    blob_store: "{{ nexus_blob_names.nuget.blob }}"
+    remote_url: http://www.nuget.org/api/v2
+    nuget_version: v2
+  - name: nuget-proxy-default
     remote_url: https://api.nuget.org/v3/index.json
-    nuget_version: v3
 
 nexus_content_selectors:
   # Docker by namespace. For mode details see:
