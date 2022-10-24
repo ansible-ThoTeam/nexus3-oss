@@ -141,7 +141,7 @@
       include_tasks: call_script.yml
       vars:
         script_name: create_repos_from_list
-        args: "{{ _nexus_repos_global_list }}"
+        args: "{{ _nexus_repos_global_list | d([]) }}"
 
     - name: Create/check privileges
       include_tasks: call_script.yml
