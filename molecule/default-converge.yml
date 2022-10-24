@@ -2,7 +2,7 @@
 - name: Converge
   hosts: nexus
   roles:
-    - role: nexus3-oss
+    - role: ansible-thoteam.nexus3-oss
   vars_files:
     - ssl-{{ ansible_os_family }}.yml
     - nexus_common_test_vars.yml

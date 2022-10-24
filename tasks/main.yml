@@ -109,6 +109,8 @@
             recurse: "{{ nexus_blobstores_recurse_owner | default(false) | bool }}"
           when: item.path is defined
           loop: "{{ nexus_blobstores }}"
+          loop_control:
+            label: "blobstore: {{ item.name }} - type: {{ item.type | d('file') }} - path: {{ item.path | d('None') }}"
 
         - name: Create/Check blobstores
           include_tasks: call_script.yml

@@ -22,7 +22,7 @@ platforms:
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8095:443
+      - 8091:443
     override_command: false
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -68,3 +68,5 @@ scenario:
 
 verifier:
   name: testinfra
+
+role_name_check: 2
