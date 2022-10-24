@@ -15,15 +15,15 @@ lint: |
 
 platforms:
 
-  - name: nexus3-oss-ubuntu-18.04
-    hostname: nexus3-oss-ubuntu-18.04
-    image: thoteam/molecule_apache_openjdk8:ubuntu_18.04
+  - name: nexus3-oss-debian-bullseye
+    hostname: nexus3-oss-debian-bullseye
+    image: thoteam/molecule_apache_openjdk8:debian_bullseye
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8094:443
+      - 8092:443
     groups:
       - nexus
     networks: &nexus_networks
@@ -50,6 +50,7 @@ scenario:
   check_sequence:
     - destroy
     - create
+    - converge
     - check
     - destroy
   converge_sequence:
@@ -66,3 +67,5 @@ scenario:
 
 verifier:
   name: testinfra
+
+role_name_check: 2
