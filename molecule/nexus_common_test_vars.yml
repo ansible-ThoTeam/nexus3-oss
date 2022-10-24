@@ -247,6 +247,11 @@ nexus_repos_go_proxy:
   - name: go-proxy
     remote_url: 'https://golang.org/pkg/'
 
+nexus_repos_nuget_proxy:
+  - name: test-nuget-proxy
+    remote_url: https://api.nuget.org/v3/index.json
+    nuget_version: v3
+
 nexus_content_selectors:
   # Docker by namespace. For mode details see:
   # https://help.sonatype.com/repomanager3/formats/docker-registry/content-selectors-and-docker
