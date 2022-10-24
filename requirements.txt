@@ -13,13 +13,15 @@
 ## and produce unwanted errors.
 ##################################
 
-molecule
+# Molecule 4.0.2 has a bug with its schema validation
+molecule==4.0.1
 molecule-docker
 ansible
-ansible-lint
+# New version of ansible-lint fails on old fashion roles with invalid namespaces
+# ansible-lint
 flake8
 flake8-docstrings
 yamllint
-testinfra
+pytest-testinfra
 docker
 jmespath
