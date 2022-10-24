@@ -454,6 +454,8 @@ Example LDAP config for simple authentication (using a DSA account) + groups map
         ldap_user_memberof_attribute: 'memberOf'
 ```
 
+@nliebelt proposed a configuration with explanations in an issue to [configure nexus for Active Directory](https://github.com/ansible-ThoTeam/nexus3-oss/issues/341)
+
 ### Privileges
 ```yaml
     nexus_privileges:
