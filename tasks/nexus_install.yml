@@ -75,6 +75,7 @@
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
     force: no
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
+  check_mode: no
   notify:
     - nexus-service-stop
 
@@ -538,6 +539,7 @@
     path: "{{ role_path }}/files/groovy/*"
     dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
     mode: 0644
+  check_mode: no
   run_once: true
   delegate_to: localhost
 
