@@ -75,6 +75,7 @@
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
     force: no
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
+  check_mode: no
   notify:
     - nexus-service-stop
 
@@ -214,7 +215,15 @@
   lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:LogFile=.*"
-    line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
+    line: "-XX:LogFile={{ nexus_data_dir }}log/jvm.log"
+  notify:
+    - nexus-service-stop
+
+- name: Setup Karaf log directory
+  lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: "^-Dkaraf.log=.*"
+    line: "-Dkaraf.log={{ nexus_data_dir }}log/jvm.log"
   notify:
     - nexus-service-stop
 
@@ -245,6 +254,16 @@
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: "^-XX:MaxDirectMemorySize=.*"
     line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
+  notify: nexus-service-stop
+
+- name: Setup additional and custom vm options if present (or remove them if none)
+  vars:
+    options: "{{ nexus_custom_jvm_settings | d([]) }}"
+  blockinfile:
+    path: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    marker: "# {mark} - Custom nexus settings managed by ansible"
+    block: "-{{ options | join('\n-') }}"
+    state: "{{ 'present' if options | length > 0 else 'absent' }}"
   notify: nexus-service-stop
 
 - name: Stop the admin wizard from running
@@ -399,6 +418,12 @@
     - wait-for-nexus-port
   when: "ansible_service_mgr != 'systemd'"
 
+- name: Install plugins from remote source
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
+  with_items: "{{ nexus_plugin_urls }}"
+
 - meta: flush_handlers
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
@@ -422,12 +447,6 @@
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
-
-- name: Install plugins from remote source
-  get_url:
-    url: "{{ item }}"
-    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
-  with_items: "{{ nexus_plugin_urls }}"
 
 - name: Access scripts API endpoint with defined admin password
   uri:
@@ -520,6 +539,7 @@
     path: "{{ role_path }}/files/groovy/*"
     dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
     mode: 0644
+  check_mode: no
   run_once: true
   delegate_to: localhost
 

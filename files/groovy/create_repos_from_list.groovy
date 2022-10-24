@@ -146,6 +146,13 @@ parsed_args.each { currentRepo ->
             }
         }
 
+        // Configs for nuget proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'nuget') {
+            configuration.attributes['nugetProxy'] = [
+                    nugetVersion: currentRepo.nuget_version.toUpperCase()
+            ]
+        }
+
         // Configs for docker proxy repos
         if (currentRepo.type == 'proxy' && currentRepo.format == 'docker') {
             configuration.attributes['dockerProxy'] = [
@@ -156,8 +163,8 @@ parsed_args.each { currentRepo ->
             ]
         }
 
-        // Configs for maven hosted/proxy repos
-        if (currentRepo.type in ['hosted', 'proxy'] && currentRepo.format == 'maven2') {
+        // Configs for all maven repos
+        if (currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
                     layoutPolicy : currentRepo.layout_policy.toUpperCase()
