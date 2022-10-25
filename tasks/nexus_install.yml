@@ -381,7 +381,13 @@
   when: nexus_backup_configure | bool
 
 - name: 'Check if data directory is empty (first-time install)'
-  command: "ls --ignore=lost+found {{ nexus_data_dir }}"
+  find:
+    paths:
+      - "{{ nexus_data_dir }}"
+    excludes:
+      - lost+found
+    recurse: no
+    file_type: any
   register: nexus_data_dir_contents
   check_mode: no
   changed_when: false
@@ -390,7 +396,7 @@
   file:
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
-  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout | length > 0
+  when: nexus_latest_version.changed and nexus_data_dir_contents.matched > 0
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
