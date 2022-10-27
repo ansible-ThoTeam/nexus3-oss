@@ -173,10 +173,12 @@ parsed_args.each { currentRepo ->
 
         // Configs for all docker repos
         if (currentRepo.format == 'docker') {
+            def dockerPort = currentRepo.get('http_port', '')
+            dockerPort = !(dockerPort instanceof String) ? dockerPort as String : dockerPort
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : currentRepo.get('http_port', '')
+                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null
             ]
         }
 
