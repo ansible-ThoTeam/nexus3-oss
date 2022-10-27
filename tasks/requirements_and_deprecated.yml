@@ -107,7 +107,7 @@
   assert:
     that:
       - options | type_debug == 'list'
-      - options | select('match', option_blacklist_regex) | length == 0
+      - options | select('match', option_blacklist_regex) | list | length == 0
     quiet: true
     fail_msg:
       - nexus_custom_jvm_settings must be list
