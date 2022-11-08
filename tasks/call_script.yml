@@ -4,6 +4,7 @@
       uri:
         url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
           {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ script_name }}/run"
+        timeout: "{{ nexus_api_timeout }}"
         user: 'admin'
         password: "{{ current_nexus_admin_password }}"
         headers:
