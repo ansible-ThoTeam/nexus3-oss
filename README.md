@@ -266,9 +266,14 @@ The fully qualified domain name and scheme under which the nexus instance will b
     nexus_api_validate_certs: "{{ nexus_api_scheme == 'https' }}"
     nexus_api_context_path: "{{ nexus_default_context_path }}"
     nexus_api_port: "{{ nexus_default_port }}"
+    nexus_api_timeout: 60
 ```
 These vars control how the role connects to the nexus API for provisionning.
 **For advance usage only. You most probably do not want to change these default settings**
+
+Note: the `nexus_api_timeout` was added in v2.4.19 and overrides the default
+[`uri` module timeout](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html) of 30s 
+for all calls to the API
 
 ### Branding capabalities
 ```yaml

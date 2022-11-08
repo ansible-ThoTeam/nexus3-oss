@@ -3,6 +3,7 @@
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
       {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ item }}"
+    timeout: "{{ nexus_api_timeout | int }}"
     user: 'admin'
     password: "{{ current_nexus_admin_password }}"
     method: DELETE
@@ -14,6 +15,7 @@
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
       {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
+    timeout: "{{ nexus_api_timeout | int }}"
     user: 'admin'
     password: "{{ current_nexus_admin_password }}"
     body_format: json
