@@ -557,18 +557,16 @@
 
 - block:
     - name: Sync new scripts to old and get differences
-      shell: >
-        set -o pipefail &&
-        rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
-        | cut -d" " -f 2 | sed "s/\.groovy//g"
+      shell:
+        cmd: >
+          set -o pipefail &&
+          rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
+          | cut -d" " -f 2 | sed "s/\.groovy//g"
+        executable: /bin/bash
       register: nexus_groovy_files_changed
       check_mode: no
       changed_when: false
-      # simple check on changed files kept on host
-      # skip ansible lint (we don't want to use synchronize module for this)
-      args:
-        warn: false
-        executable: /bin/bash
+
   rescue:
     - name: Fail with information on rsync error
       fail:
