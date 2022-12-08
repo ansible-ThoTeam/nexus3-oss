@@ -1,6 +1,7 @@
 .idea/
 *.iml
 .venv
+venv
 molecule/**/.molecule/
 molecule/**/__pycache__/
 molecule/**/.cache
