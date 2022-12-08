@@ -14,7 +14,7 @@
     - name: apply defaults to maven proxy repos
       set_fact:
         nexus_repos_maven_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_maven_proxy -%}
             {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -23,7 +23,7 @@
     - name: apply defaults to maven hosted repos
       set_fact:
         nexus_repos_maven_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_maven_hosted -%}
             {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -32,7 +32,7 @@
     - name: apply defaults to maven group repos
       set_fact:
         nexus_repos_maven_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_maven_group -%}
             {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -58,7 +58,7 @@
     - name: apply defaults to docker proxy repos
       set_fact:
         nexus_repos_docker_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_docker_proxy -%}
             {{ result.append(_nexus_repos_docker_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -67,7 +67,7 @@
     - name: apply defaults to docker hosted repos
       set_fact:
         nexus_repos_docker_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_docker_hosted -%}
             {{ result.append(_nexus_repos_docker_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -76,7 +76,7 @@
     - name: apply defaults to docker group repos
       set_fact:
         nexus_repos_docker_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_docker_group -%}
             {{ result.append(_nexus_repos_docker_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -102,7 +102,7 @@
     - name: apply defaults to pypi proxy repos
       set_fact:
         nexus_repos_pypi_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_pypi_proxy -%}
             {{ result.append(_nexus_repos_pypi_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -111,7 +111,7 @@
     - name: apply defaults to pypi hosted repos
       set_fact:
         nexus_repos_pypi_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_pypi_hosted -%}
             {{ result.append(_nexus_repos_pypi_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -120,7 +120,7 @@
     - name: apply defaults to pypi group repos
       set_fact:
         nexus_repos_pypi_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_pypi_group -%}
             {{ result.append(_nexus_repos_pypi_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -146,7 +146,7 @@
     - name: apply defaults to raw proxy repos
       set_fact:
         nexus_repos_raw_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_raw_proxy -%}
             {{ result.append(_nexus_repos_raw_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -155,7 +155,7 @@
     - name: apply defaults to raw hosted repos
       set_fact:
         nexus_repos_raw_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_raw_hosted -%}
             {{ result.append(_nexus_repos_raw_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -164,7 +164,7 @@
     - name: apply defaults to raw group repos
       set_fact:
         nexus_repos_raw_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_raw_group -%}
             {{ result.append(_nexus_repos_raw_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -190,7 +190,7 @@
     - name: apply defaults to rubygems proxy repos
       set_fact:
         nexus_repos_rubygems_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_rubygems_proxy -%}
             {{ result.append(_nexus_repos_rubygems_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -199,7 +199,7 @@
     - name: apply defaults to rubygems hosted repos
       set_fact:
         nexus_repos_rubygems_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_rubygems_hosted -%}
             {{ result.append(_nexus_repos_rubygems_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -208,7 +208,7 @@
     - name: apply defaults to rubygems group repos
       set_fact:
         nexus_repos_rubygems_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_rubygems_group -%}
             {{ result.append(_nexus_repos_rubygems_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -234,7 +234,7 @@
     - name: apply defaults to bower proxy repos
       set_fact:
         nexus_repos_bower_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_bower_proxy -%}
             {{ result.append(_nexus_repos_bower_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -243,7 +243,7 @@
     - name: apply defaults to bower hosted repos
       set_fact:
         nexus_repos_bower_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_bower_hosted -%}
             {{ result.append(_nexus_repos_bower_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -252,7 +252,7 @@
     - name: apply defaults to bower group repos
       set_fact:
         nexus_repos_bower_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_bower_group -%}
             {{ result.append(_nexus_repos_bower_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -278,7 +278,7 @@
     - name: apply defaults to npm proxy repos
       set_fact:
         nexus_repos_npm_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_npm_proxy -%}
             {{ result.append(_nexus_repos_npm_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -287,7 +287,7 @@
     - name: apply defaults to npm hosted repos
       set_fact:
         nexus_repos_npm_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_npm_hosted -%}
             {{ result.append(_nexus_repos_npm_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -296,7 +296,7 @@
     - name: apply defaults to npm group repos
       set_fact:
         nexus_repos_npm_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_npm_group -%}
             {{ result.append(_nexus_repos_npm_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -322,7 +322,7 @@
     - name: apply defaults to nuget proxy repos
       set_fact:
         nexus_repos_nuget_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_nuget_proxy -%}
             {{ result.append(_nexus_repos_nuget_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -331,7 +331,7 @@
     - name: apply defaults to nuget hosted repos
       set_fact:
         nexus_repos_nuget_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_nuget_hosted -%}
             {{ result.append(_nexus_repos_nuget_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -340,7 +340,7 @@
     - name: apply defaults to nuget group repos
       set_fact:
         nexus_repos_nuget_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_nuget_group -%}
             {{ result.append(_nexus_repos_nuget_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -366,7 +366,7 @@
     - name: apply defaults to gitlfs hosted repos
       set_fact:
         nexus_repos_gitlfs_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_gitlfs_hosted -%}
             {{ result.append(_nexus_repos_gitlfs_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -388,7 +388,7 @@
     - name: apply defaults to yum proxy repos
       set_fact:
         nexus_repos_yum_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_yum_proxy -%}
             {{ result.append(_nexus_repos_yum_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -397,7 +397,7 @@
     - name: apply defaults to yum hosted repos
       set_fact:
         nexus_repos_yum_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_yum_hosted -%}
             {{ result.append(_nexus_repos_yum_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -406,7 +406,7 @@
     - name: apply defaults to yum group repos
       set_fact:
         nexus_repos_yum_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_yum_group -%}
             {{ result.append(_nexus_repos_yum_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -432,7 +432,7 @@
     - name: apply defaults to apt proxy repos
       set_fact:
         nexus_repos_apt_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_apt_proxy -%}
             {{ result.append(_nexus_repos_apt_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -441,7 +441,7 @@
     - name: apply defaults to apt hosted repos
       set_fact:
         nexus_repos_apt_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_apt_hosted -%}
             {{ result.append(_nexus_repos_apt_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -465,7 +465,7 @@
     - name: apply defaults to helm proxy repos
       set_fact:
         nexus_repos_helm_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_helm_proxy -%}
             {{ result.append(_nexus_repos_helm_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -474,7 +474,7 @@
     - name: apply defaults to helm hosted repos
       set_fact:
         nexus_repos_helm_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_helm_hosted -%}
             {{ result.append(_nexus_repos_helm_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -498,7 +498,7 @@
     - name: apply defaults to r proxy repos
       set_fact:
         nexus_repos_r_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_r_proxy -%}
             {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -507,7 +507,7 @@
     - name: apply defaults to r hosted repos
       set_fact:
         nexus_repos_r_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_r_hosted -%}
             {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -516,7 +516,7 @@
     - name: apply defaults to r group repos
       set_fact:
         nexus_repos_r_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_r_group -%}
             {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -542,7 +542,7 @@
     - name: apply defaults to p2 proxy repos
       set_fact:
         nexus_repos_p2_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_p2_proxy -%}
             {{ result.append(_nexus_repos_p2_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -564,7 +564,7 @@
     - name: apply defaults to conda proxy repos
       set_fact:
         nexus_repos_r_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_conda_proxy -%}
             {{ result.append(_nexus_repos_conda_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -586,7 +586,7 @@
     - name: apply defaults to go proxy repos
       set_fact:
         nexus_repos_go_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_go_proxy -%}
             {{ result.append(_nexus_repos_go_defaults | combine(repo)) }}
           {%- endfor -%}
@@ -595,7 +595,7 @@
     - name: apply defaults to go group repos
       set_fact:
         nexus_repos_go_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_go_group -%}
             {{ result.append(_nexus_repos_go_defaults | combine(repo)) }}
           {%- endfor -%}

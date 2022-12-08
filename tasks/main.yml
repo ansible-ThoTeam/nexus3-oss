@@ -90,7 +90,7 @@
       # See more comments on this issue in process_repos_list.yml
       set_fact:
         nexus_privileges: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for privilege in nexus_privileges -%}
             {{ result.append(_nexus_privilege_defaults | combine(privilege)) }}
           {%- endfor -%}
