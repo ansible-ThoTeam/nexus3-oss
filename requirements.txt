@@ -16,8 +16,7 @@
 molecule
 molecule-docker
 ansible
-# New version of ansible-lint fails on old fashion roles with invalid namespaces
-# ansible-lint
+ansible-lint
 flake8
 flake8-docstrings
 yamllint
