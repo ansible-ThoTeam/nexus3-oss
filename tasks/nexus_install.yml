@@ -90,7 +90,7 @@
     name: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     home: "{{ nexus_os_user_home_dir }}"
-    ansible.builtin.shell: "/bin/bash"
+    shell: "/bin/bash"
     state: present
 
 - name: Ensure Nexus installation directory exists
