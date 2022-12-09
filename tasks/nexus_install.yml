@@ -75,6 +75,9 @@
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
     force: no
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
+    owner: root
+    group: root
+    mode: 0644
   check_mode: no
   notify:
     - nexus-service-stop
@@ -432,12 +435,15 @@
   get_url:
     url: "{{ item }}"
     dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
+    owner: root
+    group: root
+    mode: 0644
   with_items: "{{ nexus_plugin_urls }}"
 
 - name: Run all notified handlers now
   meta: flush_handlers
 
-- name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
+- name: Chown configuration files from nexus-latest/etc back to root
   file:
     path: "{{ nexus_installation_dir }}/nexus-latest/etc"
     owner: "root"
