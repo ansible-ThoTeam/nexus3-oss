@@ -6,7 +6,8 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers
 
 - name: "Run restoration script"
   shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a {{ nexus_restore_log }}"
@@ -20,4 +21,5 @@
     - wait-for-nexus
     - wait-for-nexus-port
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers

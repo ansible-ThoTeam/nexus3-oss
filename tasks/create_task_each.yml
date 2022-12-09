@@ -1,5 +1,6 @@
 ---
-- include_tasks: call_script.yml
+- name: Check/create task
+  include_tasks: call_script.yml
   vars:
     script_name: create_task
     args: "{{ item }}"

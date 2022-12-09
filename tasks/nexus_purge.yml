@@ -6,16 +6,17 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers
 
-- name: get target path of current installed nexus version
+- name: Get target path of current installed nexus version
   command: 'readlink {{ nexus_installation_dir }}/nexus-latest'
   register: nexus_readlink_latest_call
   failed_when: false
   changed_when: false
   check_mode: no
 
-- name: "Purge Nexus"
+- name: Purge Nexus
   file:
     path: "{{ item }}"
     state: absent
@@ -26,7 +27,7 @@
     - "{{ nexus_installation_dir }}/nexus-latest"
     # - "{{ nexus_backup_dir }}" # Optional
 
-- name: "remove nexus package if present"
+- name: Remove nexus package if present
   package:
     name: nexus
     state: absent

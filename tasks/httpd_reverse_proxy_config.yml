@@ -1,6 +1,5 @@
 ---
-
-- name: Copy {{ httpd_package_name }} vhost
+- name: Copy Nexus vhost in Apache config dir
   template:
     src: "nexus-vhost.conf"
     dest: "{{ httpd_config_dir }}"
@@ -37,4 +36,5 @@
     state: yes
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers

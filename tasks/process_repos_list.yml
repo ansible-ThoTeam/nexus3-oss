@@ -11,7 +11,7 @@
 - name: Process definitions for maven
   when: nexus_config_maven | bool
   block:
-    - name: apply defaults to maven proxy repos
+    - name: Apply defaults to maven proxy repos
       set_fact:
         nexus_repos_maven_proxy: >-
           {%- set result = [] -%}
@@ -20,7 +20,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to maven hosted repos
+    - name: Apply defaults to maven hosted repos
       set_fact:
         nexus_repos_maven_hosted: >-
           {%- set result = [] -%}
@@ -29,7 +29,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to maven group repos
+    - name: Apply defaults to maven group repos
       set_fact:
         nexus_repos_maven_group: >-
           {%- set result = [] -%}
@@ -55,7 +55,7 @@
   when: nexus_config_docker | bool
   block:
 
-    - name: apply defaults to docker proxy repos
+    - name: Apply defaults to docker proxy repos
       set_fact:
         nexus_repos_docker_proxy: >-
           {%- set result = [] -%}
@@ -64,7 +64,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to docker hosted repos
+    - name: Apply defaults to docker hosted repos
       set_fact:
         nexus_repos_docker_hosted: >-
           {%- set result = [] -%}
@@ -73,7 +73,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to docker group repos
+    - name: Apply defaults to docker group repos
       set_fact:
         nexus_repos_docker_group: >-
           {%- set result = [] -%}
@@ -99,7 +99,7 @@
   when: nexus_config_pypi | bool
   block:
 
-    - name: apply defaults to pypi proxy repos
+    - name: Apply defaults to pypi proxy repos
       set_fact:
         nexus_repos_pypi_proxy: >-
           {%- set result = [] -%}
@@ -108,7 +108,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to pypi hosted repos
+    - name: Apply defaults to pypi hosted repos
       set_fact:
         nexus_repos_pypi_hosted: >-
           {%- set result = [] -%}
@@ -117,7 +117,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to pypi group repos
+    - name: Apply defaults to pypi group repos
       set_fact:
         nexus_repos_pypi_group: >-
           {%- set result = [] -%}
@@ -143,7 +143,7 @@
   when: nexus_config_raw | bool
   block:
 
-    - name: apply defaults to raw proxy repos
+    - name: Apply defaults to raw proxy repos
       set_fact:
         nexus_repos_raw_proxy: >-
           {%- set result = [] -%}
@@ -152,7 +152,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to raw hosted repos
+    - name: Apply defaults to raw hosted repos
       set_fact:
         nexus_repos_raw_hosted: >-
           {%- set result = [] -%}
@@ -161,7 +161,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to raw group repos
+    - name: Apply defaults to raw group repos
       set_fact:
         nexus_repos_raw_group: >-
           {%- set result = [] -%}
@@ -187,7 +187,7 @@
   when: nexus_config_rubygems | bool
   block:
 
-    - name: apply defaults to rubygems proxy repos
+    - name: Apply defaults to rubygems proxy repos
       set_fact:
         nexus_repos_rubygems_proxy: >-
           {%- set result = [] -%}
@@ -196,7 +196,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to rubygems hosted repos
+    - name: Apply defaults to rubygems hosted repos
       set_fact:
         nexus_repos_rubygems_hosted: >-
           {%- set result = [] -%}
@@ -205,7 +205,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to rubygems group repos
+    - name: Apply defaults to rubygems group repos
       set_fact:
         nexus_repos_rubygems_group: >-
           {%- set result = [] -%}
@@ -231,7 +231,7 @@
   when: nexus_config_bower | bool
   block:
 
-    - name: apply defaults to bower proxy repos
+    - name: Apply defaults to bower proxy repos
       set_fact:
         nexus_repos_bower_proxy: >-
           {%- set result = [] -%}
@@ -240,7 +240,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to bower hosted repos
+    - name: Apply defaults to bower hosted repos
       set_fact:
         nexus_repos_bower_hosted: >-
           {%- set result = [] -%}
@@ -249,7 +249,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to bower group repos
+    - name: Apply defaults to bower group repos
       set_fact:
         nexus_repos_bower_group: >-
           {%- set result = [] -%}
@@ -275,7 +275,7 @@
   when: nexus_config_npm | bool
   block:
 
-    - name: apply defaults to npm proxy repos
+    - name: Apply defaults to npm proxy repos
       set_fact:
         nexus_repos_npm_proxy: >-
           {%- set result = [] -%}
@@ -284,7 +284,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to npm hosted repos
+    - name: Apply defaults to npm hosted repos
       set_fact:
         nexus_repos_npm_hosted: >-
           {%- set result = [] -%}
@@ -293,7 +293,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to npm group repos
+    - name: Apply defaults to npm group repos
       set_fact:
         nexus_repos_npm_group: >-
           {%- set result = [] -%}
@@ -319,7 +319,7 @@
   when: nexus_config_nuget | bool
   block:
 
-    - name: apply defaults to nuget proxy repos
+    - name: Apply defaults to nuget proxy repos
       set_fact:
         nexus_repos_nuget_proxy: >-
           {%- set result = [] -%}
@@ -328,7 +328,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to nuget hosted repos
+    - name: Apply defaults to nuget hosted repos
       set_fact:
         nexus_repos_nuget_hosted: >-
           {%- set result = [] -%}
@@ -337,7 +337,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to nuget group repos
+    - name: Apply defaults to nuget group repos
       set_fact:
         nexus_repos_nuget_group: >-
           {%- set result = [] -%}
@@ -363,7 +363,7 @@
   when: nexus_config_gitlfs | bool
   block:
 
-    - name: apply defaults to gitlfs hosted repos
+    - name: Apply defaults to gitlfs hosted repos
       set_fact:
         nexus_repos_gitlfs_hosted: >-
           {%- set result = [] -%}
@@ -385,7 +385,7 @@
   when: nexus_config_yum | bool
   block:
 
-    - name: apply defaults to yum proxy repos
+    - name: Apply defaults to yum proxy repos
       set_fact:
         nexus_repos_yum_proxy: >-
           {%- set result = [] -%}
@@ -394,7 +394,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to yum hosted repos
+    - name: Apply defaults to yum hosted repos
       set_fact:
         nexus_repos_yum_hosted: >-
           {%- set result = [] -%}
@@ -403,7 +403,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to yum group repos
+    - name: Apply defaults to yum group repos
       set_fact:
         nexus_repos_yum_group: >-
           {%- set result = [] -%}
@@ -429,7 +429,7 @@
   when: nexus_config_apt | bool
   block:
 
-    - name: apply defaults to apt proxy repos
+    - name: Apply defaults to apt proxy repos
       set_fact:
         nexus_repos_apt_proxy: >-
           {%- set result = [] -%}
@@ -438,7 +438,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to apt hosted repos
+    - name: Apply defaults to apt hosted repos
       set_fact:
         nexus_repos_apt_hosted: >-
           {%- set result = [] -%}
@@ -462,7 +462,7 @@
   when: nexus_config_helm | bool
   block:
 
-    - name: apply defaults to helm proxy repos
+    - name: Apply defaults to helm proxy repos
       set_fact:
         nexus_repos_helm_proxy: >-
           {%- set result = [] -%}
@@ -471,7 +471,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to helm hosted repos
+    - name: Apply defaults to helm hosted repos
       set_fact:
         nexus_repos_helm_hosted: >-
           {%- set result = [] -%}
@@ -495,7 +495,7 @@
   when: nexus_config_r | bool
   block:
 
-    - name: apply defaults to r proxy repos
+    - name: Apply defaults to r proxy repos
       set_fact:
         nexus_repos_r_proxy: >-
           {%- set result = [] -%}
@@ -504,7 +504,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to r hosted repos
+    - name: Apply defaults to r hosted repos
       set_fact:
         nexus_repos_r_hosted: >-
           {%- set result = [] -%}
@@ -513,7 +513,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to r group repos
+    - name: Apply defaults to r group repos
       set_fact:
         nexus_repos_r_group: >-
           {%- set result = [] -%}
@@ -539,7 +539,7 @@
   when: nexus_config_p2 | bool
   block:
 
-    - name: apply defaults to p2 proxy repos
+    - name: Apply defaults to p2 proxy repos
       set_fact:
         nexus_repos_p2_proxy: >-
           {%- set result = [] -%}
@@ -561,7 +561,7 @@
   when: nexus_config_conda | bool
   block:
 
-    - name: apply defaults to conda proxy repos
+    - name: Apply defaults to conda proxy repos
       set_fact:
         nexus_repos_r_proxy: >-
           {%- set result = [] -%}
@@ -583,7 +583,7 @@
   when: nexus_config_go | bool
   block:
 
-    - name: apply defaults to go proxy repos
+    - name: Apply defaults to go proxy repos
       set_fact:
         nexus_repos_go_proxy: >-
           {%- set result = [] -%}
@@ -592,7 +592,7 @@
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to go group repos
+    - name: Apply defaults to go group repos
       set_fact:
         nexus_repos_go_group: >-
           {%- set result = [] -%}

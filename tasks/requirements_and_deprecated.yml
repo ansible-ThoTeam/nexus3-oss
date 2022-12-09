@@ -11,17 +11,15 @@
         voidvar: "{{ [] | json_query('[]') }}"
   rescue:
     - name: Print message about jmespath
-      vars:
-        error_msg: |-
-          Since version 2.4.0, this role uses the  json_query filter which requires
-          the presense of the python module jmespath on the host running ansible.
-          Please install jmespath (i.e. pip install jmespath) on your ansible host.
       debug:
-        msg: "{{ error_msg.split('\n') }}"
+        msg:
+          - Since version 2.4.0, this role uses the json_query filter
+          - which requires the jmespath python module on the host running ansible.
+          - Please install jmespath (i.e. `pip install jmespath`) on your ansible host.
 
-    - name: fail
+    - name: Fail on jmespath missing
       fail:
-        msg: "Install jmespath. See debug message above"
+        msg: Install jmespath. See debug message above
 
 # @deprecated: nexus_package must not exists
 # @version: 2.2.0

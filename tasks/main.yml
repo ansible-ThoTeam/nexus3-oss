@@ -20,16 +20,19 @@
     path: /etc/init.d/nexus
   register: nexus_sysv_service_file
 
-- include_tasks: nexus_purge.yml
+- name: Purge nexus if asked (i.e. delete all data)
+  include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
 
 - name: "Digest splited blob list var"
   include_vars: blob_vars.yml
   when: nexus_blob_split | bool
 
-- import_tasks: nexus_install.yml
+- name: Run installation tasks
+  import_tasks: nexus_install.yml
 
-- include_tasks: httpd_reverse_proxy_config.yml
+- name: Configure apache reverse proxy
+  include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
 
 - name: Configure nexus http proxy
@@ -74,8 +77,11 @@
     }}
   when: (nexus_data_dir_contents.matched == 0) and nexus_delete_default_blobstore
 
-- block:
-    - include_tasks: setup_ldap_each.yml
+- name: Provisioning (ldap, content selectors, blobstores, prepare privileges)
+  when: nexus_run_provisionning | default(true) | bool
+  block:
+    - name: Create/check ldap servers
+      include_tasks: setup_ldap_each.yml
       with_items: "{{ ldap_connections }}"
 
     - name: Create/check content selectors
@@ -85,7 +91,7 @@
         args: "{{ nexus_content_selectors }}"
       when: nexus_content_selectors | length > 0
 
-    - name: apply defaults to privileges
+    - name: Apply defaults to privileges
       # @todo: fix with easier syntax once the flip filter is released
       # See more comments on this issue in process_repos_list.yml
       set_fact:
@@ -99,7 +105,6 @@
     - name: Create/Check blobstores
       when: nexus_restore_point is undefined
       block:
-
         - name: Create directories for blob stores.
           file:
             path: "{{ item['path'] }}"
@@ -119,14 +124,13 @@
             args: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
-
-  when: nexus_run_provisionning | default(true) | bool
-
 - name: "Restore nexus backup"
   include_tasks: nexus-restore.yml
   when: nexus_restore_point is defined
 
-- block:
+- name: Provisionning part 2 (cleanup policies, repositories, privileges, roles, ...)
+  when: nexus_run_provisionning | default(true) | bool
+  block:
     - name: Create/check cleanup policies
       include_tasks: call_script.yml
       vars:
@@ -171,21 +175,22 @@
         args: "{{ nexus_ldap_users }}"
       when: nexus_ldap_users | length > 0
 
-  when: nexus_run_provisionning | default(true) | bool
-
-- include_tasks: call_script.yml
+- name: Configure anonymous access
+  include_tasks: call_script.yml
   vars:
     script_name: setup_anonymous_access
     args:
       anonymous_access: "{{ nexus_anonymous_access }}"
 
-- include_tasks: call_script.yml
+- name: Configure base url
+  include_tasks: call_script.yml
   vars:
     script_name: setup_base_url
     args:
       base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
 
-- include_tasks: call_script.yml
+- name: Configure realms
+  include_tasks: call_script.yml
   vars:
     script_name: setup_realms
     args:
@@ -206,7 +211,8 @@
         httpHeader: "{{ nexus_rut_auth_header }}"
   when: nexus_rut_auth_header is defined
 
-- include_tasks: call_script.yml
+- name: Configure mail server
+  include_tasks: call_script.yml
   vars:
     script_name: setup_email
     args:

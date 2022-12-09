@@ -126,7 +126,8 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers
 
 - name: Delete unpacked data directory
   file:
@@ -367,18 +368,20 @@
     state: link
   when: "ansible_service_mgr != 'systemd'"
 
-- block:
+- name: Install backup/restore script
+  when: nexus_backup_configure | bool
+  block:
     - name: "Deploy backup restore script"
       template:
         src: "nexus-blob-restore.sh.j2"
         dest: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
         mode: 0755
+
     - name: "Symlink backup restore script to /sbin"
       file:
         src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
         dest: "/sbin/nexus-blob-restore.sh"
         state: link
-  when: nexus_backup_configure | bool
 
 - name: 'Check if data directory is empty (first-time install)'
   find:
@@ -401,7 +404,8 @@
     # hard to run as a handler for time being
     - skip_ansible_lint
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers
 
 - name: Enable nexus systemd service and make sure it is started
   systemd:
@@ -430,7 +434,8 @@
     dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
   with_items: "{{ nexus_plugin_urls }}"
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  meta: flush_handlers
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:
@@ -444,7 +449,7 @@
     # hard to run as a handler for time being
     - skip_ansible_lint
 
-- name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
+- name: Prevent nexus to create any new configuration files in nexus-latest/etc inside {{ nexus_installation_dir }}
   file:
     path: "{{ item }}"
     state: "directory"
@@ -555,7 +560,8 @@
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
     mode: 0644
 
-- block:
+- name: Upload scripts with meaningful message on failure
+  block:
     - name: Sync new scripts to old and get differences
       shell:
         cmd: >
@@ -568,19 +574,26 @@
       changed_when: false
 
   rescue:
-    - name: Fail with information on rsync error
+    - name: Rsync error information
+      debug:
+        msg:
+          - A task involving running rsync on the host just failed, most probably because rsync is not installed.
+          - Please make sure rsync is installed on your host or double check the above error and try again.
+
+    - name: Fail on rsync error
       fail:
-        msg: >-
-          A task involving running rsync on the host just failed, most probably because rsync is not installed.
-          Please make sure rsync is installed on your host or double check the above error and try again.
+        msg: Rsync error - See debug message above
+
 
 - name: Declare new or changed groovy scripts in nexus
   include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
 
 - name: Change admin password if we are still using default
+  when: (nexus_api_head_with_default_password.status | default(false)) == 200
   block:
-    - include_tasks: call_script.yml
+    - name: Update admin password
+      include_tasks: call_script.yml
       vars:
         script_name: update_admin_password
         args:
@@ -596,5 +609,3 @@
         path: "{{ nexus_data_dir }}/admin.password"
         state: absent
       when: nexus_version is version_compare('3.17.0', '>=')
-
-  when: (nexus_api_head_with_default_password.status | default(false)) == 200

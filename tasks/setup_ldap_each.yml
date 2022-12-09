@@ -1,5 +1,6 @@
 ---
-- include_tasks: call_script.yml
+- name: Configure ldap server
+  include_tasks: call_script.yml
   vars:
     script_name: setup_ldap
     args:
