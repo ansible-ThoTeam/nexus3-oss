@@ -8,7 +8,8 @@ These test should only run on debian based destributions
 """
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
-    os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('nexus')
+    os.environ["MOLECULE_INVENTORY_FILE"]
+).get_hosts("nexus")
 
 apt_pub_key = """
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -63,12 +64,12 @@ def test_apt_package_upload(host: testinfra.host.Host):
         "get_url",
         "url=https://github.com/ansible-ThoTeam/nexushello-apt-package/releases"
         "/download/v1.0.1/nexushello_1.0.1_all.deb dest=/tmp",
-        check=False
+        check=False,
     )
 
     upload = host.run(
         'curl -X POST "https://localhost/service/rest/v1/components?repository=private_ubuntu_18.04" -k '
-        '-u admin:changeme '
+        "-u admin:changeme "
         '-H "accept: application/json" '
         '-H "Content-Type: multipart/form-data" '
         '-F "apt.asset=@/tmp/nexushello_1.0.1_all.deb;type=application/vnd.debian.binary-package"'
@@ -100,7 +101,7 @@ EOF"""
         "apt",
         "name=nexushello state=present update-cache=true",
         check=False,
-        become=True
+        become=True,
     )
 
     assert host.run("nexushello").stdout == "Hello nexus !\n"

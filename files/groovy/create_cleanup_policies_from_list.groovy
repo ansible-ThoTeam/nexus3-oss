@@ -51,7 +51,7 @@ parsed_args.each { currentPolicy ->
                 existingPolicy.setNotes(currentPolicy.notes)
                 existingPolicy.setCriteria(criteriaMap)
                 cleanupPolicyStorage.update(existingPolicy)
-                
+
                 currentResult.put('status', 'updated')
                 scriptResults['changed'] = true
             }
@@ -122,7 +122,7 @@ def Boolean isPolicyEqual(existingPolicy, currentPolicy) {
 
     isequal &= existingPolicy.getNotes() == currentPolicy.notes
     isequal &= existingPolicy.getFormat() == currentPolicy.format
-    
+
     isequal &= (((! existingPolicy.getCriteria().containsKey(LAST_BLOB_UPDATED_KEY)) && (! currentCriteria.containsKey(LAST_BLOB_UPDATED_KEY)))
     ||  (existingPolicy.getCriteria().containsKey(LAST_BLOB_UPDATED_KEY)
         && currentCriteria.containsKey(LAST_BLOB_UPDATED_KEY)
