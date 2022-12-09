@@ -1,7 +1,7 @@
 ---
 - name: Removing (potential) previously declared Groovy script {{ item }}
   ansible.builtin.uri:
-    ansible.builtin.url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
       {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ item }}"
     timeout: "{{ nexus_api_timeout | int }}"
     user: 'admin'
@@ -13,7 +13,7 @@
 
 - name: Declaring Groovy script {{ item }}
   ansible.builtin.uri:
-    ansible.builtin.url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
       {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
     timeout: "{{ nexus_api_timeout | int }}"
     user: 'admin'

@@ -36,7 +36,7 @@
 
     - name: Call latest nexus uri to get redirection
       ansible.builtin.uri:
-        ansible.builtin.url: "{{ nexus_download_url }}/latest-unix.tar.gz"
+        url: "{{ nexus_download_url }}/latest-unix.tar.gz"
         method: CONNECT
         status_code: 302
         validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
@@ -69,7 +69,7 @@
 
 - name: Download nexus_package
   ansible.builtin.get_url:
-    ansible.builtin.url: "{{ nexus_download_url }}/{{ nexus_package }}"
+    url: "{{ nexus_download_url }}/{{ nexus_package }}"
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
     force: no
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
@@ -431,7 +431,7 @@
 
 - name: Install plugins from remote source
   ansible.builtin.get_url:
-    ansible.builtin.url: "{{ item }}"
+    url: "{{ item }}"
     dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
     owner: root
     group: root
@@ -465,7 +465,7 @@
 
 - name: Access scripts API endpoint with defined admin password
   ansible.builtin.uri:
-    ansible.builtin.url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
       {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
     method: 'HEAD'
     user: 'admin'
@@ -504,7 +504,7 @@
 
 - name: Access scripts API endpoint with default admin password
   ansible.builtin.uri:
-    ansible.builtin.url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
       {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
     method: 'HEAD'
     user: 'admin'
