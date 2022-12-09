@@ -65,9 +65,7 @@ class FilterModule(object):
         valid_elements = ["error", "changed", "action_details"]
         if element not in valid_elements:
             raise AnsibleFilterError(
-                "The element parameter must be one of {}".format(
-                    ",".join(valid_elements)
-                )
+                f"The element parameter must be one of {','.join(valid_elements)}"
             )
 
         return self._get_script_run_results(data)[element]
@@ -121,7 +119,7 @@ class FilterModule(object):
                 }
         except Exception as e:
             raise AnsibleFilterError(
-                "Filter encountered an unexpected exception: {} {}".format(type(e), e)
+                f"Filter encountered an unexpected exception: {type(e)} {e}"
             )
 
         return result
