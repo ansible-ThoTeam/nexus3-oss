@@ -1,39 +1,42 @@
 ---
 
 - name: Check requirements and deprecated features/vars
-  import_tasks: "requirements_and_deprecated.yml"
+  ansible.builtin.import_tasks: "requirements_and_deprecated.yml"
 
 - name: Include OS specific variables.
-  include_vars: "configure-{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "configure-{{ ansible_os_family }}.yml"
 
 - name: Include OS specific selinux libs and utils if needed
-  include_tasks: "selinux-{{ ansible_os_family }}.yml"
+  ansible.builtin.include_tasks: "selinux-{{ ansible_os_family }}.yml"
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - name: Check if SystemD service is installed
-  stat:
+  ansible.builtin.stat:
     path: /etc/systemd/system/nexus.service
   register: nexus_systemd_service_file
 
 - name: Check if sysv service is installed
-  stat:
+  ansible.builtin.stat:
     path: /etc/init.d/nexus
   register: nexus_sysv_service_file
 
-- include_tasks: nexus_purge.yml
+- name: Purge nexus if asked (i.e. delete all data)
+  ansible.builtin.include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
 
 - name: "Digest splited blob list var"
-  include_vars: blob_vars.yml
+  ansible.builtin.include_vars: blob_vars.yml
   when: nexus_blob_split | bool
 
-- import_tasks: nexus_install.yml
+- name: Run installation tasks
+  ansible.builtin.import_tasks: nexus_install.yml
 
-- include_tasks: httpd_reverse_proxy_config.yml
+- name: Configure apache reverse proxy
+  ansible.builtin.include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
 
 - name: Configure nexus http proxy
-  include_tasks: call_script.yml
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_http_proxy
     args:
@@ -51,7 +54,7 @@
   when: nexus_with_http_proxy or nexus_with_https_proxy
 
 - name: Deleting default repositories
-  include_tasks: delete_repo_each.yml
+  ansible.builtin.include_tasks: delete_repo_each.yml
   with_items:
     - maven-central
     - maven-public
@@ -63,7 +66,7 @@
   when: (nexus_data_dir_contents.matched == 0) and nexus_delete_default_repos
 
 - name: Deleting default blobstore
-  include_tasks: delete_blobstore_each.yml
+  ansible.builtin.include_tasks: delete_blobstore_each.yml
   with_items: >-
     {{
       {'default':{'blob': 'default'}}
@@ -74,23 +77,26 @@
     }}
   when: (nexus_data_dir_contents.matched == 0) and nexus_delete_default_blobstore
 
-- block:
-    - include_tasks: setup_ldap_each.yml
+- name: Provisioning (ldap, content selectors, blobstores, prepare privileges)
+  when: nexus_run_provisionning | default(true) | bool
+  block:
+    - name: Create/check ldap servers
+      ansible.builtin.include_tasks: setup_ldap_each.yml
       with_items: "{{ ldap_connections }}"
 
     - name: Create/check content selectors
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: create_content_selectors_from_list
         args: "{{ nexus_content_selectors }}"
       when: nexus_content_selectors | length > 0
 
-    - name: apply defaults to privileges
+    - name: Apply defaults to privileges
       # @todo: fix with easier syntax once the flip filter is released
       # See more comments on this issue in process_repos_list.yml
-      set_fact:
+      ansible.builtin.set_fact:
         nexus_privileges: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for privilege in nexus_privileges -%}
             {{ result.append(_nexus_privilege_defaults | combine(privilege)) }}
           {%- endfor -%}
@@ -99,9 +105,8 @@
     - name: Create/Check blobstores
       when: nexus_restore_point is undefined
       block:
-
         - name: Create directories for blob stores.
-          file:
+          ansible.builtin.file:
             path: "{{ item['path'] }}"
             owner: "{{ nexus_os_user }}"
             group: "{{ nexus_os_group }}"
@@ -113,79 +118,79 @@
             label: "blobstore: {{ item.name }} - type: {{ item.type | d('file') }} - path: {{ item.path | d('None') }}"
 
         - name: Create/Check blobstores
-          include_tasks: call_script.yml
+          ansible.builtin.include_tasks: call_script.yml
           vars:
             script_name: create_blobstores_from_list
             args: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
-
-  when: nexus_run_provisionning | default(true) | bool
-
 - name: "Restore nexus backup"
-  include_tasks: nexus-restore.yml
+  ansible.builtin.include_tasks: nexus-restore.yml
   when: nexus_restore_point is defined
 
-- block:
+- name: Provisionning part 2 (cleanup policies, repositories, privileges, roles, ...)
+  when: nexus_run_provisionning | default(true) | bool
+  block:
     - name: Create/check cleanup policies
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: create_cleanup_policies_from_list
         args: "{{ nexus_repos_cleanup_policies }}"
       when: nexus_repos_cleanup_policies | length > 0
 
     - name: Apply defaults to repositories configurations and process a single list
-      include_tasks: process_repos_list.yml
+      ansible.builtin.include_tasks: process_repos_list.yml
 
     - name: Create configured repositories
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: create_repos_from_list
         args: "{{ _nexus_repos_global_list | d([]) }}"
 
     - name: Create/check privileges
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_privileges_from_list
         args: "{{ nexus_privileges }}"
       when: nexus_privileges | length > 0
 
     - name: Create/check roles
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_roles_from_list
         args: "{{ nexus_roles }}"
       when: nexus_roles | length > 0
 
     - name: Create/check local users
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_users_from_list
         args: "{{ nexus_local_users }}"
       when: nexus_local_users | length > 0
 
     - name: Create/check ldap users
-      include_tasks: call_script.yml
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_ldap_users_from_list
         args: "{{ nexus_ldap_users }}"
       when: nexus_ldap_users | length > 0
 
-  when: nexus_run_provisionning | default(true) | bool
-
-- include_tasks: call_script.yml
+- name: Configure anonymous access
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_anonymous_access
     args:
       anonymous_access: "{{ nexus_anonymous_access }}"
 
-- include_tasks: call_script.yml
+- name: Configure base url
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_base_url
     args:
       base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
 
-- include_tasks: call_script.yml
+- name: Configure realms
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_realms
     args:
@@ -196,7 +201,7 @@
       docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
 
 - name: Configure RUT Auth header
-  include_tasks: call_script.yml
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
@@ -206,7 +211,8 @@
         httpHeader: "{{ nexus_rut_auth_header }}"
   when: nexus_rut_auth_header is defined
 
-- include_tasks: call_script.yml
+- name: Configure mail server
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_email
     args:
@@ -224,7 +230,7 @@
       email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
 
 - name: Configure branding capability
-  include_tasks: call_script.yml
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
@@ -237,7 +243,7 @@
         headerEnabled: "{{ nexus_branding_header | length > 0 }}"
 
 - name: Configure audit capability
-  include_tasks: call_script.yml
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
@@ -246,7 +252,7 @@
       capability_properties: {}
 
 - name: Define backup task if backup is configured
-  set_fact:
+  ansible.builtin.set_fact:
     _nexus_backup_task:
       - name: db and blobstores backup
         typeId: script
@@ -261,6 +267,6 @@
   when: nexus_backup_configure | bool
 
 - name: Create scheduled tasks (with backup task if relevant)
-  include_tasks: create_task_each.yml
+  ansible.builtin.include_tasks: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks + _nexus_backup_task | default([]) }}"
   when: nexus_run_provisionning | default(true) | bool

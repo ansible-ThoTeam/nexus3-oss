@@ -189,7 +189,7 @@ Allow to change the nexus user default home directory
 
 Nexus directories.
 * `nexus_installation_dir` contains the installed executable(s)
-* `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Custom blobstores paths outside 
+* `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Custom blobstores paths outside
 of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
 * `nexus_tmp_dir` contains all temporary files. Default path for redhat has been moved out of `/tmp` to overcome
 potential problems with automatic cleaning procedures. See #168.
@@ -272,7 +272,7 @@ These vars control how the role connects to the nexus API for provisionning.
 **For advance usage only. You most probably do not want to change these default settings**
 
 Note: the `nexus_api_timeout` was added in v2.4.19 and overrides the default
-[`uri` module timeout](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html) of 30s 
+[`uri` module timeout](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html) of 30s
 for all calls to the API
 
 ### Branding capabalities
@@ -1039,8 +1039,8 @@ Feel free to use them or implement your own install scenario at your convenience
 
 
   roles:
-    
-    
+
+
     - { role: geerlingguy.java, vars: See role doc for your distribution/version }
     # Debian/Ubuntu only
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy.load", "proxy_http.load", "headers.load", "ssl.load", "rewrite.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }

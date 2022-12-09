@@ -11,35 +11,35 @@
 - name: Process definitions for maven
   when: nexus_config_maven | bool
   block:
-    - name: apply defaults to maven proxy repos
-      set_fact:
+    - name: Apply defaults to maven proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_maven_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_maven_proxy -%}
             {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to maven hosted repos
-      set_fact:
+    - name: Apply defaults to maven hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_maven_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_maven_hosted -%}
             {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to maven group repos
-      set_fact:
+    - name: Apply defaults to maven group repos
+      ansible.builtin.set_fact:
         nexus_repos_maven_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_maven_group -%}
             {{ result.append(_nexus_repos_maven_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add maven repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -55,35 +55,35 @@
   when: nexus_config_docker | bool
   block:
 
-    - name: apply defaults to docker proxy repos
-      set_fact:
+    - name: Apply defaults to docker proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_docker_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_docker_proxy -%}
             {{ result.append(_nexus_repos_docker_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to docker hosted repos
-      set_fact:
+    - name: Apply defaults to docker hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_docker_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_docker_hosted -%}
             {{ result.append(_nexus_repos_docker_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to docker group repos
-      set_fact:
+    - name: Apply defaults to docker group repos
+      ansible.builtin.set_fact:
         nexus_repos_docker_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_docker_group -%}
             {{ result.append(_nexus_repos_docker_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add docker repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -99,35 +99,35 @@
   when: nexus_config_pypi | bool
   block:
 
-    - name: apply defaults to pypi proxy repos
-      set_fact:
+    - name: Apply defaults to pypi proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_pypi_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_pypi_proxy -%}
             {{ result.append(_nexus_repos_pypi_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to pypi hosted repos
-      set_fact:
+    - name: Apply defaults to pypi hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_pypi_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_pypi_hosted -%}
             {{ result.append(_nexus_repos_pypi_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to pypi group repos
-      set_fact:
+    - name: Apply defaults to pypi group repos
+      ansible.builtin.set_fact:
         nexus_repos_pypi_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_pypi_group -%}
             {{ result.append(_nexus_repos_pypi_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add pypi repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -143,35 +143,35 @@
   when: nexus_config_raw | bool
   block:
 
-    - name: apply defaults to raw proxy repos
-      set_fact:
+    - name: Apply defaults to raw proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_raw_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_raw_proxy -%}
             {{ result.append(_nexus_repos_raw_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to raw hosted repos
-      set_fact:
+    - name: Apply defaults to raw hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_raw_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_raw_hosted -%}
             {{ result.append(_nexus_repos_raw_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to raw group repos
-      set_fact:
+    - name: Apply defaults to raw group repos
+      ansible.builtin.set_fact:
         nexus_repos_raw_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_raw_group -%}
             {{ result.append(_nexus_repos_raw_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add raw repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -187,35 +187,35 @@
   when: nexus_config_rubygems | bool
   block:
 
-    - name: apply defaults to rubygems proxy repos
-      set_fact:
+    - name: Apply defaults to rubygems proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_rubygems_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_rubygems_proxy -%}
             {{ result.append(_nexus_repos_rubygems_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to rubygems hosted repos
-      set_fact:
+    - name: Apply defaults to rubygems hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_rubygems_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_rubygems_hosted -%}
             {{ result.append(_nexus_repos_rubygems_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to rubygems group repos
-      set_fact:
+    - name: Apply defaults to rubygems group repos
+      ansible.builtin.set_fact:
         nexus_repos_rubygems_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_rubygems_group -%}
             {{ result.append(_nexus_repos_rubygems_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add rubygems repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -231,35 +231,35 @@
   when: nexus_config_bower | bool
   block:
 
-    - name: apply defaults to bower proxy repos
-      set_fact:
+    - name: Apply defaults to bower proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_bower_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_bower_proxy -%}
             {{ result.append(_nexus_repos_bower_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to bower hosted repos
-      set_fact:
+    - name: Apply defaults to bower hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_bower_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_bower_hosted -%}
             {{ result.append(_nexus_repos_bower_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to bower group repos
-      set_fact:
+    - name: Apply defaults to bower group repos
+      ansible.builtin.set_fact:
         nexus_repos_bower_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_bower_group -%}
             {{ result.append(_nexus_repos_bower_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add bower repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -275,35 +275,35 @@
   when: nexus_config_npm | bool
   block:
 
-    - name: apply defaults to npm proxy repos
-      set_fact:
+    - name: Apply defaults to npm proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_npm_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_npm_proxy -%}
             {{ result.append(_nexus_repos_npm_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to npm hosted repos
-      set_fact:
+    - name: Apply defaults to npm hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_npm_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_npm_hosted -%}
             {{ result.append(_nexus_repos_npm_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to npm group repos
-      set_fact:
+    - name: Apply defaults to npm group repos
+      ansible.builtin.set_fact:
         nexus_repos_npm_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_npm_group -%}
             {{ result.append(_nexus_repos_npm_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add npm repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -319,35 +319,35 @@
   when: nexus_config_nuget | bool
   block:
 
-    - name: apply defaults to nuget proxy repos
-      set_fact:
+    - name: Apply defaults to nuget proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_nuget_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_nuget_proxy -%}
             {{ result.append(_nexus_repos_nuget_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to nuget hosted repos
-      set_fact:
+    - name: Apply defaults to nuget hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_nuget_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_nuget_hosted -%}
             {{ result.append(_nexus_repos_nuget_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to nuget group repos
-      set_fact:
+    - name: Apply defaults to nuget group repos
+      ansible.builtin.set_fact:
         nexus_repos_nuget_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_nuget_group -%}
             {{ result.append(_nexus_repos_nuget_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add nuget repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -363,17 +363,17 @@
   when: nexus_config_gitlfs | bool
   block:
 
-    - name: apply defaults to gitlfs hosted repos
-      set_fact:
+    - name: Apply defaults to gitlfs hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_gitlfs_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_gitlfs_hosted -%}
             {{ result.append(_nexus_repos_gitlfs_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add gitlfs repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -385,35 +385,35 @@
   when: nexus_config_yum | bool
   block:
 
-    - name: apply defaults to yum proxy repos
-      set_fact:
+    - name: Apply defaults to yum proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_yum_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_yum_proxy -%}
             {{ result.append(_nexus_repos_yum_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to yum hosted repos
-      set_fact:
+    - name: Apply defaults to yum hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_yum_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_yum_hosted -%}
             {{ result.append(_nexus_repos_yum_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to yum group repos
-      set_fact:
+    - name: Apply defaults to yum group repos
+      ansible.builtin.set_fact:
         nexus_repos_yum_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_yum_group -%}
             {{ result.append(_nexus_repos_yum_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add yum repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -429,26 +429,26 @@
   when: nexus_config_apt | bool
   block:
 
-    - name: apply defaults to apt proxy repos
-      set_fact:
+    - name: Apply defaults to apt proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_apt_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_apt_proxy -%}
             {{ result.append(_nexus_repos_apt_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to apt hosted repos
-      set_fact:
+    - name: Apply defaults to apt hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_apt_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_apt_hosted -%}
             {{ result.append(_nexus_repos_apt_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add apt repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -462,26 +462,26 @@
   when: nexus_config_helm | bool
   block:
 
-    - name: apply defaults to helm proxy repos
-      set_fact:
+    - name: Apply defaults to helm proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_helm_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_helm_proxy -%}
             {{ result.append(_nexus_repos_helm_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to helm hosted repos
-      set_fact:
+    - name: Apply defaults to helm hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_helm_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_helm_hosted -%}
             {{ result.append(_nexus_repos_helm_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add helm repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -495,35 +495,35 @@
   when: nexus_config_r | bool
   block:
 
-    - name: apply defaults to r proxy repos
-      set_fact:
+    - name: Apply defaults to r proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_r_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_r_proxy -%}
             {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to r hosted repos
-      set_fact:
+    - name: Apply defaults to r hosted repos
+      ansible.builtin.set_fact:
         nexus_repos_r_hosted: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_r_hosted -%}
             {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to r group repos
-      set_fact:
+    - name: Apply defaults to r group repos
+      ansible.builtin.set_fact:
         nexus_repos_r_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_r_group -%}
             {{ result.append(_nexus_repos_r_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add r repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -539,17 +539,17 @@
   when: nexus_config_p2 | bool
   block:
 
-    - name: apply defaults to p2 proxy repos
-      set_fact:
+    - name: Apply defaults to p2 proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_p2_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_p2_proxy -%}
             {{ result.append(_nexus_repos_p2_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add p2 repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -561,17 +561,17 @@
   when: nexus_config_conda | bool
   block:
 
-    - name: apply defaults to conda proxy repos
-      set_fact:
+    - name: Apply defaults to conda proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_r_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_conda_proxy -%}
             {{ result.append(_nexus_repos_conda_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add conda repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
@@ -583,26 +583,26 @@
   when: nexus_config_go | bool
   block:
 
-    - name: apply defaults to go proxy repos
-      set_fact:
+    - name: Apply defaults to go proxy repos
+      ansible.builtin.set_fact:
         nexus_repos_go_proxy: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_go_proxy -%}
             {{ result.append(_nexus_repos_go_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
-    - name: apply defaults to go group repos
-      set_fact:
+    - name: Apply defaults to go group repos
+      ansible.builtin.set_fact:
         nexus_repos_go_group: >-
-          {%- set result=[] -%}
+          {%- set result = [] -%}
           {%- for repo in nexus_repos_go_group -%}
             {{ result.append(_nexus_repos_go_defaults | combine(repo)) }}
           {%- endfor -%}
           {{ result | to_json | from_json }}
 
     - name: Add go repositories to global repos list
-      set_fact:
+      ansible.builtin.set_fact:
         _nexus_repos_global_list: >-
           {{
             _nexus_repos_global_list | default([])
