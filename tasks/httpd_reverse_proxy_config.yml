@@ -1,6 +1,6 @@
 ---
 - name: Copy Nexus vhost in Apache config dir
-  template:
+  ansible.builtin.template:
     src: "nexus-vhost.conf"
     dest: "{{ httpd_config_dir }}"
     mode: 0644
@@ -9,7 +9,7 @@
     - wait-for-httpd
 
 - name: Copy SSL certificate and optional chain file
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ certificate_file_dest }}"
     mode: 0600
@@ -20,7 +20,7 @@
   loop: "{{ [httpd_ssl_certificate_file] + [httpd_ssl_certificate_chain_file | default()] | unique }}"
 
 - name: Copy SSL certificate key file
-  copy:
+  ansible.builtin.copy:
     src: "{{ httpd_ssl_certificate_key_file }}"
     dest: "{{ certificate_key_dest }}"
     mode: 0600
@@ -30,11 +30,11 @@
     - wait-for-httpd
 
 - name: Setsebool httpd_can_network_connect
-  seboolean:
+  ansible.posix.seboolean:
     name: httpd_can_network_connect
     persistent: yes
     state: yes
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - name: Run all notified handlers now
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

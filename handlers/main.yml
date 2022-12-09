@@ -1,12 +1,12 @@
 ---
 - name: Reload systemd
-  systemd:
+  ansible.builtin.systemd:
     daemon-reload: yes
     name: nexus.service
   listen: systemd-reload
 
 - name: Nexus systemd service restart
-  systemd:
+  ansible.builtin.systemd:
     name: nexus.service
     state: restarted
     no_block: yes
@@ -14,35 +14,35 @@
   when: "ansible_service_mgr == 'systemd'"
 
 - name: Nexus sysv service restart
-  service:
+  ansible.builtin.service:
     name: nexus
     state: restarted
   listen: nexus-service-restart
   when: "ansible_service_mgr != 'systemd'"
 
 - name: Nexus systemd service stop
-  systemd:
+  ansible.builtin.systemd:
     name: nexus.service
     state: stopped
   listen: nexus-service-stop
   when: nexus_systemd_service_file.stat.exists
 
 - name: Nexus sysv service stop
-  service:
+  ansible.builtin.service:
     name: nexus
     state: stopped
   listen: nexus-service-stop
   when: nexus_sysv_service_file.stat.exists
 
 - name: Wait for Nexus to start
-  wait_for:
+  ansible.builtin.wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
     search_regex: "Started Sonatype Nexus .*"
     timeout: 1800
   listen: wait-for-nexus
 
 - name: Wait for Nexus port to be available
-  wait_for:
+  ansible.builtin.wait_for:
     port: "{{ nexus_default_port }}"
     timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
@@ -51,7 +51,7 @@
   listen: wait-for-nexus-port
 
 - name: Reload Apache service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ httpd_package_name }}.service"
     state: reloaded
     enabled: yes
@@ -59,7 +59,7 @@
   listen: httpd-service-reload
 
 - name: Wait for Apache port to be available
-  wait_for:
+  ansible.builtin.wait_for:
     port: 443
     delay: 5
   listen: wait-for-httpd

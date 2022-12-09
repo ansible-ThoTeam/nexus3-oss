@@ -1,7 +1,7 @@
 ---
 
 - name: Make sure we have the necessary yum packages available for selinux
-  yum:
+  ansible.builtin.yum:
     name:
       - libselinux-python{{ py_suffix }}
       - libsemanage-python{{ py_suffix }}

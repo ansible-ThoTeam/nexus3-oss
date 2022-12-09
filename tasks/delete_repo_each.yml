@@ -1,6 +1,6 @@
 ---
 - name: Delete repository
-  include_tasks: call_script.yml
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: delete_repo
     args:

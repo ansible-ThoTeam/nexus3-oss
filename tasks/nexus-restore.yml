@@ -1,16 +1,16 @@
 ---
 - name: Make sure nexus is stopped
-  debug:
+  ansible.builtin.debug:
     msg: "trigger nexus stop"
   changed_when: true
   notify:
     - nexus-service-stop
 
 - name: Run all notified handlers now
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: "Run restoration script"
-  shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a {{ nexus_restore_log }}"
+  ansible.builtin.shell: "nexus-blob-restore.sh {{ nexus_restore_point }} 2>&1 | tee -a {{ nexus_restore_log }}"
   tags:
     # This is only run when a restore point is defined
     # shut-off ansible-lint error on this one: this is the desired way of doing it
@@ -22,4 +22,4 @@
     - wait-for-nexus-port
 
 - name: Run all notified handlers now
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

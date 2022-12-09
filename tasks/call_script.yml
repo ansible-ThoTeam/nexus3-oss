@@ -2,8 +2,8 @@
 - name: Call groovy script, get result, handle exceptions
   block:
     - name: Calling Groovy script {{ script_name }}
-      uri:
-        url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+      ansible.builtin.uri:
+        ansible.builtin.url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
           {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ script_name }}/run"
         timeout: "{{ nexus_api_timeout | int }}"
         user: 'admin'
@@ -19,7 +19,7 @@
       changed_when: script_run | nexus_groovy_changed | bool
 
     - name: Details about run script if verbose mode is on
-      debug:
+      ansible.builtin.debug:
         msg: "{{ script_run | nexus_groovy_details }}"
         verbosity: 1
       when: not ansible_check_mode
@@ -29,21 +29,21 @@
       when: script_run | nexus_groovy_details == 'Global script failure'
       block:
         - name: Debug script result for global fail
-          debug:
+          ansible.builtin.debug:
             var: script_run
 
         - name: Global script failure at nexus level
-          fail:
+          ansible.builtin.fail:
             msg: >-
               Running the script {{ script_name }} failed at nexus level.
               See the above debug output
 
     - name: Debug script result for failed script actions
-      debug:
+      ansible.builtin.debug:
         msg: "{{ script_run | nexus_groovy_details }}"
 
     - name: Script action failure
-      fail:
+      ansible.builtin.fail:
         msg: >-
           The script {{ script_name }} returned at least one of its
           actions has failed. See the debug message above for details
