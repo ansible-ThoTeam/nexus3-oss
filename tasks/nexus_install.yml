@@ -23,8 +23,8 @@
     - nexus_latest_link.stat.islnk | default(false)
 
 - name: No version given => Version detection
+  when: nexus_version | length == 0
   block:
-
     - name: Register nexus_version from currently installed
       # Note: setting nexus_version here skips the next block task.
       set_fact:
@@ -52,8 +52,6 @@
             | regex_replace("^https://.*nexus-(\d*\.\d*\.\d*-\d*)-unix.tar.gz", "\1")
           }}
         nexus_version_detected_from: latest
-
-  when: nexus_version | length == 0
 
 - name: Print info about detected version to use
   vars:
