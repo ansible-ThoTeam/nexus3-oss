@@ -1,6 +1,7 @@
 ---
 dependency:
   name: galaxy
+  enabled: False
 
 driver:
   name: docker
