@@ -115,6 +115,14 @@
     recurse: yes
     mode: "u=rwX,g=rX,o=rX"
 
+- name: Create context for nexus binary on selinux systems.
+  community.general.sefcontext:
+    target: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus"
+    setype: bin_t
+    state: present
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  notify: restore_nexus_selinux_context
+
 - name: Update symlink nexus-latest
   ansible.builtin.file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
