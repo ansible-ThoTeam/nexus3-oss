@@ -82,13 +82,19 @@ You can have a look at the following tickets in the original repository for expl
 
 We would like to thank the original authors for the work done.
 
+<table>
+    <tr>
+        <td width="230px"><img alt="Picture of Lionel Lecha" src="docs/images/lionel_lecha.png" /></td>
+        <td>
+            <i>In Memoriam [Lionel Lecha] (note from main author):</i> This work would never have reached the community 
+            as an Open Source project without the unconditional trust of [Lionel Lecha], director of SMAP APPUI @La Poste,
+            when I started to automate the deployment of nexus for his unit in 2018 as an external contractor. 
+            Lionel died too early on the 17th of february 2023 at the age of 60. Thanks for your always equal good mood
+            and your confidence in me.
+        </td>
+    </tr>
+</table>
 
-![Picture of Lionel Lecha][docs/images/lionel_lecha.png]
-*In Memoriam [Lionel Lecha] (note from main author):* This work would never have reached the community 
-as an Open Source project without the unconditional trust of [Lionel Lecha], director of SMAP APPUI @La Poste,
-when I started to automate the deployment of nexus for his unit in 2018 as an external contractor. Lionel died
-too early on the 17th of february 2023 at the age of 60. Thanks for your always equal good mood
-and your confidence in me.
 
 ## Requirements
 
