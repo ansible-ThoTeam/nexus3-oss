@@ -64,6 +64,6 @@
     delay: 5
   listen: wait-for-httpd
 
-- name: relabel nexus binary according to new context
+- name: Relabel nexus binary according to new context
   ansible.builtin.command: "restorecon -irv {{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus"
   listen: restore_nexus_selinux_context

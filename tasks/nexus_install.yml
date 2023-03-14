@@ -77,6 +77,10 @@
     group: root
     mode: 0644
   check_mode: no
+  register: download_status
+  until: download_status.status_code == 200
+  retries: "{{ nexus_download_retries }}"
+  delay: "{{ nexus_download_delay }}"
   notify:
     - nexus-service-stop
 
