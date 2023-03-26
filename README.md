@@ -88,8 +88,8 @@ We would like to thank the original authors for the work done.
         <td width="230px"><img alt="Picture of Lionel Lecha" src="docs/images/lionel_lecha.png" /></td>
         <td>
             This work would never have reached the community as an Open Source project without the unconditional trust
-            of Lionel Lecha, director of SMAP APPUI @La Poste when I started to automate the deployment of nexus 
-            for his unit in 2018 as an external contractor. Lionel died too early on the 17th of february 2023 
+            of Lionel Lecha, director of SMAP APPUI @La Poste when I started to automate the deployment of nexus
+            for his unit in 2018 as an external contractor. Lionel died too early on the 17th of february 2023
             at the age of 60. Thanks for your always equal good mood and your confidence.
         </td>
     </tr>

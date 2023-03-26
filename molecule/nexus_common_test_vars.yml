@@ -1,5 +1,4 @@
 ---
-
 httpd_setup_enable: true
 httpd_copy_ssl_files: false
 httpd_ssl_cert_file_location: "{{ default_cert }}"
@@ -15,7 +14,7 @@ nexus_custom_jvm_settings:
   - XX:NumberOfGCLogFiles=10
   - XX:GCLogFileSize=50m
 
-nexus_download_dir: '/nexus-downloads'
+nexus_download_dir: /nexus-downloads
 
 nexus_backup_configure: true
 
@@ -45,7 +44,7 @@ nexus_anonymous_access: true
 nexus_audit_enabled: true
 
 nexus_rut_auth_realm: false
-nexus_rut_auth_header: "CUSTOM_RUT_HEADER"
+nexus_rut_auth_header: CUSTOM_RUT_HEADER
 
 nexus_repos_cleanup_policies:
   - name: mvn_cleanup
@@ -58,19 +57,19 @@ nexus_repos_cleanup_policies:
 
 nexus_repos_maven_proxy:
   - name: central
-    remote_url: 'https://repo1.maven.org/maven2/'
+    remote_url: https://repo1.maven.org/maven2/
     layout_policy: permissive
     cleanup_policies:
       - mvn_cleanup
   - name: jboss
-    remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+    remote_url: https://repository.jboss.org/nexus/content/groups/public-jboss/
     cleanup_policies:
       - mvn_cleanup
 
 nexus_repos_maven_hosted:
   - name: private-release
     version_policy: release
-    write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+    write_policy: allow_once # one of "allow", "allow_once" or "deny"
     cleanup_policies:
       - mvn_cleanup
 
@@ -115,7 +114,6 @@ nexus_repos_docker_hosted:
     write_policy: allow
 
 nexus_repos_docker_proxy: []
-
 nexus_repos_apt_hosted:
   - name: private_ubuntu_18.04
     distribution: bionic
@@ -205,7 +203,7 @@ nexus_repos_apt_hosted:
       0J6R2RZlI2A7tQ==
       =GPnF
       -----END PGP PRIVATE KEY BLOCK-----
-    passphrase: "password"
+    passphrase: password
     # Allow redeploy to allow repeated failing tests when debugging
     # !! Don't do this for a release repo on produciton
     write_policy: allow
@@ -227,7 +225,7 @@ nexus_repos_helm_proxy:
 
 nexus_repos_r_proxy:
   - name: r-proxy
-    remote_url: 'https://cran.r-project.org/'
+    remote_url: https://cran.r-project.org/
 
 nexus_repos_r_hosted:
   - name: r-internal
@@ -242,11 +240,11 @@ nexus_repos_r_group:
 
 nexus_repos_conda_proxy:
   - name: conda-proxy
-    remote_url: 'https://repo.continuum.io/pkgs/'
+    remote_url: https://repo.continuum.io/pkgs/
 
 nexus_repos_go_proxy:
   - name: go-proxy
-    remote_url: 'https://golang.org/pkg/'
+    remote_url: https://golang.org/pkg/
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -282,8 +280,8 @@ nexus_content_selectors:
 
 nexus_privileges:
   - name: all-repos-read
-    description: 'Read & Browse access to all repos'
-    repository: '*'
+    description: Read & Browse access to all repos
+    repository: "*"
     actions:
       - read
       - browse
@@ -306,7 +304,7 @@ nexus_privileges:
   - name: docker-login-search-all
     type: repository-content-selector
     contentSelector: docker-login-search
-    description: "Login to and search docker registry"
+    description: Login to and search docker registry
     repository: "*"
     actions:
       - read
@@ -334,25 +332,25 @@ nexus_privileges:
 nexus_roles:
   - name: c-ro-private_yum_centos_7
     id: c-ro-private_yum_centos_7
-    description: "Custrom read-only role for private_yum_centos_7 hosted repository"
+    description: Custrom read-only role for private_yum_centos_7 hosted repository
     privileges:
-      - 'nx-repository-view-yum-private_yum_centos_7-read'
-      - 'nx-repository-view-yum-private_yum_centos_7-browse'
+      - nx-repository-view-yum-private_yum_centos_7-read
+      - nx-repository-view-yum-private_yum_centos_7-browse
   - name: developers
     id: developers
-    description: "Developers"
+    description: Developers
     privileges:
       - all-repos-read
       - wildcard1
       - docker-login-search-all
   - name: role-team1
     id: role-team1
-    description: "team1"
+    description: team1
     privileges:
       - docker-private-team1-rw
   - name: role-team2
     id: role-team2
-    description: "team2"
+    description: team2
     privileges:
       - docker-private-team2-rw
 
@@ -361,23 +359,23 @@ nexus_local_users:
     first_name: Jenkins
     last_name: CI
     email: support@company.com
-    password: "s3cr3t"
+    password: s3cr3t
     roles:
       - developers
-  - username: olduser  # make sure this old account is removed
+  - username: olduser # make sure this old account is removed
     state: absent
   - username: test_roles
     first_name: Test
     last_name: Roles
     email: test@roles.com
-    password: "s3cr3t"
+    password: s3cr3t
     roles:
       - c-ro-private_yum_centos_7
   - username: team1
     first_name: team
     last_name: one
     email: team@one.com
-    password: "theone"
+    password: theone
     roles:
       - developers
       - role-team1
@@ -385,7 +383,7 @@ nexus_local_users:
     first_name: team
     last_name: two
     email: team@two.com
-    password: "thetwo"
+    password: thetwo
     roles:
       - developers
       - role-team2
@@ -394,9 +392,9 @@ nexus_scheduled_tasks:
   #  Example task to purge maven snapshots with cron schedule
   - name: Purge maven snapshots
     schedule_type: cron
-    cron: '0 50 23 * * ?'
+    cron: "0 50 23 * * ?"
     typeId: repository.maven.remove-snapshots
-    task_alert_email: alerts@example.org  # optional
+    task_alert_email: alerts@example.org # optional
     taskProperties:
       repositoryName: "*"
       minimumRetained: "2"
@@ -430,7 +428,7 @@ nexus_scheduled_tasks:
     monthly_days:
       - 1
       - 15
-      - 999  # Last day of month
+      - 999 # Last day of month
     typeId: repository.maven.purge-unused-snapshots
     taskProperties:
       repositoryName: "*"
@@ -471,7 +469,7 @@ nexus_https_proxy_host: "{{ lookup('env', 'https_proxy') | urlsplit('hostname') 
 nexus_https_proxy_port: "{{ lookup('env', 'https_proxy') | urlsplit('port') }}"
 nexus_https_proxy_username: "{{ lookup('env', 'https_proxy') | urlsplit('username') }}"
 nexus_https_proxy_password: "{{ lookup('env', 'https_proxy') | urlsplit('password') }}"
-nexus_proxy_exclude_hosts:  # no_proxy env for shell does not obey java style
-  - "localhost"
-  - "127.*"
+nexus_proxy_exclude_hosts: # no_proxy env for shell does not obey java style
+  - localhost
+  - 127.*
   - "[::1]"

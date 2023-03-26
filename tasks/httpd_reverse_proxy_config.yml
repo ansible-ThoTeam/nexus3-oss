@@ -1,9 +1,9 @@
 ---
 - name: Copy Nexus vhost in Apache config dir
   ansible.builtin.template:
-    src: "nexus-vhost.conf"
+    src: nexus-vhost.conf
     dest: "{{ httpd_config_dir }}"
-    mode: 0644
+    mode: "0644"
   notify:
     - httpd-service-reload
     - wait-for-httpd
@@ -12,7 +12,7 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ certificate_file_dest }}"
-    mode: 0600
+    mode: "0600"
   when: (httpd_copy_ssl_files | bool) and (item | length > 0)
   notify:
     - httpd-service-reload
@@ -23,7 +23,7 @@
   ansible.builtin.copy:
     src: "{{ httpd_ssl_certificate_key_file }}"
     dest: "{{ certificate_key_dest }}"
-    mode: 0600
+    mode: "0600"
   when: httpd_copy_ssl_files | bool
   notify:
     - httpd-service-reload
@@ -32,8 +32,8 @@
 - name: Setsebool httpd_can_network_connect
   ansible.posix.seboolean:
     name: httpd_can_network_connect
-    persistent: yes
-    state: yes
+    persistent: true
+    state: true
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - name: Run all notified handlers now

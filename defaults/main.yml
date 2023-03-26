@@ -1,24 +1,24 @@
 ---
-nexus_version: ''
+nexus_version: ""
 
 # This var is calculated dynamically by the role and
 # will hold the currently installed version if any
 # /!\ It should never be set directly /!\
 # nexus_version_running: <unset>
 
-nexus_download_dir: '/tmp'
-nexus_download_url: 'https://download.sonatype.com/nexus/3'
+nexus_download_dir: /tmp
+nexus_download_url: https://download.sonatype.com/nexus/3
 nexus_download_retries: 0
 nexus_download_delay: 15
-nexus_os_group: 'nexus'
-nexus_os_user: 'nexus'
-nexus_os_user_home_dir: '/home/{{ nexus_os_user }}'
-nexus_os_max_filedescriptors: 65536  # minimum value for nexus > 3.5.x
-nexus_installation_dir: '/opt'
-nexus_data_dir: '/var/nexus'
-nexus_timezone: 'UTC'  # java timezone
+nexus_os_group: nexus
+nexus_os_user: nexus
+nexus_os_user_home_dir: /home/{{ nexus_os_user }}
+nexus_os_max_filedescriptors: 65536 # minimum value for nexus > 3.5.x
+nexus_installation_dir: /opt
+nexus_data_dir: /var/nexus
+nexus_timezone: UTC # java timezone
 nexus_tmp_dir: "{{ (ansible_os_family == 'RedHat') | ternary('/var/nexus-tmp', '/tmp/nexus') }}"
-nexus_script_dir: '{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts'
+nexus_script_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts"
 nexus_plugin_urls: []
 nexus_onboarding_wizard: false
 
@@ -27,28 +27,27 @@ nexus_onboarding_wizard: false
 # https://help.sonatype.com/repomanager3/system-requirements#SystemRequirements-Memory
 # and you know what you are doing
 # Note: those values probably belong to a host_vars files...
-nexus_min_heap_size: "2703M"
+nexus_min_heap_size: 2703M
 nexus_max_heap_size: "{{ nexus_min_heap_size }}"
 nexus_max_direct_memory: "{{ nexus_min_heap_size }}"
 # The below list should not contain any setting related to the above memory setting
 # (aka -Xms -Xmx and -XX:MaxDirectMemorySize=)
 nexus_custom_jvm_settings: []
-
 # Nexus Backup
-nexus_backup_dir: '/var/nexus-backup'
-nexus_backup_dir_create: true  # Shall we create the dir, or do you already have something in place?
-nexus_restore_log: '{{ nexus_backup_dir }}/nexus-restore.log'
-nexus_backup_configure: false  # Shall we configure backup ?
+nexus_backup_dir: /var/nexus-backup
+nexus_backup_dir_create: true # Shall we create the dir, or do you already have something in place?
+nexus_restore_log: "{{ nexus_backup_dir }}/nexus-restore.log"
+nexus_backup_configure: false # Shall we configure backup ?
 ## For next schedule vars, see related schedule tasks settings
 ## https://github.com/ansible-ThoTeam/nexus3-oss/wiki/Scheduled-tasks-configuration#schedule-types-and-related-settings
 nexus_backup_schedule_type: cron
-nexus_backup_cron: "0 0 21 * * ?"  # See cron expression in nexus create task GUI
+nexus_backup_cron: "0 0 21 * * ?" # See cron expression in nexus create task GUI
 # nexus_backup_start_date_time: "yyyy-MM-dd'T'HH:mm:ss"
 # nexus_backup_weekly_days: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 # nexus_backup_monthly_days: {{ range(1,32) | list + [999] }}
-nexus_backup_rotate: false  # Shall we rotate backups
-nexus_backup_rotate_first: false  # Shall we rotate before making the current backup ?
-nexus_backup_keep_rotations: 4  # Keep 4 backup rotations by default (current + last 3)
+nexus_backup_rotate: false # Shall we rotate backups
+nexus_backup_rotate_first: false # Shall we rotate before making the current backup ?
+nexus_backup_keep_rotations: 4 # Keep 4 backup rotations by default (current + last 3)
 
 # Nexus restore procedure:
 # run ansible-playbook example.yml -e "nexus_restore_point=(# date of choice -> %Y-%m-%d-%H-%M-%S #)"
@@ -62,7 +61,7 @@ nexus_default_port: 8081
 nexus_docker_hosted_port: 9080
 nexus_docker_proxy_port: 9081
 nexus_docker_group_port: 9082
-nexus_default_context_path: '/'
+nexus_default_context_path: /
 nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0") }}'
 
 # Nexus default admin password on first time install.
@@ -72,14 +71,14 @@ nexus_application_host: '{{ httpd_setup_enable | ternary("127.0.0.1", "0.0.0.0")
 # i.e.
 # - Set your new password in nexus_admin_password
 # - Run `ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_default_admin_password=oldpassword`
-nexus_default_admin_password: 'admin123'
+nexus_default_admin_password: admin123
 # Nexus admin password to set and use.
 # Note: this should be vault encrypted in your playbook.
-nexus_admin_password: 'changeme'
+nexus_admin_password: changeme
 
 nexus_anonymous_access: false
 
-nexus_public_hostname: 'nexus.vm'
+nexus_public_hostname: nexus.vm
 nexus_public_scheme: https
 
 # How should the role access the API for provisionning
@@ -103,11 +102,11 @@ nexus_audit_enabled: false
 
 # email server
 nexus_email_server_enabled: false
-nexus_email_server_host: "localhost"
+nexus_email_server_host: localhost
 nexus_email_server_port: 25
 nexus_email_server_username: ""
 nexus_email_server_password: ""
-nexus_email_from_address: "nexus@example.org"
+nexus_email_from_address: nexus@example.org
 nexus_email_subject_prefix: ""
 nexus_email_tls_enabled: false
 nexus_email_tls_required: false
@@ -116,13 +115,13 @@ nexus_email_ssl_check_server_identity_enabled: false
 nexus_email_trust_store_enabled: false
 
 nexus_branding_header: ""
-nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
+nexus_branding_footer: Last provisionned {{ ansible_date_time.iso8601 }}
 
 httpd_setup_enable: false
 httpd_server_name: "{{ nexus_public_hostname }}"
-httpd_default_admin_email: "admin@example.com"
-httpd_ssl_certificate_file: 'files/nexus.vm.crt'
-httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
+httpd_default_admin_email: admin@example.com
+httpd_ssl_certificate_file: files/nexus.vm.crt
+httpd_ssl_certificate_key_file: files/nexus.vm.key
 # httpd_ssl_certificate_chain_file: "{{ httpd_ssl_certificate_file }}"
 # If httpd_copy_ssl_files is false you need to provide the following variables:
 # - httpd_ssl_cert_file_location
@@ -130,8 +129,8 @@ httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 # - httpd_ssl_cert_chain_file_location <= optionnal. Leave unset if none
 httpd_copy_ssl_files: true
 # These specifies to the vhost file where to find on the remote file system the certificates files.
-httpd_ssl_cert_file_location: "/etc/pki/tls/certs/nexus.vm.crt"
-httpd_ssl_cert_key_location: "/etc/pki/tls/private/nexus.vm.key"
+httpd_ssl_cert_file_location: /etc/pki/tls/certs/nexus.vm.crt
+httpd_ssl_cert_key_location: /etc/pki/tls/private/nexus.vm.key
 # httpd_ssl_cert_chain_file_location: "{{ httpd_ssl_cert_file_location }}"
 
 ldap_connections: []
@@ -159,18 +158,18 @@ ldap_connections: []
 
 # http proxy
 nexus_with_http_proxy: false
-nexus_http_proxy_host: "proxy.example.com"
+nexus_http_proxy_host: proxy.example.com
 nexus_http_proxy_port: 8080
 nexus_http_proxy_username: ""
 nexus_http_proxy_password: ""
 nexus_with_https_proxy: false
-nexus_https_proxy_host: "proxy.example.com"
+nexus_https_proxy_host: proxy.example.com
 nexus_https_proxy_port: 8080
 nexus_https_proxy_username: ""
 nexus_https_proxy_password: ""
 nexus_proxy_exclude_hosts:
-  - "localhost"
-  - "127.*"
+  - localhost
+  - 127.*
   - "[::1]"
 
 nexus_config_maven: true
@@ -198,15 +197,15 @@ nexus_content_selectors: []
 
 # also see _nexus_privilege_defaults below
 nexus_privileges:
-  - name: all-repos-read  # used as key to update a privilege
-    description: 'Read & Browse access to all repos'
-    repository: '*'
+  - name: all-repos-read # used as key to update a privilege
+    description: Read & Browse access to all repos
+    repository: "*"
     actions:
       - read
       - browse
 
 nexus_roles:
-  - id: developers  # can map to a LDAP group id, also used as a key to update a role
+  - id: developers # can map to a LDAP group id, also used as a key to update a role
     name: developers
     description: All developers
     privileges:
@@ -237,41 +236,40 @@ nexus_delete_default_blobstore: false
 
 #
 # Nexus blobstore config
-nexus_blob_split: false     # True - blobstores per format
-nexus_blob_names:           # Splited blob name list @ blob_vars.yml
+nexus_blob_split: false # True - blobstores per format
+nexus_blob_names: # Splited blob name list @ blob_vars.yml
   pypi:
-    blob: 'default'
+    blob: default
   raw:
-    blob: 'default'
+    blob: default
   docker:
-    blob: 'default'
+    blob: default
   ruby:
-    blob: 'default'
+    blob: default
   bower:
-    blob: 'default'
+    blob: default
   npm:
-    blob: 'default'
+    blob: default
   nuget:
-    blob: 'default'
+    blob: default
   mvn:
-    blob: 'default'
+    blob: default
   gitlfs:
-    blob: 'default'
+    blob: default
   yum:
-    blob: 'default'
+    blob: default
   apt:
-    blob: 'default'
+    blob: default
   helm:
-    blob: 'default'
+    blob: default
   r:
-    blob: 'default'
+    blob: default
   p2:
-    blob: 'default'
+    blob: default
   conda:
-    blob: 'default'
+    blob: default
   go:
-    blob: 'default'
-
+    blob: default
 
 nexus_blobstores: []
 # example blobstore item :
@@ -296,19 +294,17 @@ nexus_repos_cleanup_policies: []
 #       lastDownloaded: 120  # Optional
 #       preRelease: RELEASES # Optional: PRERELEASES or RELEASES
 #       regexKey: "foo.*"    # Optional
-
-
 # also see _nexus_repos_maven_defaults below
 nexus_repos_maven_proxy:
   - name: central
-    remote_url: 'https://repo1.maven.org/maven2/'
+    remote_url: https://repo1.maven.org/maven2/
     layout_policy: permissive
     # maximum_component_age: -1
     # maximum_metadata_age: 1440
     # negative_cache_enabled: true
     # negative_cache_ttl: 1440
   - name: jboss
-    remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
+    remote_url: https://repository.jboss.org/nexus/content/groups/public-jboss/
     # maximum_component_age: -1
     # maximum_metadata_age: 1440
     # negative_cache_enabled: true
@@ -327,7 +323,7 @@ nexus_repos_maven_proxy:
 nexus_repos_maven_hosted:
   - name: private-release
     version_policy: release
-    write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+    write_policy: allow_once # one of "allow", "allow_once" or "deny"
 
 nexus_repos_maven_group:
   - name: public
@@ -383,30 +379,30 @@ _nexus_privilege_defaults:
 _nexus_repos_maven_defaults:
   blob_store: "{{ nexus_blob_names.mvn.blob }}"
   strict_content_validation: true
-  version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: -1  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  version_policy: release # release, snapshot or mixed
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: -1 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
   blob_store: "{{ nexus_blob_names.pypi.blob }}"
   strict_content_validation: true
-  version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  version_policy: release # release, snapshot or mixed
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_pypi_hosted:
   - name: pypi-internal
     version_policy: release
-    write_policy: allow  # one of "allow", "allow_once" or "deny"
+    write_policy: allow # one of "allow", "allow_once" or "deny"
 
 nexus_repos_pypi_group:
   - name: pypi-all
@@ -416,7 +412,7 @@ nexus_repos_pypi_group:
 
 nexus_repos_pypi_proxy:
   - name: pypi
-    remote_url: 'https://pypi.python.org/'
+    remote_url: https://pypi.python.org/
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
     # negative_cache_enabled: true
@@ -427,18 +423,17 @@ nexus_repos_pypi_proxy:
 _nexus_repos_raw_defaults:
   blob_store: "{{ nexus_blob_names.raw.blob }}"
   strict_content_validation: true
-  version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
-
+  version_policy: release # release, snapshot or mixed
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_raw_proxy:
   - name: ubuntu-archive
-    remote_url: 'http://archive.ubuntu.com/ubuntu/'
+    remote_url: http://archive.ubuntu.com/ubuntu/
     # maximum_component_age: 1440
     # maximum_metadata_age: 1440
     # negative_cache_enabled: true
@@ -447,7 +442,7 @@ nexus_repos_raw_proxy:
 nexus_repos_raw_hosted:
   - name: raw-internal
     version_policy: release
-    write_policy: allow_once  # one of "allow", "allow_once" or "deny"
+    write_policy: allow_once # one of "allow", "allow_once" or "deny"
 
 nexus_repos_raw_group:
   - name: raw-all
@@ -460,28 +455,28 @@ _nexus_repos_docker_defaults:
   blob_store: "{{ nexus_blob_names.docker.blob }}"
   force_basic_auth: true
   strict_content_validation: true
-  version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  version_policy: release # release, snapshot or mixed
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
   # More about Foreign Layers https://help.sonatype.com/repomanager3/formats/docker-registry/foreign-layers
-  cache_foreign_layers: false  # Nexus gui default. For proxies only
-  foreign_layer_url_whitelist: []  # Nexus gui default. For proxies only
+  cache_foreign_layers: false # Nexus gui default. For proxies only
+  foreign_layer_url_whitelist: [] # Nexus gui default. For proxies only
 
 nexus_repos_docker_hosted:
   - name: docker-hosted
     http_port: "{{ nexus_docker_hosted_port }}"
-    v1_enabled: True
+    v1_enabled: true
 
 nexus_repos_docker_proxy:
   - name: docker-proxy
     http_port: "{{ nexus_docker_proxy_port }}"
-    v1_enabled: True
-    index_type: "HUB"
-    remote_url: "https://registry-1.docker.io"
+    v1_enabled: true
+    index_type: HUB
+    remote_url: https://registry-1.docker.io
     use_nexus_certificates_to_access_index: false
     # cache_foreign_layers: true
     # foreign_layer_url_whitelist:
@@ -495,7 +490,7 @@ nexus_repos_docker_proxy:
 nexus_repos_docker_group:
   - name: docker-group
     http_port: "{{ nexus_docker_group_port }}"
-    v1_enabled: True
+    v1_enabled: true
     member_repos:
       - docker-hosted
       - docker-proxy
@@ -504,11 +499,11 @@ nexus_repos_docker_group:
 _nexus_repos_rubygems_defaults:
   blob_store: "{{ nexus_blob_names.ruby.blob }}"
   strict_content_validation: true
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_rubygems_hosted:
   - name: rubygems-hosted
@@ -534,11 +529,11 @@ nexus_repos_rubygems_proxy:
 _nexus_repos_bower_defaults:
   blob_store: "{{ nexus_blob_names.bower.blob }}"
   strict_content_validation: true
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_bower_hosted:
   - name: bower-internal
@@ -564,11 +559,11 @@ nexus_repos_bower_proxy:
 _nexus_repos_npm_defaults:
   blob_store: "{{ nexus_blob_names.npm.blob }}"
   strict_content_validation: true
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_npm_hosted:
   - name: npm-internal
@@ -593,12 +588,12 @@ nexus_repos_npm_proxy:
 _nexus_repos_nuget_defaults:
   blob_store: "{{ nexus_blob_names.nuget.blob }}"
   strict_content_validation: true
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
-  nuget_version: v3  # Nexus gui default. For proxies only. One of v2 or v3
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  nuget_version: v3 # Nexus gui default. For proxies only. One of v2 or v3
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -624,7 +619,7 @@ nexus_repos_nuget_proxy:
 _nexus_repos_gitlfs_defaults:
   blob_store: "{{ nexus_blob_names.gitlfs.blob }}"
   strict_content_validation: true
-  write_policy: allow  # one of "allow", "allow_once" or "deny"
+  write_policy: allow # one of "allow", "allow_once" or "deny"
 
 nexus_repos_gitlfs_hosted:
   - name: gitlfs-internal
@@ -641,30 +636,29 @@ nexus_repos_yum_proxy: []
 #   # negative_cache_enabled: true
 #   # negative_cache_ttl: 1440
 nexus_repos_yum_group: []
-
 _nexus_repos_yum_defaults:
   blob_store: "{{ nexus_blob_names.yum.blob }}"
-  repodata_depth: 0  # from 0 to 5
+  repodata_depth: 0 # from 0 to 5
   strict_content_validation: true
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 # apt support
 # More on how to work with apt repos https://help.sonatype.com/repomanager3/formats/apt-repositories
 _nexus_repos_apt_defaults:
   blob_store: "{{ nexus_blob_names.apt.blob }}"
   strict_content_validation: true
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
-  flat: false  # Nexus gui default. For proxies only
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+  flat: false # Nexus gui default. For proxies only
 
 nexus_repos_apt_hosted: []
 # - name: private_apt_centos_7
@@ -687,12 +681,12 @@ nexus_repos_apt_proxy: []
 _nexus_repos_helm_defaults:
   blob_store: "{{ nexus_blob_names.helm.blob }}"
   strict_content_validation: true
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_helm_hosted: []
 # - name: helm-hosted
@@ -705,13 +699,13 @@ nexus_repos_helm_proxy: []
 _nexus_repos_r_defaults:
   blob_store: "{{ nexus_blob_names.r.blob }}"
   strict_content_validation: true
-  version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  version_policy: release # release, snapshot or mixed
+  layout_policy: strict # strict or permissive
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_r_proxy: []
 # - name: r-proxy
@@ -736,21 +730,20 @@ nexus_repos_r_group: []
 _nexus_repos_p2_defaults:
   blob_store: "{{ nexus_blob_names.p2.blob }}"
   strict_content_validation: true
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_p2_proxy: []
-
 # conda support
 _nexus_repos_conda_defaults:
   blob_store: "{{ nexus_blob_names.conda.blob }}"
   strict_content_validation: true
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_conda_proxy: []
 #   - name: conda-proxy
@@ -759,11 +752,11 @@ nexus_repos_conda_proxy: []
 _nexus_repos_go_defaults:
   blob_store: "{{ nexus_blob_names.go.blob }}"
   strict_content_validation: true
-  write_policy: allow_once  # one of "allow", "allow_once" or "deny"
-  maximum_component_age: 1440  # Nexus gui default. For proxies only
-  maximum_metadata_age: 1440  # Nexus gui default. For proxies only
-  negative_cache_enabled: true  # Nexus gui default. For proxies only
-  negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  write_policy: allow_once # one of "allow", "allow_once" or "deny"
+  maximum_component_age: 1440 # Nexus gui default. For proxies only
+  maximum_metadata_age: 1440 # Nexus gui default. For proxies only
+  negative_cache_enabled: true # Nexus gui default. For proxies only
+  negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 
 nexus_repos_go_group: []
 nexus_repos_go_proxy: []

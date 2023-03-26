@@ -1,13 +1,12 @@
 ---
-
 - name: Check requirements and deprecated features/vars
-  ansible.builtin.import_tasks: "requirements_and_deprecated.yml"
+  ansible.builtin.import_tasks: requirements_and_deprecated.yml
 
 - name: Include OS specific variables.
-  ansible.builtin.include_vars: "configure-{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: configure-{{ ansible_os_family }}.yml
 
 - name: Include OS specific selinux libs and utils if needed
-  ansible.builtin.include_tasks: "selinux-{{ ansible_os_family }}.yml"
+  ansible.builtin.include_tasks: selinux-{{ ansible_os_family }}.yml
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - name: Check if SystemD service is installed
@@ -24,7 +23,7 @@
   ansible.builtin.include_tasks: nexus_purge.yml
   when: nexus_purge | default(false) | bool
 
-- name: "Digest splited blob list var"
+- name: Digest splited blob list var
   ansible.builtin.include_vars: blob_vars.yml
   when: nexus_blob_split | bool
 
@@ -124,7 +123,7 @@
             args: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
-- name: "Restore nexus backup"
+- name: Restore nexus backup
   ansible.builtin.include_tasks: nexus-restore.yml
   when: nexus_restore_point is defined
 
@@ -205,7 +204,7 @@
   vars:
     script_name: setup_capability
     args:
-      capability_typeId: "rutauth"
+      capability_typeId: rutauth
       capability_enabled: true
       capability_properties:
         httpHeader: "{{ nexus_rut_auth_header }}"
@@ -234,7 +233,7 @@
   vars:
     script_name: setup_capability
     args:
-      capability_typeId: "rapture.branding"
+      capability_typeId: rapture.branding
       capability_enabled: "{{ (nexus_branding_footer | length > 0) and (nexus_branding_header | length > 0) }}"
       capability_properties:
         footerHtml: "{{ nexus_branding_footer }}"
@@ -247,10 +246,9 @@
   vars:
     script_name: setup_capability
     args:
-      capability_typeId: "audit"
+      capability_typeId: audit
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}
-
 - name: Define backup task if backup is configured
   ansible.builtin.set_fact:
     _nexus_backup_task:

@@ -1,5 +1,4 @@
 ---
-
 - name: Make sure we have the necessary yum packages available for selinux
   ansible.builtin.yum:
     name:

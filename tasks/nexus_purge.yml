@@ -1,7 +1,7 @@
 ---
 - name: Make sure nexus is stopped
   ansible.builtin.debug:
-    msg: "trigger nexus stop"
+    msg: trigger nexus stop
   changed_when: true
   notify:
     - nexus-service-stop
@@ -10,11 +10,11 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Get target path of current installed nexus version
-  ansible.builtin.command: 'readlink {{ nexus_installation_dir }}/nexus-latest'
+  ansible.builtin.command: readlink {{ nexus_installation_dir }}/nexus-latest
   register: nexus_readlink_latest_call
   failed_when: false
   changed_when: false
-  check_mode: no
+  check_mode: false
 
 - name: Purge Nexus
   ansible.builtin.file:
