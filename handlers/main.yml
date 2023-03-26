@@ -65,5 +65,7 @@
   listen: wait-for-httpd
 
 - name: Relabel nexus binary according to new context
+  # This is triggered only if needed, ignore the corresponding lint rule
+  # noqa no-changed-when
   ansible.builtin.command: restorecon -irv {{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus
   listen: restore_nexus_selinux_context

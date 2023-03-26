@@ -392,7 +392,7 @@ nexus_scheduled_tasks:
   #  Example task to purge maven snapshots with cron schedule
   - name: Purge maven snapshots
     schedule_type: cron
-    cron: 0 50 23 * * ?
+    cron: "0 50 23 * * ?"
     typeId: repository.maven.remove-snapshots
     task_alert_email: alerts@example.org # optional
     taskProperties:

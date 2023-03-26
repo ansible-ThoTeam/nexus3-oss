@@ -74,7 +74,7 @@
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   check_mode: false
   register: download_status
   until: download_status.status_code == 200
@@ -100,7 +100,7 @@
   ansible.builtin.file:
     path: "{{ nexus_installation_dir }}"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: Unpack Nexus download
   ansible.builtin.unarchive:
@@ -108,7 +108,7 @@
     dest: "{{ nexus_installation_dir }}"
     creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     copy: false
-    mode: 0755
+    mode: "0755"
   notify:
     - nexus-service-stop
 
@@ -214,7 +214,7 @@
     state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
-    mode: 0750
+    mode: "0750"
 
 - name: Setup Nexus data directory
   ansible.builtin.lineinfile:
@@ -284,7 +284,7 @@
     path: "{{ nexus_default_settings_file }}"
     line: nexus.onboarding.enabled={{ nexus_onboarding_wizard }}
     create: true
-    mode: 0644
+    mode: "0644"
   when: nexus_version is version_compare('3.17.0', '>=')
 
 - name: Create Nexus tmp directory
@@ -293,7 +293,7 @@
     state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
-    mode: 0750
+    mode: "0750"
 
 - name: Create Nexus backup directory
   ansible.builtin.file:
@@ -301,7 +301,7 @@
     state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
-    mode: 0750
+    mode: "0750"
   when: nexus_backup_dir_create | bool
 
 - name: Setup Nexus tmp directory
@@ -368,7 +368,7 @@
   ansible.builtin.template:
     src: nexus.service
     dest: /etc/systemd/system
-    mode: 0644
+    mode: "0644"
   notify:
     - systemd-reload
   when: ansible_service_mgr == 'systemd'
@@ -387,7 +387,7 @@
       ansible.builtin.template:
         src: nexus-blob-restore.sh.j2
         dest: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
-        mode: 0755
+        mode: "0755"
 
     - name: Symlink backup restore script to /sbin
       ansible.builtin.file:
@@ -446,7 +446,7 @@
     dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   with_items: "{{ nexus_plugin_urls }}"
 
 - name: Run all notified handlers now
@@ -552,7 +552,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
     - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
@@ -562,7 +562,7 @@
   community.general.archive:
     path: "{{ role_path }}/files/groovy/*"
     dest: /tmp/nexus-upload-groovy-scripts.tar.gz
-    mode: 0644
+    mode: "0644"
   check_mode: false
   run_once: true
   delegate_to: localhost
@@ -571,7 +571,7 @@
   ansible.builtin.unarchive:
     src: /tmp/nexus-upload-groovy-scripts.tar.gz
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
-    mode: 0644
+    mode: "0644"
 
 - name: Upload scripts with meaningful message on failure
   block:

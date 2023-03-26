@@ -41,7 +41,7 @@ nexus_backup_configure: false # Shall we configure backup ?
 ## For next schedule vars, see related schedule tasks settings
 ## https://github.com/ansible-ThoTeam/nexus3-oss/wiki/Scheduled-tasks-configuration#schedule-types-and-related-settings
 nexus_backup_schedule_type: cron
-nexus_backup_cron: 0 0 21 * * ? # See cron expression in nexus create task GUI
+nexus_backup_cron: "0 0 21 * * ?" # See cron expression in nexus create task GUI
 # nexus_backup_start_date_time: "yyyy-MM-dd'T'HH:mm:ss"
 # nexus_backup_weekly_days: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 # nexus_backup_monthly_days: {{ range(1,32) | list + [999] }}
