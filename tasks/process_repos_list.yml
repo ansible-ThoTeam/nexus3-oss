@@ -1,5 +1,4 @@
 ---
-
 # Process a single _nexus_repos_global_list for configured formats and apply default values for type.
 
 # @todo: refactor with easier syntax once the 'flip' filter is released (possibly in ansible 2.8)
@@ -54,7 +53,6 @@
 - name: Process definitions for docker
   when: nexus_config_docker | bool
   block:
-
     - name: Apply defaults to docker proxy repos
       ansible.builtin.set_fact:
         nexus_repos_docker_proxy: >-
@@ -98,7 +96,6 @@
 - name: Process definitions for pypi
   when: nexus_config_pypi | bool
   block:
-
     - name: Apply defaults to pypi proxy repos
       ansible.builtin.set_fact:
         nexus_repos_pypi_proxy: >-
@@ -142,7 +139,6 @@
 - name: Process definitions for raw repositories
   when: nexus_config_raw | bool
   block:
-
     - name: Apply defaults to raw proxy repos
       ansible.builtin.set_fact:
         nexus_repos_raw_proxy: >-
@@ -186,7 +182,6 @@
 - name: Process definitions for rubygems repositories
   when: nexus_config_rubygems | bool
   block:
-
     - name: Apply defaults to rubygems proxy repos
       ansible.builtin.set_fact:
         nexus_repos_rubygems_proxy: >-
@@ -230,7 +225,6 @@
 - name: Process definitions for bower repositories
   when: nexus_config_bower | bool
   block:
-
     - name: Apply defaults to bower proxy repos
       ansible.builtin.set_fact:
         nexus_repos_bower_proxy: >-
@@ -274,7 +268,6 @@
 - name: Process definitions for npm repositories
   when: nexus_config_npm | bool
   block:
-
     - name: Apply defaults to npm proxy repos
       ansible.builtin.set_fact:
         nexus_repos_npm_proxy: >-
@@ -318,7 +311,6 @@
 - name: Process definitions for nuget repositories
   when: nexus_config_nuget | bool
   block:
-
     - name: Apply defaults to nuget proxy repos
       ansible.builtin.set_fact:
         nexus_repos_nuget_proxy: >-
@@ -362,7 +354,6 @@
 - name: Process definitions for gitlfs repositories
   when: nexus_config_gitlfs | bool
   block:
-
     - name: Apply defaults to gitlfs hosted repos
       ansible.builtin.set_fact:
         nexus_repos_gitlfs_hosted: >-
@@ -384,7 +375,6 @@
 - name: Process definitions for yum repositories
   when: nexus_config_yum | bool
   block:
-
     - name: Apply defaults to yum proxy repos
       ansible.builtin.set_fact:
         nexus_repos_yum_proxy: >-
@@ -428,7 +418,6 @@
 - name: Process definitions for apt repositories
   when: nexus_config_apt | bool
   block:
-
     - name: Apply defaults to apt proxy repos
       ansible.builtin.set_fact:
         nexus_repos_apt_proxy: >-
@@ -461,7 +450,6 @@
 - name: Process definitions for helm repositories
   when: nexus_config_helm | bool
   block:
-
     - name: Apply defaults to helm proxy repos
       ansible.builtin.set_fact:
         nexus_repos_helm_proxy: >-
@@ -494,7 +482,6 @@
 - name: Process definitions for r
   when: nexus_config_r | bool
   block:
-
     - name: Apply defaults to r proxy repos
       ansible.builtin.set_fact:
         nexus_repos_r_proxy: >-
@@ -538,7 +525,6 @@
 - name: Process definitions for p2 repositories
   when: nexus_config_p2 | bool
   block:
-
     - name: Apply defaults to p2 proxy repos
       ansible.builtin.set_fact:
         nexus_repos_p2_proxy: >-
@@ -560,7 +546,6 @@
 - name: Process definitions for conda
   when: nexus_config_conda | bool
   block:
-
     - name: Apply defaults to conda proxy repos
       ansible.builtin.set_fact:
         nexus_repos_r_proxy: >-
@@ -582,7 +567,6 @@
 - name: Process definitions for go repositories
   when: nexus_config_go | bool
   block:
-
     - name: Apply defaults to go proxy repos
       ansible.builtin.set_fact:
         nexus_repos_go_proxy: >-

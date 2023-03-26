@@ -1,29 +1,27 @@
 ---
 - name: Removing (potential) previously declared Groovy script {{ item }}
   ansible.builtin.uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ item }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ item }}"
     timeout: "{{ nexus_api_timeout | int }}"
-    user: 'admin'
+    user: admin
     password: "{{ current_nexus_admin_password }}"
     method: DELETE
-    force_basic_auth: yes
+    force_basic_auth: true
     status_code: 204,404
     validate_certs: "{{ nexus_api_validate_certs }}"
 
 - name: Declaring Groovy script {{ item }}
   ansible.builtin.uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
     timeout: "{{ nexus_api_timeout | int }}"
-    user: 'admin'
+    user: admin
     password: "{{ current_nexus_admin_password }}"
     body_format: json
     method: POST
-    force_basic_auth: yes
+    force_basic_auth: true
     status_code: 204
     validate_certs: "{{ nexus_api_validate_certs }}"
     body:
       name: "{{ item }}"
-      type: 'groovy'
+      type: groovy
       content: "{{ lookup('file', 'groovy/' + item + '.groovy') }}"

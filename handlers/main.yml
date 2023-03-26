@@ -1,7 +1,7 @@
 ---
 - name: Reload systemd
   ansible.builtin.systemd:
-    daemon-reload: yes
+    daemon-reload: true
     name: nexus.service
   listen: systemd-reload
 
@@ -9,16 +9,16 @@
   ansible.builtin.systemd:
     name: nexus.service
     state: restarted
-    no_block: yes
+    no_block: true
   listen: nexus-service-restart
-  when: "ansible_service_mgr == 'systemd'"
+  when: ansible_service_mgr == 'systemd'
 
 - name: Nexus sysv service restart
   ansible.builtin.service:
     name: nexus
     state: restarted
   listen: nexus-service-restart
-  when: "ansible_service_mgr != 'systemd'"
+  when: ansible_service_mgr != 'systemd'
 
 - name: Nexus systemd service stop
   ansible.builtin.systemd:
@@ -37,7 +37,7 @@
 - name: Wait for Nexus to start
   ansible.builtin.wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
-    search_regex: "Started Sonatype Nexus .*"
+    search_regex: Started Sonatype Nexus .*
     timeout: 1800
   listen: wait-for-nexus
 
@@ -54,8 +54,8 @@
   ansible.builtin.systemd:
     name: "{{ httpd_package_name }}.service"
     state: reloaded
-    enabled: yes
-    no_block: yes
+    enabled: true
+    no_block: true
   listen: httpd-service-reload
 
 - name: Wait for Apache port to be available
@@ -65,5 +65,5 @@
   listen: wait-for-httpd
 
 - name: Relabel nexus binary according to new context
-  ansible.builtin.command: "restorecon -irv {{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus"
+  ansible.builtin.command: restorecon -irv {{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus
   listen: restore_nexus_selinux_context

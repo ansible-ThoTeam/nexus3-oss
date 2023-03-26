@@ -2,16 +2,18 @@
 - name: Call groovy script, get result, handle exceptions
   block:
     - name: Calling Groovy script {{ script_name }}
+      vars:
+        api_url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}"
+        ressource_path: "{{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ script_name }}/run"
       ansible.builtin.uri:
-        url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-          {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}/{{ script_name }}/run"
+        url: "{{ api_url }}{{ ressource_path }}"
         timeout: "{{ nexus_api_timeout | int }}"
-        user: 'admin'
+        user: admin
         password: "{{ current_nexus_admin_password }}"
         headers:
-          Content-Type: "text/plain"
+          Content-Type: text/plain
         method: POST
-        force_basic_auth: yes
+        force_basic_auth: true
         validate_certs: "{{ nexus_api_validate_certs }}"
         body: "{{ args | to_json }}"
       register: script_run

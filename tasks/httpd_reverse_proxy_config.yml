@@ -1,7 +1,7 @@
 ---
 - name: Copy Nexus vhost in Apache config dir
   ansible.builtin.template:
-    src: "nexus-vhost.conf"
+    src: nexus-vhost.conf
     dest: "{{ httpd_config_dir }}"
     mode: 0644
   notify:
@@ -32,8 +32,8 @@
 - name: Setsebool httpd_can_network_connect
   ansible.posix.seboolean:
     name: httpd_can_network_connect
-    persistent: yes
-    state: yes
+    persistent: true
+    state: true
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
 
 - name: Run all notified handlers now
