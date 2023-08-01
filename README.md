@@ -1134,6 +1134,7 @@ The current proposed scenarii refer to the tested platforms (see `molecule/` dir
 * default-centos8 => https://localhost:8091
 * efault-debian_bullseye => https://localhost:8092
 * default-debian_buster => https://localhost:8093
+* default-debian_bookworm => https://localhost:8096
 * default-ubuntu_20.04 => https://localhost:8094
 * default-ubuntu_22.04 => https://localhost:8095
 

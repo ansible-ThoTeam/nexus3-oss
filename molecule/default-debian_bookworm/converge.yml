@@ -1,0 +1,3 @@
+---
+- name: Import default converge playbook
+  import_playbook: ../default-converge.yml
