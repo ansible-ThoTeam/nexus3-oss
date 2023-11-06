@@ -645,6 +645,9 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
     #   # maximum_metadata_age: 1440
     #   # negative_cache_enabled: true
     #   # negative_cache_ttl: 1440
+    # To set HTTP request settings:
+    #   # enable_circular_redirects: true
+    #   # enable_cookies: true
 ```
 
 Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-ProxyRepository) configuration.
