@@ -155,6 +155,14 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configs for npm proxy repos usign bearer token
+        if (currentRepo.bearerToken && currentRepo.type == 'proxy' && currentRepo.format == 'npm') {
+            configuration.attributes['httpclient']['authentication'] = [
+                    type: 'bearerToken',
+                    bearerToken: currentRepo.bearerToken
+            ]
+        }
+
         // Configs for docker proxy repos
         if (currentRepo.type == 'proxy' && currentRepo.format == 'docker') {
             configuration.attributes['dockerProxy'] = [
