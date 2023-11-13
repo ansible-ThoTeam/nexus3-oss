@@ -249,6 +249,16 @@
       capability_typeId: audit
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}
+
+- name: Configure log4j-visualizer capability
+  ansible.builtin.include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    args:
+      capability_typeId: "log4j-visualizer"
+      capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
+      capability_properties: {}
+
 - name: Define backup task if backup is configured
   ansible.builtin.set_fact:
     _nexus_backup_task:
