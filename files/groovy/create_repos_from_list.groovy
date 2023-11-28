@@ -185,6 +185,15 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configs for all docker group repos
+        if (currentRepo.type == 'group' && currentRepo.format == 'docker') {
+            configuration.attributes['group'] = [
+                // when setting the groupWriteMember, the memberNames must be set as well, API expects both objects
+                    groupWriteMember: currentRepo.writable_member_repo,
+                    memberNames: currentRepo.member_repos
+            ]
+        }
+
         if (existingRepository == null) {
             repositoryManager.create(configuration)
             currentResult.put('status', 'created')
