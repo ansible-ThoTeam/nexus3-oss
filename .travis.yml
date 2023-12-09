@@ -40,7 +40,9 @@ jobs:
       name: Checking overall syntax (groovy, yaml, python)
       script: |-
         ./tests/test_groovySyntax.sh
-        molecule test
+        yamllint .
+        ansible-lint
+        flake8
     - stage: test
       name: Test on centos7
       script: |-
