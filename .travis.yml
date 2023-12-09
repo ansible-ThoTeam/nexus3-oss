@@ -1,13 +1,12 @@
 ---
+dist: jammy
+sudo: required
+language: python
+python: 3.10
+
 branches:
   only:
     - main
-
-sudo: required
-
-language: python
-
-python: 3.9
 
 cache:
   pip: true
@@ -16,7 +15,7 @@ cache:
 
 env:
   global:
-    TRAVIS_BUILD_DIR: /home/travis/build/ansible-thoteam.nexus3-oss
+    - TRAVIS_BUILD_DIR=/home/travis/build/ansible-thoteam.nexus3-oss
 
 services:
   - docker
