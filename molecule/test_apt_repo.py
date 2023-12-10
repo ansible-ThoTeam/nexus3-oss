@@ -56,6 +56,10 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 -----END PGP PUBLIC KEY BLOCK-----
 """
 
+apt_gpg_target = "/usr/share/keyrings/private_nexus.gpg"
+
+nexushello_version = "1.0.2"
+
 
 def test_apt_package_upload(host: testinfra.host.Host):
     """Test we can upload an apt package to repository."""
@@ -63,22 +67,25 @@ def test_apt_package_upload(host: testinfra.host.Host):
     host.ansible(
         "get_url",
         "url=https://github.com/ansible-ThoTeam/nexushello-apt-package/releases"
-        "/download/v1.0.1/nexushello_1.0.1_all.deb dest=/tmp",
+        f"/download/v{nexushello_version}/nexushello_{nexushello_version}_all.deb dest=/tmp",
         check=False,
     )
 
     upload = host.run(
-        'curl -X POST "https://localhost/service/rest/v1/components?repository=private_ubuntu_18.04" -k '
-        "-u admin:changeme "
-        '-H  "accept: application/json" '
-        '-H  "Content-Type: multipart/form-data" '
-        '-F "apt.asset=@/tmp/nexushello_1.0.1_all.deb;type=application/vnd.debian.binary-package"'
+        'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
+        f'--data-binary "@./nexushello_{nexushello_version}_all.deb"'
+        '"https://localhost:8095/repository/private_ubuntu_18.04/'
     )
+
     assert upload.exit_status == 0
 
-    # Install hello-world package on host from uploaded file
+    # Import gpg key of our repo
+    host.run(f'echo "{apt_pub_key}" | gpg --dearmor > {apt_gpg_target}')
+
+    # Configure our private repo for apt
     host.run(
-        "echo deb https://localhost/repository/private_ubuntu_18.04 bionic main "
+        f"echo '[arch=all signed-by={apt_gpg_target}] "
+        "deb https://localhost/repository/private_ubuntu_18.04 bionic main "
         "> /etc/apt/sources.list.d/nexushello.list"
     )
 
@@ -92,10 +99,6 @@ Acquire::https {
 EOF"""
     )
 
-    # Import gpg key of our repo
-    host.run(f'echo "{apt_pub_key}" > /tmp/pub.key')
-    host.run("apt-key add /tmp/pub.key")
-
     # Install package
     host.ansible(
         "apt",
@@ -104,4 +107,4 @@ EOF"""
         become=True,
     )
 
-    assert host.run("nexushello").stdout == "Hello nexus !\n"
+    assert host.run("nexushello").stdout == "Hello nexus!\n"
