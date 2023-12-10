@@ -55,7 +55,7 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 =Oq1K
 -----END PGP PUBLIC KEY BLOCK-----
 """
-apt_gpg_target = "/etc/apt/keyrings/private_nexus.gpg"
+apt_gpg_target = "/etc/apt/keyrings/private_nexus.asc"
 apt_private_repo = "private_ubuntu_18.04"
 
 nexushello_version = "1.0.2"
@@ -83,7 +83,7 @@ def test_apt_package_upload(host: testinfra.host.Host):
     assert upload.exit_status == 0
 
     # Import gpg key of our repo
-    host.run("echo %s | gpg --dearmor > %s", apt_pub_key, apt_gpg_target)
+    host.run("echo %s > %s", apt_pub_key, apt_gpg_target)
 
     # Configure our private repo for apt
     host.run(
