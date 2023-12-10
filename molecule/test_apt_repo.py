@@ -73,8 +73,8 @@ def test_apt_package_upload(host: testinfra.host.Host):
 
     upload = host.run(
         'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
-        f'--data-binary "@./nexushello_{nexushello_version}_all.deb"'
-        '"https://localhost:8095/repository/private_ubuntu_18.04/'
+        f'--data-binary "@./nexushello_{nexushello_version}_all.deb" '
+        '"https://localhost/repository/private_ubuntu_18.04/"'
     )
 
     assert upload.exit_status == 0
