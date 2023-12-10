@@ -56,10 +56,10 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 -----END PGP PUBLIC KEY BLOCK-----
 """
 apt_gpg_target = "/etc/apt/keyrings/private_nexus.asc"
-apt_private_repo = "private_ubuntu_18.04"
+apt_private_repo = "private_apt"
 
 nexushello_version = "1.0.2"
-nexushello_distribution = "bionic"
+nexushello_distribution = "all"
 
 
 def test_apt_package_upload(host: testinfra.host.Host):
