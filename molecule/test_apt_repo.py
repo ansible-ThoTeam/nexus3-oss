@@ -74,7 +74,7 @@ def test_apt_package_upload(host: testinfra.host.Host):
 
     upload = host.run(
         'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
-        '--data-binary "@./nexushello_%s_all.deb" '
+        '--data-binary "@/tmp/nexushello_%s_all.deb" '
         '"https://localhost/repository/%s/"',
         nexushello_version,
         apt_private_repo,
