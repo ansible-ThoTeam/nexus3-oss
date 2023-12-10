@@ -4,7 +4,7 @@ import os
 import testinfra.utils.ansible_runner
 
 """
-These test should only run on debian based destributions
+These test should only run on debian based distributions
 """
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
