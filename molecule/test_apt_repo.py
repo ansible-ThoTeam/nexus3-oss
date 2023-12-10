@@ -79,7 +79,6 @@ def test_apt_package_upload(host: testinfra.host.Host):
         nexushello_version,
         apt_private_repo,
     )
-
     assert upload.exit_status == 0
 
     # Import gpg key of our repo
@@ -87,8 +86,8 @@ def test_apt_package_upload(host: testinfra.host.Host):
 
     # Configure our private repo for apt
     host.run(
-        "echo '[arch=all signed-by=%s] "
-        "deb https://localhost/repository/%s %s main "
+        "echo 'deb [arch=all signed-by=%s] "
+        "https://localhost/repository/%s %s main' "
         "> /etc/apt/sources.list.d/nexushello.list",
         apt_gpg_target,
         apt_private_repo,
