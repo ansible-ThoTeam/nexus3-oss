@@ -74,20 +74,25 @@ def test_apt_package_upload(host: testinfra.host.Host):
 
     upload = host.run(
         'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
-        f'--data-binary "@./nexushello_{nexushello_version}_all.deb" '
-        f'"https://localhost/repository/{apt_private_repo}/"'
+        '--data-binary "@./nexushello_%s_all.deb" '
+        '"https://localhost/repository/%s/"',
+        nexushello_version,
+        apt_private_repo,
     )
 
     assert upload.exit_status == 0
 
     # Import gpg key of our repo
-    host.run(f'echo "{apt_pub_key}" | gpg --dearmor > {apt_gpg_target}')
+    host.run("echo %s | gpg --dearmor > %s", apt_pub_key, apt_gpg_target)
 
     # Configure our private repo for apt
     host.run(
-        f"echo '[arch=all signed-by={apt_gpg_target}] "
-        f"deb https://localhost/repository/{apt_private_repo} {nexushello_distribution} main "
-        "> /etc/apt/sources.list.d/nexushello.list"
+        "echo '[arch=all signed-by=%s] "
+        "deb https://localhost/repository/%s %s main "
+        "> /etc/apt/sources.list.d/nexushello.list",
+        apt_gpg_target,
+        apt_private_repo,
+        nexushello_distribution,
     )
 
     # Disable ssl verification as we use a self signed cert for tests
