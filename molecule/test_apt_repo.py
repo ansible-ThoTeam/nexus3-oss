@@ -55,7 +55,7 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 =Oq1K
 -----END PGP PUBLIC KEY BLOCK-----
 """
-apt_gpg_target = "/usr/share/keyrings/private_nexus.gpg"
+apt_gpg_target = "/etc/apt/keyrings/private_nexus.gpg"
 apt_private_repo = "private_ubuntu_18.04"
 
 nexushello_version = "1.0.2"
