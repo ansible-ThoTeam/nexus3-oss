@@ -82,6 +82,7 @@ def test_apt_package_upload(host: testinfra.host.Host):
     assert upload.exit_status == 0
 
     # Import gpg key of our repo
+    host.run("mkdir -p $(dirname %s)", apt_gpg_target)
     host.run("echo %s > %s", apt_pub_key, apt_gpg_target)
 
     # Configure our private repo for apt
