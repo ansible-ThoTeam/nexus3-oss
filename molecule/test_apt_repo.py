@@ -55,10 +55,11 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 =Oq1K
 -----END PGP PUBLIC KEY BLOCK-----
 """
-
 apt_gpg_target = "/usr/share/keyrings/private_nexus.gpg"
+apt_private_repo = "private_ubuntu_18.04"
 
 nexushello_version = "1.0.2"
+nexushello_distribution = "bionic"
 
 
 def test_apt_package_upload(host: testinfra.host.Host):
@@ -74,7 +75,7 @@ def test_apt_package_upload(host: testinfra.host.Host):
     upload = host.run(
         'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
         f'--data-binary "@./nexushello_{nexushello_version}_all.deb" '
-        '"https://localhost/repository/private_ubuntu_18.04/"'
+        f'"https://localhost/repository/{apt_private_repo}/"'
     )
 
     assert upload.exit_status == 0
@@ -85,7 +86,7 @@ def test_apt_package_upload(host: testinfra.host.Host):
     # Configure our private repo for apt
     host.run(
         f"echo '[arch=all signed-by={apt_gpg_target}] "
-        "deb https://localhost/repository/private_ubuntu_18.04 bionic main "
+        f"deb https://localhost/repository/{apt_private_repo} {nexushello_distribution} main "
         "> /etc/apt/sources.list.d/nexushello.list"
     )
 
