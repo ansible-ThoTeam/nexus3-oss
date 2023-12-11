@@ -58,7 +58,7 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 apt_gpg_target = "/etc/apt/keyrings/private_nexus.asc"
 apt_private_repo = "private_apt"
 
-nexushello_version = "1.0.2"
+nexushello_version = "1.0.3"
 nexushello_distribution = "all"
 
 
