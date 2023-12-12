@@ -15,6 +15,7 @@ platforms:
     pull: true
     pre_build_image: true
     privileged: true
+    cgroupns_mode: host
     published_ports:
       - 8090:443
     override_command: false
@@ -23,6 +24,7 @@ platforms:
     networks: &nexus_networks
       - name: nexus-default
     volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads
 
   - name: slapd-server-mock
