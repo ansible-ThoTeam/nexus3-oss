@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_ldap
-    args:
+    call_args:
       name: "{{ item.ldap_name }}"
       protocol: "{{ item.ldap_protocol }}"
       hostname: "{{ item.ldap_hostname }}"
