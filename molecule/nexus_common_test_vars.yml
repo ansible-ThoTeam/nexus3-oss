@@ -90,6 +90,8 @@ nexus_repos_npm_proxy:
   - name: npm-registry
     remote_url: https://registry.npmjs.org/
     negative_cache_enabled: false
+    enable_circular_redirects: true
+    enable_cookies: true
 
 nexus_repos_yum_hosted:
   - name: private_yum_centos_7
@@ -100,6 +102,8 @@ nexus_repos_yum_proxy:
     maximum_component_age: -1
     maximum_metadata_age: -1
     negative_cache_ttl: 60
+    enable_circular_redirects: true
+    enable_cookies: true
 nexus_repos_yum_group:
   - name: yum_all
     member_repos:
