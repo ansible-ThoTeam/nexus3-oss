@@ -8,12 +8,6 @@ driver:
   safe_files:
     - nexus-downloads
 
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
-
 platforms:
   - name: nexus3-oss-ubuntu-22.04
     hostname: nexus3-oss-ubuntu-22.04
