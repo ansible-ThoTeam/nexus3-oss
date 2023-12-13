@@ -20,6 +20,6 @@ flake8
 flake8-docstrings
 jmespath
 molecule
-molecule-docker
+molecule-plugins[docker]
 pytest-testinfra
 yamllint
