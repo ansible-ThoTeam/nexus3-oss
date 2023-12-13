@@ -111,7 +111,9 @@ parsed_args.each { currentRepo ->
                     blocked       : false,
                     autoBlock     : true,
                     connection    : [
-                            useTrustStore: false
+                            useTrustStore: false,
+                            enableCircularRedirects: currentRepo.get('enable_circular_redirects', false),
+                            enableCookies: currentRepo.get('enable_cookies', false)
                     ]
             ]
 
