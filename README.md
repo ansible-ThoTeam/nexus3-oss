@@ -1102,15 +1102,15 @@ This role includes tests and CI integration through travis. At time being, we te
 * groovy scripts syntax
 * yaml syntax and coding standard (yamllint)
 * ansible good practices (ansible lint)
-* a set of basic deployments on 3 different linux platforms
-    * Centos 8
-    * Debian buster
-    * Ubuntu bionic (18.04)
+* a set of basic deployments on 2 different linux platforms
+    * Rockylinux 9 (as a close parent of RHEL products since centos is deprecated)
+    * Debian 12 Bookworm
 
-Other tests are available for older platforms but not played on CI for performance reasons:
-* Centos 7
-* Debian stretch
-* Ubuntu xenial (16.04)
+Other tests are available for older/different platforms but not played on CI for performance reasons:
+* Rockylinux 8
+* Debian 11 bullseye
+* Ubuntu 20.04 Focal
+* Ubuntu 22.04 Jammy
 
 
 #### Groovy syntax
@@ -1138,11 +1138,14 @@ deactivate
 ```
 Please have a look at molecule documentation (a good start is `molecule --help`) for further usage.
 
-The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
-* default-centos7 => https://localhost:8090
-* default-centos8 => https://localhost:8091
+The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario
+and leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance
+from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail.
+As a convenience, here is the correspondence between scenarii and configured ports:
+* default-rockylinux8 => https://localhost:8090
+* default-rockylinux9 => https://localhost:8091
 * efault-debian_bullseye => https://localhost:8092
-* default-debian_buster => https://localhost:8093
+* default-debian_bookworm => https://localhost:8093
 * default-ubuntu_20.04 => https://localhost:8094
 * default-ubuntu_22.04 => https://localhost:8095
 
