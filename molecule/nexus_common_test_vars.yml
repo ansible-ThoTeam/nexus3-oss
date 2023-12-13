@@ -115,8 +115,8 @@ nexus_repos_docker_hosted:
 
 nexus_repos_docker_proxy: []
 nexus_repos_apt_hosted:
-  - name: private_ubuntu_18.04
-    distribution: bionic
+  - name: private_apt
+    distribution: all
     keypair: |-
       -----BEGIN PGP PRIVATE KEY BLOCK-----
 
@@ -205,7 +205,7 @@ nexus_repos_apt_hosted:
       -----END PGP PRIVATE KEY BLOCK-----
     passphrase: password
     # Allow redeploy to allow repeated failing tests when debugging
-    # !! Don't do this for a release repo on produciton
+    # !! Don't do this for a release repo on production
     write_policy: allow
 
 nexus_repos_apt_proxy:
@@ -332,7 +332,7 @@ nexus_privileges:
 nexus_roles:
   - name: c-ro-private_yum_centos_7
     id: c-ro-private_yum_centos_7
-    description: Custrom read-only role for private_yum_centos_7 hosted repository
+    description: Custom read-only role for private_yum_centos_7 hosted repository
     privileges:
       - nx-repository-view-yum-private_yum_centos_7-read
       - nx-repository-view-yum-private_yum_centos_7-browse

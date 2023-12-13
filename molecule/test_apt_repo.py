@@ -4,7 +4,7 @@ import os
 import testinfra.utils.ansible_runner
 
 """
-These test should only run on debian based destributions
+These test should only run on debian based distributions
 """
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
@@ -55,6 +55,12 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 =Oq1K
 -----END PGP PUBLIC KEY BLOCK-----
 """
+apt_gpg_target = "/etc/apt/keyrings/private_nexus.asc"
+apt_private_repo = "private_apt"
+
+nexushello_version = "1.0.4"
+nexushello_deb_build = "1"
+nexushello_distribution = "all"
 
 
 def test_apt_package_upload(host: testinfra.host.Host):
@@ -63,23 +69,32 @@ def test_apt_package_upload(host: testinfra.host.Host):
     host.ansible(
         "get_url",
         "url=https://github.com/ansible-ThoTeam/nexushello-apt-package/releases"
-        "/download/v1.0.1/nexushello_1.0.1_all.deb dest=/tmp",
+        f"/download/v{nexushello_version}/nexushello_{nexushello_version}-{nexushello_deb_build}_all.deb dest=/tmp",
         check=False,
     )
 
     upload = host.run(
-        'curl -X POST "https://localhost/service/rest/v1/components?repository=private_ubuntu_18.04" -k '
-        "-u admin:changeme "
-        '-H  "accept: application/json" '
-        '-H  "Content-Type: multipart/form-data" '
-        '-F "apt.asset=@/tmp/nexushello_1.0.1_all.deb;type=application/vnd.debian.binary-package"'
+        'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
+        '--data-binary "@/tmp/nexushello_%s-%s_all.deb" '
+        '"https://localhost/repository/%s/"',
+        nexushello_version,
+        nexushello_deb_build,
+        apt_private_repo,
     )
     assert upload.exit_status == 0
 
-    # Install hello-world package on host from uploaded file
+    # Import gpg key of our repo
+    host.run("mkdir -p $(dirname %s)", apt_gpg_target)
+    host.run("echo %s > %s", apt_pub_key, apt_gpg_target)
+
+    # Configure our private repo for apt
     host.run(
-        "echo deb https://localhost/repository/private_ubuntu_18.04 bionic main "
-        "> /etc/apt/sources.list.d/nexushello.list"
+        "echo 'deb [arch=all signed-by=%s] "
+        "https://localhost/repository/%s %s main' "
+        "> /etc/apt/sources.list.d/nexushello.list",
+        apt_gpg_target,
+        apt_private_repo,
+        nexushello_distribution,
     )
 
     # Disable ssl verification as we use a self signed cert for tests
@@ -92,10 +107,6 @@ Acquire::https {
 EOF"""
     )
 
-    # Import gpg key of our repo
-    host.run(f'echo "{apt_pub_key}" > /tmp/pub.key')
-    host.run("apt-key add /tmp/pub.key")
-
     # Install package
     host.ansible(
         "apt",
@@ -104,4 +115,4 @@ EOF"""
         become=True,
     )
 
-    assert host.run("nexushello").stdout == "Hello nexus !\n"
+    assert host.run("nexushello").stdout == "Hello nexus!\n"

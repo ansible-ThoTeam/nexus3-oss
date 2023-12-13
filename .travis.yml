@@ -1,13 +1,12 @@
 ---
+dist: jammy
+sudo: required
+language: python
+python: "3.10"
+
 branches:
   only:
     - main
-
-sudo: required
-
-language: python
-
-python: 3.9
 
 cache:
   pip: true
@@ -16,7 +15,7 @@ cache:
 
 env:
   global:
-    TRAVIS_BUILD_DIR: /home/travis/build/ansible-thoteam.nexus3-oss
+    - TRAVIS_BUILD_DIR=/home/travis/build/ansible-thoteam.nexus3-oss
 
 services:
   - docker
@@ -29,6 +28,7 @@ before_install:
   - cd $TRAVIS_BUILD_DIR
 
 install:
+  - pip install --upgrade pip
   - pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
 stages:
@@ -41,15 +41,17 @@ jobs:
       name: Checking overall syntax (groovy, yaml, python)
       script: |-
         ./tests/test_groovySyntax.sh
-        molecule test
+        yamllint .
+        ansible-lint
+        flake8
     - stage: test
-      name: Test on centos7
+      name: Test on rockylinux9
       script: |-
-        molecule test -s default-centos7
+        molecule test -s default-rockylinux9
     - stage: test
-      name: Test on Debian Bullseye
+      name: Test on Debian Bookworm
       script: |-
-        molecule test -s default-debian_bullseye
+        molecule test -s default-debian_bookworm
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
