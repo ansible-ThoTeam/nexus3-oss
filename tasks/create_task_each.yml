@@ -3,4 +3,4 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: create_task
-    args: "{{ item }}"
+    call_args: "{{ item }}"
