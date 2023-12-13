@@ -58,7 +58,8 @@ ztL8V2T47uABUGCunyFxhVRM7q9VQIRC+i7bEO3v0J6R2RZlI2A7tQ==
 apt_gpg_target = "/etc/apt/keyrings/private_nexus.asc"
 apt_private_repo = "private_apt"
 
-nexushello_version = "1.0.4-1"
+nexushello_version = "1.0.4"
+nexushello_deb_build = "1"
 nexushello_distribution = "all"
 
 
@@ -68,15 +69,16 @@ def test_apt_package_upload(host: testinfra.host.Host):
     host.ansible(
         "get_url",
         "url=https://github.com/ansible-ThoTeam/nexushello-apt-package/releases"
-        f"/download/v{nexushello_version}/nexushello_{nexushello_version}_all.deb dest=/tmp",
+        f"/download/v{nexushello_version}/nexushello_{nexushello_version}-{nexushello_deb_build}_all.deb dest=/tmp",
         check=False,
     )
 
     upload = host.run(
         'curl -k -u "admin:changeme" -H "Content-Type: multipart/form-data" '
-        '--data-binary "@/tmp/nexushello_%s_all.deb" '
+        '--data-binary "@/tmp/nexushello_%s-%s_all.deb" '
         '"https://localhost/repository/%s/"',
         nexushello_version,
+        nexushello_deb_build,
         apt_private_repo,
     )
     assert upload.exit_status == 0
