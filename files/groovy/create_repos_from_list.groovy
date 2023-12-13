@@ -167,7 +167,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
-                    deployPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
+                    layoutPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 
