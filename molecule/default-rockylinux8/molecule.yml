@@ -8,27 +8,22 @@ driver:
   safe_files:
     - nexus-downloads
 
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
-
 platforms:
-  - name: nexus3-oss-debian-bullseye
-    hostname: nexus3-oss-debian-bullseye
-    image: thoteam/molecule_apache_openjdk8:debian_bullseye
-    command: lib/systemd/systemd
+  - name: nexus3-oss-rockylinux8
+    hostname: nexus3-oss-rockylinux8
+    image: thoteam/molecule_apache_openjdk8:rockylinux8
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8092:443
+      - 8090:443
+    override_command: false
     groups:
       - nexus
     networks: &nexus_networks
       - name: nexus-default
     volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - ${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads
 
   - name: slapd-server-mock
