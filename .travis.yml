@@ -45,13 +45,13 @@ jobs:
         ansible-lint
         flake8
     - stage: test
-      name: Test on centos7
+      name: Test on rockylinux9
       script: |-
-        molecule test -s default-centos7
+        molecule test -s default-rockylinux9
     - stage: test
-      name: Test on Debian Bullseye
+      name: Test on Debian Bookworm
       script: |-
-        molecule test -s default-debian_bullseye
+        molecule test -s default-debian_bookworm
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
