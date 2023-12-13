@@ -254,7 +254,7 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
-    args:
+    call_args:
       capability_typeId: "log4j-visualizer"
       capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
       capability_properties: {}
