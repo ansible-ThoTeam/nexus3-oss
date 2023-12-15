@@ -25,3 +25,6 @@ if (parsed_args.with_http_proxy || parsed_args.with_https_proxy) {
     core.nonProxyHosts()
     core.nonProxyHosts(parsed_args.proxy_exclude_hosts as String[])
 }
+
+core.connectionRetryAttempts(parsed_args.nexus_http_proxy_retries as int)
+core.connectionTimeout(parsed_args.nexus_http_proxy_timeout as int)
