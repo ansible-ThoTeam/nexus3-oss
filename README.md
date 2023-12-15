@@ -39,6 +39,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [API access for this role](#api-access-for-this-role)
       * [Branding capabalities](#branding-capabalities)
       * [Audit capability](#audit-capability)
+      * [Log4j Visualizer](#log4j-visualizer)
       * [Reverse proxy setup](#reverse-proxy-setup)
       * [LDAP configuration](#ldap-configuration)
       * [Privileges](#privileges)
@@ -309,6 +310,13 @@ Header and footer branding, those can contain HTML.
 ```
 
 The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/security/auditing) is off by default. You can turn it on by switching this to `true`. Please note that the audit data is stored in nexus db, persits accross reboots and is not automatically rotated/cleared.
+
+### Log4j Visualizer
+```yaml
+    nexus_log4j_visualizer_enabled: false
+```
+
+By default the log4j visualizer is set to false. You can enable this by switching to `true`. This will add the log4j-visualizer capability to your Nexus instance.
 
 ### Reverse proxy setup
 ```yaml
@@ -650,7 +658,6 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
     #   # negative_cache_enabled: true
     #   # negative_cache_ttl: 1440
     # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
-    #   # content_disposition: inline
     # To set HTTP request settings:
     #   # enable_circular_redirects: true
     #   # enable_cookies: true
