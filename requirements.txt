@@ -13,12 +13,13 @@
 ## and produce unwanted errors.
 ##################################
 
-molecule
 ansible
 ansible-lint
+docker
 flake8
 flake8-docstrings
-yamllint
-testinfra
-docker
 jmespath
+molecule
+molecule-plugins[docker]
+pytest-testinfra
+yamllint

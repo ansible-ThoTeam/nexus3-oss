@@ -1,18 +1,17 @@
 ---
-
 - name: Set detection method to fixed if we have a var
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_version_detected_from: fixed
   when: nexus_version | length > 0
 
-- name: "Check nexus-latest link stat in {{ nexus_installation_dir }}"
-  stat:
+- name: Check nexus-latest link stat in {{ nexus_installation_dir }}
+  ansible.builtin.stat:
     path: "{{ nexus_installation_dir }}/nexus-latest"
   register: nexus_latest_link
-  check_mode: no
+  check_mode: false
 
 - name: Register current running version if any
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_version_running: >-
       {{
         nexus_latest_link.stat.lnk_target
@@ -23,11 +22,11 @@
     - nexus_latest_link.stat.islnk | default(false)
 
 - name: No version given => Version detection
+  when: nexus_version | length == 0
   block:
-
     - name: Register nexus_version from currently installed
       # Note: setting nexus_version here skips the next block task.
-      set_fact:
+      ansible.builtin.set_fact:
         nexus_version: "{{ nexus_version_running }}"
         nexus_version_detected_from: installed
       when:
@@ -35,25 +34,23 @@
         - not (nexus_upgrade | default(false) | bool)
 
     - name: Call latest nexus uri to get redirection
-      uri:
+      ansible.builtin.uri:
         url: "{{ nexus_download_url }}/latest-unix.tar.gz"
         method: CONNECT
         status_code: 302
         validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
       register: nexus_latest_uri_call
       # No changes made, we only need the target uri. Safe for check mode and needed for next operations
-      check_mode: no
+      check_mode: false
 
     - name: Register nexus_version from latest nexus uri redirection
-      set_fact:
+      ansible.builtin.set_fact:
         nexus_version: >-
           {{
             nexus_latest_uri_call.location
             | regex_replace("^https://.*nexus-(\d*\.\d*\.\d*-\d*)-unix.tar.gz", "\1")
           }}
         nexus_version_detected_from: latest
-
-  when: nexus_version | length == 0
 
 - name: Print info about detected version to use
   vars:
@@ -62,58 +59,75 @@
       Version detected from: {{ nexus_version_detected_from }}
       Upgrade allowed: {{ nexus_upgrade | default(false) | bool }}
       Current running version: {{ nexus_version_running | default('none') }}
-  debug:
+  ansible.builtin.debug:
     msg: "{{ version_info.split('\n') }}"
 
 - name: Register nexus package name
-  set_fact:
-    nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+  ansible.builtin.set_fact:
+    nexus_package: nexus-{{ nexus_version }}-unix.tar.gz
 
 - name: Download nexus_package
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ nexus_download_url }}/{{ nexus_package }}"
     dest: "{{ nexus_download_dir }}/{{ nexus_package }}"
-    force: no
+    force: false
     validate_certs: "{{ nexus_download_ssl_verify | default(omit) }}"
+    owner: root
+    group: root
+    mode: "0644"
+  check_mode: false
+  register: download_status
+  until: download_status.status_code == 200
+  retries: "{{ nexus_download_retries }}"
+  delay: "{{ nexus_download_delay }}"
   notify:
     - nexus-service-stop
 
 - name: Ensure Nexus o/s group exists
-  group:
+  ansible.builtin.group:
     name: "{{ nexus_os_group }}"
     state: present
 
 - name: Ensure Nexus o/s user exists
-  user:
+  ansible.builtin.user:
     name: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     home: "{{ nexus_os_user_home_dir }}"
-    shell: "/bin/bash"
+    shell: /bin/bash
     state: present
 
 - name: Ensure Nexus installation directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_installation_dir }}"
-    state: "directory"
+    state: directory
+    mode: "0755"
 
 - name: Unpack Nexus download
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ nexus_download_dir }}/{{ nexus_package }}"
     dest: "{{ nexus_installation_dir }}"
     creates: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-    force: no
     copy: false
+    mode: "0755"
   notify:
     - nexus-service-stop
 
 - name: Ensure proper ownership of nexus installation directory
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-    recurse: yes
-    mode: "u=rwX,g=rX,o=rX"
+    recurse: true
+    mode: u=rwX,g=rX,o=rX
+
+- name: Create context for nexus binary on selinux systems.
+  community.general.sefcontext:
+    target: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus"
+    setype: bin_t
+    state: present
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  notify: restore_nexus_selinux_context
 
 - name: Update symlink nexus-latest
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_installation_dir }}/nexus-latest"
     src: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
     owner: "{{ nexus_os_user }}"
@@ -124,31 +138,32 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  ansible.builtin.meta: flush_handlers
 
 - name: Delete unpacked data directory
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_installation_dir }}/nexus-latest/data"
     state: absent
 
 - name: Get path to default settings
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
   when: nexus_version is version_compare('3.1.0', '<')
 
 - name: Get path to default settings
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
   when: nexus_version is version_compare('3.1.0', '>=')
 
 - name: Get application settings directories
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_app_dir_settings_dirs:
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
   when: nexus_version is version_compare('3.1.0', '<')
 
 - name: Get application settings directories
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_app_dir_settings_dirs:
       - "{{ nexus_installation_dir }}/nexus-latest/etc"
       - "{{ nexus_installation_dir }}/nexus-latest/etc/karaf"
@@ -159,29 +174,29 @@
   when: nexus_version is version_compare('3.1.0', '>=')
 
 - name: Get rest API endpoint (v < 3.8.0)
-  set_fact:
-    nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
+  ansible.builtin.set_fact:
+    nexus_rest_api_endpoint: service/siesta/rest/v1/script
   when: nexus_version is version_compare('3.8.0', '<')
 
 - name: Get rest API endpoint (v >= 3.8.0)
-  set_fact:
-    nexus_rest_api_endpoint: "service/rest/v1/script"
+  ansible.builtin.set_fact:
+    nexus_rest_api_endpoint: service/rest/v1/script
   when: nexus_version is version_compare('3.8.0', '>=')
 
 - name: Get path to database restore dir (v < 3.11.0)
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_db_restore_dir: "{{ nexus_data_dir }}/backup"
   when: nexus_version is version_compare('3.11.0', '<')
 
 - name: Get path to database restore dir (v >= 3.11.0)
-  set_fact:
+  ansible.builtin.set_fact:
     nexus_db_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
   when: nexus_version is version_compare('3.11.0', '>=')
 
 - name: Allow nexus to create first-time install configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
-    state: "directory"
+    state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
     mode: "0755"
@@ -194,200 +209,254 @@
     - skip_ansible_lint
 
 - name: Create Nexus data directory
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_data_dir }}"
-    state: "directory"
+    state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    mode: "0750"
 
 - name: Setup Nexus data directory
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-Dkaraf.data=.*"
-    line: "-Dkaraf.data={{ nexus_data_dir }}"
+    regexp: ^-Dkaraf.data=.*
+    line: -Dkaraf.data={{ nexus_data_dir }}
   notify:
     - nexus-service-stop
 
 - name: Setup JVM logfile directory
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-XX:LogFile=.*"
-    line: "-XX:LogFile={{ nexus_data_dir }}/log/jvm.log"
+    regexp: ^-XX:LogFile=.*
+    line: -XX:LogFile={{ nexus_data_dir }}log/jvm.log
+  notify:
+    - nexus-service-stop
+
+- name: Setup Karaf log directory
+  ansible.builtin.lineinfile:
+    dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    regexp: ^-Dkaraf.log=.*
+    line: -Dkaraf.log={{ nexus_data_dir }}log
   notify:
     - nexus-service-stop
 
 - name: Setup Nexus default timezone
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-Duser.timezone=.*"
-    line: "-Duser.timezone={{ nexus_timezone }}"
+    regexp: ^-Duser.timezone=.*
+    line: -Duser.timezone={{ nexus_timezone }}
   notify:
     - nexus-service-stop
 
 - name: Setup Nexus JVM min heap size
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-Xms.*"
-    line: "-Xms{{ nexus_min_heap_size }}"
+    regexp: ^-Xms.*
+    line: -Xms{{ nexus_min_heap_size }}
   notify: nexus-service-stop
 
 - name: Setup Nexus JVM max heap size
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-Xmx.*"
-    line: "-Xmx{{ nexus_max_heap_size }}"
+    regexp: ^-Xmx.*
+    line: -Xmx{{ nexus_max_heap_size }}
   notify: nexus-service-stop
 
 - name: Setup Nexus JVM max direct memory
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-XX:MaxDirectMemorySize=.*"
-    line: "-XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}"
+    regexp: ^-XX:MaxDirectMemorySize=.*
+    line: -XX:MaxDirectMemorySize={{ nexus_max_direct_memory }}
+  notify: nexus-service-stop
+
+- name: Setup additional and custom vm options if present (or remove them if none)
+  vars:
+    options: "{{ nexus_custom_jvm_settings | d([]) }}"
+  ansible.builtin.blockinfile:
+    path: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
+    marker: "# {mark} - Custom nexus settings managed by ansible"
+    block: "-{{ options | join('\n-') }}"
+    state: "{{ 'present' if options | length > 0 else 'absent' }}" # noqa args[module]
   notify: nexus-service-stop
 
 - name: Stop the admin wizard from running
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ nexus_default_settings_file }}"
-    line: "nexus.onboarding.enabled={{ nexus_onboarding_wizard }}"
+    line: nexus.onboarding.enabled={{ nexus_onboarding_wizard }}
     create: true
+    mode: "0644"
   when: nexus_version is version_compare('3.17.0', '>=')
 
 - name: Create Nexus tmp directory
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_tmp_dir }}"
-    state: "directory"
+    state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    mode: "0750"
 
 - name: Create Nexus backup directory
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_backup_dir }}"
-    state: "directory"
+    state: directory
     owner: "{{ nexus_os_user }}"
     group: "{{ nexus_os_group }}"
+    mode: "0750"
   when: nexus_backup_dir_create | bool
 
 - name: Setup Nexus tmp directory
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
-    regexp: "^-Djava.io.tmpdir=.*"
-    line: "-Djava.io.tmpdir={{ nexus_tmp_dir }}"
+    regexp: ^-Djava.io.tmpdir=.*
+    line: -Djava.io.tmpdir={{ nexus_tmp_dir }}
   notify:
     - nexus-service-stop
 
 - name: Set NEXUS_HOME for the service user
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_os_user_home_dir }}/.bashrc"
-    regexp: "^export NEXUS_HOME=.*"
-    line: "export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest"
+    regexp: ^export NEXUS_HOME=.*
+    line: export NEXUS_HOME={{ nexus_installation_dir }}/nexus-latest
   notify:
     - nexus-service-stop
 
 - name: Set nexus user
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.rc"
-    regexp: ".*run_as_user=.*"
-    line: "run_as_user=\"{{ nexus_os_user }}\""
+    regexp: .*run_as_user=.*
+    line: run_as_user="{{ nexus_os_user }}"
   notify:
     - nexus-service-stop
 
 - name: Set nexus port
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_default_settings_file }}"
-    regexp: "^application-port=.*"
-    line: "application-port={{ nexus_default_port }}"
+    regexp: ^application-port=.*
+    line: application-port={{ nexus_default_port }}
   notify:
     - nexus-service-stop
 
 - name: Set nexus context path
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_default_settings_file }}"
-    regexp: "^nexus-context-path=.*"
-    line: "nexus-context-path={{ nexus_default_context_path }}"
+    regexp: ^nexus-context-path=.*
+    line: nexus-context-path={{ nexus_default_context_path }}
   notify:
     - nexus-service-stop
 
-- name: "Set nexus service listening ip to {{ nexus_application_host }}"
-  lineinfile:
+- name: Set nexus service listening ip to {{ nexus_application_host }}
+  ansible.builtin.lineinfile:
     dest: "{{ nexus_default_settings_file }}"
-    regexp: "^application-host=.*"
-    line: "application-host={{ nexus_application_host }}"
+    regexp: ^application-host=.*
+    line: application-host={{ nexus_application_host }}
   notify:
     - nexus-service-stop
+
+# Note: this one is mandatory until we move all our groovy scripts
+# to REST API calls. Once this is done, we will move this to an
+# optionnal setting defaulting to false as recommended by sonatype
+- name: Enable creating groovy scripts in nexus
+  ansible.builtin.lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: ^nexus.scripts.allowCreation=.*
+    line: nexus.scripts.allowCreation=true
+  notify:
+    - nexus-service-stop
+  when: nexus_version is version_compare('3.21.2', '>=')
 
 - name: Create systemd service configuration
-  template:
-    src: "nexus.service"
-    dest: "/etc/systemd/system"
+  ansible.builtin.template:
+    src: nexus.service
+    dest: /etc/systemd/system
+    mode: "0644"
   notify:
     - systemd-reload
-  when: "ansible_service_mgr == 'systemd'"
+  when: ansible_service_mgr == 'systemd'
 
 - name: Create sysv service configuration
-  file:
-    path: "/etc/init.d/nexus"
+  ansible.builtin.file:
+    path: /etc/init.d/nexus
     src: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus"
     state: link
-  when: "ansible_service_mgr != 'systemd'"
+  when: ansible_service_mgr != 'systemd'
 
-- block:
-    - name: "Deploy backup restore script"
-      template:
-        src: "nexus-blob-restore.sh.j2"
-        dest: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
-        mode: 0755
-    - name: "Symlink backup restore script to /sbin"
-      file:
-        src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
-        dest: "/sbin/nexus-blob-restore.sh"
-        state: link
+- name: Install backup/restore script
   when: nexus_backup_configure | bool
+  block:
+    - name: Deploy backup restore script
+      ansible.builtin.template:
+        src: nexus-blob-restore.sh.j2
+        dest: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
+        mode: "0755"
 
-- name: 'Check if data directory is empty (first-time install)'
-  command: "ls {{ nexus_data_dir }}"
+    - name: Symlink backup restore script to /sbin
+      ansible.builtin.file:
+        src: "{{ nexus_script_dir }}/nexus-blob-restore.sh"
+        dest: /sbin/nexus-blob-restore.sh
+        state: link
+
+- name: Check if data directory is empty (first-time install)
+  ansible.builtin.find:
+    paths:
+      - "{{ nexus_data_dir }}"
+    excludes:
+      - lost+found
+    recurse: false
+    file_type: any
   register: nexus_data_dir_contents
-  check_mode: no
+  check_mode: false
   changed_when: false
 
 - name: Clean cache for upgrade process
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_data_dir }}/clean_cache"
     state: touch
-  when: nexus_latest_version.changed and nexus_data_dir_contents.stdout | length > 0
+  when: nexus_latest_version.changed and nexus_data_dir_contents.matched > 0
   tags:
     # hard to run as a handler for time being
     - skip_ansible_lint
 
-- meta: flush_handlers
+- name: Run all notified handlers now
+  ansible.builtin.meta: flush_handlers
 
 - name: Enable nexus systemd service and make sure it is started
-  systemd:
+  ansible.builtin.systemd:
     name: nexus.service
-    enabled: yes
+    enabled: true
     state: started
-    no_block: yes
+    no_block: true
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: "ansible_service_mgr == 'systemd'"
+  when: ansible_service_mgr == 'systemd'
 
 - name: Enable nexus sysv service and make sure it is started
-  service:
+  ansible.builtin.service:
     name: nexus
-    enabled: yes
+    enabled: true
     state: started
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: "ansible_service_mgr != 'systemd'"
+  when: ansible_service_mgr != 'systemd'
 
-- meta: flush_handlers
+- name: Install plugins from remote source
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items: "{{ nexus_plugin_urls }}"
 
-- name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
-  file:
+- name: Run all notified handlers now
+  ansible.builtin.meta: flush_handlers
+
+- name: Chown configuration files from nexus-latest/etc back to root
+  ansible.builtin.file:
     path: "{{ nexus_installation_dir }}/nexus-latest/etc"
-    owner: "root"
-    group: "root"
+    owner: root
+    group: root
     mode: a=rX,u+w
     recurse: true
   when: chown_config_first_time.changed
@@ -395,43 +464,36 @@
     # hard to run as a handler for time being
     - skip_ansible_lint
 
-- name: Prevent nexus to create any new configuration files in  {{ nexus_installation_dir }}/nexus-latest/etc
-  file:
+- name: Prevent nexus to create any new configuration files in nexus-latest/etc inside {{ nexus_installation_dir }}
+  ansible.builtin.file:
     path: "{{ item }}"
-    state: "directory"
-    owner: "root"
-    group: "root"
+    state: directory
+    owner: root
+    group: root
     mode: "0755"
     recurse: false
   with_items: "{{ nexus_app_dir_settings_dirs }}"
 
-- name: Install plugins from remote source
-  get_url:
-    url: "{{ item }}"
-    dest: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/deploy/"
-  with_items: "{{ nexus_plugin_urls }}"
-
 - name: Access scripts API endpoint with defined admin password
-  uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
-    method: 'HEAD'
-    user: 'admin'
+  ansible.builtin.uri:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
+    method: HEAD
+    user: admin
     password: "{{ nexus_admin_password }}"
-    force_basic_auth: yes
+    force_basic_auth: true
     status_code: 200, 401
     validate_certs: "{{ nexus_api_validate_certs }}"
   register: nexus_api_head_with_defined_password
-  check_mode: no
+  check_mode: false
 
 - name: Register defined admin password for next operations
-  set_fact:
+  ansible.builtin.set_fact:
     current_nexus_admin_password: "{{ nexus_admin_password }}"
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
 
 - name: Check if admin.password file exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ nexus_data_dir }}/admin.password"
   register: admin_password_file
 
@@ -442,34 +504,33 @@
     - nexus_version is version_compare('3.17.0', '>=')
   block:
     - name: Slurp content of remote generated password file
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ nexus_data_dir }}/admin.password"
       register: _slurpedpass
 
     - name: Set default password from slurped content
-      set_fact:
+      ansible.builtin.set_fact:
         nexus_default_admin_password: "{{ _slurpedpass.content | b64decode }}"
 
 - name: Access scripts API endpoint with default admin password
-  uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
-    method: 'HEAD'
-    user: 'admin'
+  ansible.builtin.uri:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
+    method: HEAD
+    user: admin
     password: "{{ nexus_default_admin_password }}"
-    force_basic_auth: yes
+    force_basic_auth: true
     status_code: 200, 401
     validate_certs: "{{ nexus_api_validate_certs }}"
   register: nexus_api_head_with_default_password
   when: nexus_api_head_with_defined_password.status == 401
 
 - name: Register default admin password for next operations
-  set_fact:
+  ansible.builtin.set_fact:
     current_nexus_admin_password: "{{ nexus_default_admin_password }}"
   when: (nexus_api_head_with_default_password.status | default(false)) == 200
 
 - name: Ensure current Nexus password is known
-  fail:
+  ansible.builtin.fail:
     msg: >-
       Failed to determine current Nexus password
       (it is neither the default/generated nor the defined password).
@@ -480,76 +541,83 @@
   when: current_nexus_admin_password is not defined
 
 - name: Force (re-)registration of groovy scripts (purge reference dir)
-  file:
+  ansible.builtin.file:
     path: "{{ nexus_data_dir }}/groovy-raw-scripts"
     state: absent
   when: nexus_force_groovy_scripts_registration | default(false)
 
 - name: Create directories to hold current groovy scripts for reference
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: root
     group: root
+    mode: "0755"
   with_items:
     - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
     - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
 
 - name: Archive scripts
-  become: no
-  archive:
+  become: false
+  community.general.archive:
     path: "{{ role_path }}/files/groovy/*"
-    dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+    dest: /tmp/nexus-upload-groovy-scripts.tar.gz
+    mode: "0644"
+  check_mode: false
   run_once: true
   delegate_to: localhost
 
 - name: Upload new scripts
-  unarchive:
-    src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+  ansible.builtin.unarchive:
+    src: /tmp/nexus-upload-groovy-scripts.tar.gz
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+    mode: "0644"
 
-- block:
+- name: Upload scripts with meaningful message on failure
+  block:
     - name: Sync new scripts to old and get differences
-      shell: >
-        set -o pipefail &&
-        rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
-        | cut -d" " -f 2 | sed "s/\.groovy//g"
-      register: nexus_groovy_files_changed
-      check_mode: no
-      changed_when: false
-      # simple check on changed files kept on host
-      # skip ansible lint (we don't want to use synchronize module for this)
-      args:
-        warn: false
+      ansible.builtin.shell:
+        cmd: >
+          set -o pipefail &&
+          rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
+          | cut -d" " -f 2 | sed "s/\.groovy//g"
         executable: /bin/bash
+      register: nexus_groovy_files_changed
+      check_mode: false
+      changed_when: false
+
   rescue:
-    - name: Fail with information on rsync error
-      fail:
-        msg: >-
-          A task involving running rsync on the host just failed, most probably because rsync is not installed.
-          Please make sure rsync is installed on your host or double check the above error and try again.
+    - name: Rsync error information
+      ansible.builtin.debug:
+        msg:
+          - A task involving running rsync on the host just failed, most probably because rsync is not installed.
+          - Please make sure rsync is installed on your host or double check the above error and try again.
+
+    - name: Fail on rsync error
+      ansible.builtin.fail:
+        msg: Rsync error - See debug message above
 
 - name: Declare new or changed groovy scripts in nexus
-  include_tasks: declare_script_each.yml
+  ansible.builtin.include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
 
 - name: Change admin password if we are still using default
+  when: (nexus_api_head_with_default_password.status | default(false)) == 200
   block:
-    - include_tasks: call_script.yml
+    - name: Update admin password
+      ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: update_admin_password
-        args:
+        call_args:
           new_password: "{{ nexus_admin_password }}"
 
     - name: Admin password changed
-      set_fact:
+      ansible.builtin.set_fact:
         current_nexus_admin_password: "{{ nexus_admin_password }}"
       no_log: true
 
     - name: Clear generated password file from install (nexus > 3.17)
-      file:
+      ansible.builtin.file:
         path: "{{ nexus_data_dir }}/admin.password"
         state: absent
       when: nexus_version is version_compare('3.17.0', '>=')
-
-  when: (nexus_api_head_with_default_password.status | default(false)) == 200

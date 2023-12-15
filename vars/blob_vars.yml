@@ -1,50 +1,69 @@
 ---
-nexus_blob_prefix: 'blob-'  # Note: Nexus restore - blob name-convention 'blob-*'
+nexus_blob_prefix: blob- # Note: Nexus restore - blob name-convention 'blob-*'
 nexus_blob_names:
   pypi:
-    blob: '{{ nexus_blob_prefix }}pypi'
+    blob: "{{ nexus_blob_prefix }}pypi"
   raw:
-    blob: '{{ nexus_blob_prefix }}raw'
+    blob: "{{ nexus_blob_prefix }}raw"
   docker:
-    blob: '{{ nexus_blob_prefix }}docker'
+    blob: "{{ nexus_blob_prefix }}docker"
   ruby:
-    blob: '{{ nexus_blob_prefix }}ruby'
+    blob: "{{ nexus_blob_prefix }}ruby"
   bower:
-    blob: '{{ nexus_blob_prefix }}bower'
+    blob: "{{ nexus_blob_prefix }}bower"
   npm:
-    blob: '{{ nexus_blob_prefix }}npm'
+    blob: "{{ nexus_blob_prefix }}npm"
   nuget:
-    blob: '{{ nexus_blob_prefix }}nuget'
+    blob: "{{ nexus_blob_prefix }}nuget"
   mvn:
-    blob: '{{ nexus_blob_prefix }}mvn'
+    blob: "{{ nexus_blob_prefix }}mvn"
   gitlfs:
-    blob: '{{ nexus_blob_prefix }}gitlfs'
+    blob: "{{ nexus_blob_prefix }}gitlfs"
   yum:
-    blob: '{{ nexus_blob_prefix }}yum'
+    blob: "{{ nexus_blob_prefix }}yum"
   apt:
-    blob: '{{ nexus_blob_prefix }}apt'
-
+    blob: "{{ nexus_blob_prefix }}apt"
+  helm:
+    blob: "{{ nexus_blob_prefix }}helm"
+  r:
+    blob: "{{ nexus_blob_prefix }}r"
+  p2:
+    blob: "{{ nexus_blob_prefix }}p2"
+  conda:
+    blob: "{{ nexus_blob_prefix }}conda"
+  go:
+    blob: "{{ nexus_blob_prefix }}go"
 
 nexus_blobstores:
-  - name: '{{ nexus_blob_prefix }}raw'
+  - name: "{{ nexus_blob_prefix }}raw"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.raw.blob }}"
-  - name: '{{ nexus_blob_prefix }}pypi'
+  - name: "{{ nexus_blob_prefix }}pypi"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.pypi.blob }}"
-  - name: '{{ nexus_blob_prefix }}docker'
+  - name: "{{ nexus_blob_prefix }}docker"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.docker.blob }}"
-  - name: '{{ nexus_blob_prefix }}ruby'
+  - name: "{{ nexus_blob_prefix }}ruby"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.ruby.blob }}"
-  - name: '{{ nexus_blob_prefix }}bower'
+  - name: "{{ nexus_blob_prefix }}bower"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.bower.blob }}"
-  - name: '{{ nexus_blob_prefix }}npm'
+  - name: "{{ nexus_blob_prefix }}npm"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.npm.blob }}"
-  - name: '{{ nexus_blob_prefix }}nuget'
+  - name: "{{ nexus_blob_prefix }}nuget"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.nuget.blob }}"
-  - name: '{{ nexus_blob_prefix }}mvn'
+  - name: "{{ nexus_blob_prefix }}mvn"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.mvn.blob }}"
-  - name: '{{ nexus_blob_prefix }}gitlfs'
+  - name: "{{ nexus_blob_prefix }}gitlfs"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.gitlfs.blob }}"
-  - name: '{{ nexus_blob_prefix }}yum'
+  - name: "{{ nexus_blob_prefix }}yum"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.yum.blob }}"
-  - name: '{{ nexus_blob_prefix }}apt'
+  - name: "{{ nexus_blob_prefix }}apt"
     path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.apt.blob }}"
+  - name: "{{ nexus_blob_prefix }}helm"
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.helm.blob }}"
+  - name: "{{ nexus_blob_prefix }}r"
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.r.blob }}"
+  - name: "{{ nexus_blob_prefix }}p2"
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.p2.blob }}"
+  - name: "{{ nexus_blob_prefix }}conda"
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.conda.blob }}"
+  - name: "{{ nexus_blob_prefix }}go"
+    path: "{{ nexus_data_dir }}/blobs/{{ nexus_blob_names.go.blob }}"

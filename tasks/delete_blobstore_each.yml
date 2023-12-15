@@ -1,5 +1,6 @@
 ---
-- include_tasks: call_script.yml
+- name: Check/create blobstore
+  ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: delete_blobstore
-    args: "{{ item }}"
+    call_args: "{{ item }}"

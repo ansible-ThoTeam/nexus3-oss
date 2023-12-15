@@ -1,33 +1,29 @@
 ---
 dependency:
   name: galaxy
+  enabled: false
 
 driver:
   name: docker
   safe_files:
     - nexus-downloads
 
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
-
 platforms:
-
-  - name: nexus3-oss-ubuntu-18.04
-    hostname: nexus3-oss-ubuntu-18.04
-    image: thoteam/molecule_apache_openjdk8:ubuntu_18.04
+  - name: nexus3-oss-debian-bookworm
+    hostname: nexus3-oss-debian-bookworm
+    image: thoteam/molecule_apache_openjdk8:debian_bookworm
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8094:443
+      - 8093:443
     groups:
       - nexus
     networks: &nexus_networks
       - name: nexus-default
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads
 
   - name: slapd-server-mock
     hostname: slapd-server-mock
@@ -48,18 +44,15 @@ scenario:
   check_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - check
     - destroy
   converge_sequence:
     - create
-    - prepare
     - converge
   test_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - idempotence
     - check
@@ -68,3 +61,5 @@ scenario:
 
 verifier:
   name: testinfra
+
+role_name_check: 2

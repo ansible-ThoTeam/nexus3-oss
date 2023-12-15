@@ -1,27 +1,27 @@
 ---
 dependency:
   name: galaxy
+  enabled: false
 
 driver:
   name: docker
   safe_files:
     - nexus-downloads
 
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
-
 platforms:
-
-  - name: nexus3-oss-default
-    hostname: nexus3-oss-default
-    image: thoteam/molecule_apache_openjdk8:centos7
-    command: /usr/sbin/init
+  - name: nexus3-oss-rockylinux9
+    hostname: nexus3-oss-rockylinux9
+    image: thoteam/molecule_apache_openjdk8:rockylinux9
     pull: true
     pre_build_image: true
     privileged: true
+    published_ports:
+      - 8091:443
+    override_command: false
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads
+    cgroupns_mode: host
     groups:
       - nexus
     networks: &nexus_networks
@@ -46,16 +46,22 @@ scenario:
   check_sequence:
     - destroy
     - create
-    - prepare
     - converge
     - check
     - destroy
   converge_sequence:
     - create
-    - prepare
     - converge
   test_sequence:
-    - lint
+    - destroy
+    - create
+    - converge
+    - idempotence
+    - check
+    - verify
+    - destroy
 
 verifier:
   name: testinfra
+
+role_name_check: 2

@@ -28,11 +28,14 @@ private Configuration newConfiguration(Map map) {
 }
 
 private boolean configurationChanged(Configuration oldConfig, Configuration newConfig) {
-    if (oldConfig.attributes.httpclient)
-        if (oldConfig.attributes.httpclient.authentication == [:])
+    if (oldConfig.attributes.httpclient) {
+        if (oldConfig.attributes.httpclient.authentication == [:]) {
             oldConfig.attributes.httpclient.authentication = null
-    return oldConfig.properties == newConfig.properties
+        }
+    }
+    return oldConfig.properties != newConfig.properties
 }
+
 
 parsed_args.each { currentRepo ->
 
@@ -104,20 +107,23 @@ parsed_args.each { currentRepo ->
 
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
-            authentication = currentRepo.remote_username == null ? null : [
-                    type    : 'username',
-                    username: currentRepo.remote_username,
-                    password: currentRepo.remote_password
-            ]
-
             configuration.attributes['httpclient'] = [
-                    authentication: authentication,
                     blocked       : false,
                     autoBlock     : true,
                     connection    : [
-                            useTrustStore: false
+                            useTrustStore: false,
+                            enableCircularRedirects: currentRepo.get('enable_circular_redirects', false),
+                            enableCookies: currentRepo.get('enable_cookies', false)
                     ]
             ]
+
+            if (currentRepo.remote_username) {
+                configuration.attributes['httpclient']['authentication'] = [
+                    type    : 'username',
+                    username: currentRepo.remote_username,
+                    password: currentRepo.remote_password
+                ]
+            }
 
             configuration.attributes['proxy'] = [
                     remoteUrl     : currentRepo.remote_url,
@@ -131,6 +137,13 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configure content disposition for maven and raw proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'maven2' || currentRepo.format == 'raw'){
+                configuration.attributes['raw'] = [
+                    contentDisposition: currentRepo.content_disposition ? currentRepo.content_disposition.toUpperCase() : "INLINE"
+                ]
+            }
+
         // Configure cleanup policy
         if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
             def cleanupPolicies = currentRepo.cleanup_policies as Set
@@ -140,6 +153,13 @@ parsed_args.each { currentRepo ->
                     policyName: cleanupPolicies
                 ]
             }
+        }
+
+        // Configs for nuget proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'nuget') {
+            configuration.attributes['nugetProxy'] = [
+                    nugetVersion: currentRepo.nuget_version.toUpperCase()
+            ]
         }
 
         // Configs for docker proxy repos
@@ -152,8 +172,8 @@ parsed_args.each { currentRepo ->
             ]
         }
 
-        // Configs for maven hosted/proxy repos
-        if (currentRepo.type in ['hosted', 'proxy'] && currentRepo.format == 'maven2') {
+        // Configs for all maven repos
+        if (currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
                     layoutPolicy : currentRepo.layout_policy.toUpperCase()
@@ -162,10 +182,12 @@ parsed_args.each { currentRepo ->
 
         // Configs for all docker repos
         if (currentRepo.format == 'docker') {
+            def dockerPort = currentRepo.get('http_port', '')
+            dockerPort = !(dockerPort instanceof String) ? dockerPort as String : dockerPort
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : currentRepo.get('http_port', '')
+                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null
             ]
         }
 
@@ -175,7 +197,7 @@ parsed_args.each { currentRepo ->
             scriptResults['changed'] = true
             log.info('Configuration for repo {} created', currentRepo.name)
         } else {
-            if (!configurationChanged(existingRepository.configuration, configuration)) {
+            if (configurationChanged(existingRepository.configuration, configuration)) {
                 repositoryManager.update(configuration)
                 currentResult.put('status', 'updated')
                 log.info('Configuration for repo {} saved', currentRepo.name)

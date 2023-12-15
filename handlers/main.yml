@@ -1,60 +1,71 @@
 ---
-- name: systemd-reload
-  systemd:
-    daemon-reload: yes
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon-reload: true
     name: nexus.service
+  listen: systemd-reload
 
-- name: nexus systemd service restart
-  systemd:
+- name: Nexus systemd service restart
+  ansible.builtin.systemd:
     name: nexus.service
     state: restarted
-    no_block: yes
+    no_block: true
   listen: nexus-service-restart
-  when: "ansible_service_mgr == 'systemd'"
+  when: ansible_service_mgr == 'systemd'
 
-- name: nexus sysv service restart
-  service:
+- name: Nexus sysv service restart
+  ansible.builtin.service:
     name: nexus
     state: restarted
   listen: nexus-service-restart
-  when: "ansible_service_mgr != 'systemd'"
+  when: ansible_service_mgr != 'systemd'
 
-- name: nexus systemd service stop
-  systemd:
+- name: Nexus systemd service stop
+  ansible.builtin.systemd:
     name: nexus.service
     state: stopped
   listen: nexus-service-stop
   when: nexus_systemd_service_file.stat.exists
 
-- name: nexus sysv service stop
-  service:
+- name: Nexus sysv service stop
+  ansible.builtin.service:
     name: nexus
     state: stopped
   listen: nexus-service-stop
   when: nexus_sysv_service_file.stat.exists
 
-- name: wait-for-nexus
-  wait_for:
+- name: Wait for Nexus to start
+  ansible.builtin.wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
-    search_regex: "Started Sonatype Nexus .*"
+    search_regex: Started Sonatype Nexus .*
     timeout: 1800
+  listen: wait-for-nexus
 
-- name: wait-for-nexus-port
-  wait_for:
+- name: Wait for Nexus port to be available
+  ansible.builtin.wait_for:
     port: "{{ nexus_default_port }}"
     timeout: "{{ nexus_wait_for_port_timeout | default(omit) }}"
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
   register: wait_for_result
   until: wait_for_result is success
+  listen: wait-for-nexus-port
 
-- name: httpd-service-reload
-  systemd:
+- name: Reload Apache service
+  ansible.builtin.systemd:
     name: "{{ httpd_package_name }}.service"
     state: reloaded
-    enabled: yes
-    no_block: yes
+    enabled: true
+    no_block: true
+  listen: httpd-service-reload
 
-- name: wait-for-httpd
-  wait_for:
+- name: Wait for Apache port to be available
+  ansible.builtin.wait_for:
     port: 443
     delay: 5
+  listen: wait-for-httpd
+
+- name: Relabel nexus binary according to new context
+  # This is triggered only if needed, ignore the corresponding lint rule
+  # noqa no-changed-when
+  ansible.builtin.command: restorecon -irv {{ nexus_installation_dir }}/nexus-{{ nexus_version }}/bin/nexus
+  listen: restore_nexus_selinux_context

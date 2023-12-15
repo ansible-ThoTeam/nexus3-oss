@@ -1,9 +1,8 @@
 ---
-
 - name: Make sure we have the necessary deb packages available for selinux
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
-    update_cache: yes
+    update_cache: true
     state: present
   with_items:
     - python-selinux

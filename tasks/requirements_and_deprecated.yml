@@ -2,31 +2,29 @@
 # This file contains all requirements and deprecation checks
 # that can be run before the role starts.
 
-# @requirement: jmespath module must be installe on ansible host
+# @requirement: jmespath module must be installed on ansible host
 # @version: 2.4.0
 - name: Check presence of jmespath python module on ansible host
   block:
     - name: Try to use jmespath on a test var
-      set_fact:
+      ansible.builtin.set_fact:
         voidvar: "{{ [] | json_query('[]') }}"
   rescue:
     - name: Print message about jmespath
-      vars:
-        error_msg: |-
-          Since version 2.4.0, this role uses the  json_query filter which requires
-          the presense of the python module jmespath on the host running ansible.
-          Please install jmespath (i.e. pip install jmespath) on your ansible host.
-      debug:
-        msg: "{{ error_msg.split('\n') }}"
+      ansible.builtin.debug:
+        msg:
+          - Since version 2.4.0, this role uses the json_query filter
+          - which requires the jmespath python module on the host running ansible.
+          - Please install jmespath (i.e. `pip install jmespath`) on your ansible host.
 
-    - name: fail
-      fail:
-        msg: "Install jmespath. See debug message above"
+    - name: Fail on jmespath missing
+      ansible.builtin.fail:
+        msg: Install jmespath. See debug message above
 
 # @deprecated: nexus_package must not exists
 # @version: 2.2.0
 - name: Broken compatibility => nexus_package is now dynamically calculated
-  fail:
+  ansible.builtin.fail:
     msg: >-
       You have set the variable nexus_package in your playbook.
       Starting from version 2.2.0 of this role, this is not compatible
@@ -37,7 +35,7 @@
 # @deprecated: purge was refactored to nexus_purge
 # @version: 2.2.3
 - name: Broken compatibility => purge var moved to nexus_purge
-  fail:
+  ansible.builtin.fail:
     msg: >-
       You have set the purge variable to reset nexus.
       Starting from version 2.2.3 of this role, this variable
@@ -48,7 +46,7 @@
 # @deprecated: public_hostname was renamed to nexus_public_hostname
 # @version: 2.3.0
 - name: Variable refactoring - public_hostname is now nexus_public_hostname
-  fail:
+  ansible.builtin.fail:
     msg: >-
       Version 2.3.0 of this role introduced a variable name change: public_hostname was renamed to
       nexus_public_hostname. We have detected that public_hostname is set in your vars ({{ public_hostname }})
@@ -56,7 +54,7 @@
       Fix this by setting a correct value for nexus_public_hostname and remove public_hostname if
       possible.
   when: >-
-    public_hosname | default('') | length > 0
+    public_hostname | default('') | length > 0
     and
     public_hostname != nexus_public_hostname
     and
@@ -66,20 +64,18 @@
 # anymore to configure docker proxy repos
 # @version: 2.4.0
 - name: "Coding standard: proxy_url is not supported anymore for docker proxy repos"
-  fail:
+  ansible.builtin.fail:
     msg: >-
       proxy_url used to be the variable to configure docker proxy repositories in nexus3-oss role. Since version 2.3.0,
       all repository configuration use the same standard var remote_url. Please review your configurations
       in nexus_repos_docker_proxy and rename the variable accordingly.
-  when: >-
-    nexus_repos_docker_proxy
-    | json_query('[?proxy_url]')
-    | list
-    | length > 0
+  when:
+    - nexus_repos_docker_proxy | length > 0
+    - nexus_repos_docker_proxy | json_query('[?proxy_url]') | list | length > 0
 
 # @requirement: new internal var _nexus_repos_global_List must be undefined
 # @version: 2.4.0
-- name: "Make sure our internal var for repos is unset"
+- name: Make sure our internal var for repos is unset
   when: _nexus_repos_global_list is defined
   block:
     - name: Print debug message about our internal var
@@ -88,9 +84,30 @@
           _nexus_repos_global_list is set somewhere in your playbook/inventory.
           This is an internal var that must be unset when the role starts executing.
           Please unset _nexus_repos_global_list from your playbook/inventory
-      debug:
+      ansible.builtin.debug:
         msg: "{{ error_msg.split('\n') }}"
 
     - name: Fail as we cannot run correctly with internal var set
-      fail:
-        msg: "Unset _nexus_repos_global_list. See debug message above"
+      ansible.builtin.fail:
+        msg: Unset _nexus_repos_global_list. See debug message above
+
+# @requirement: new variable nexus_custom_jvm_setting must be a list
+# and must not contain other memory settings
+# @version: 2.4.16
+- name: Make sure nexus_custom_jvm_settings follow our contraints
+  vars:
+    options: "{{ nexus_custom_jvm_settings | d([]) }}"
+    option_blacklist:
+      - Xms
+      - Xmx
+      - XX:MaxDirectMemorySize=
+    option_blacklist_regex: -({{ option_blacklist | map('regex_escape') | join('|') }})
+  ansible.builtin.assert:
+    that:
+      - options | type_debug == 'list'
+      - options | select('match', option_blacklist_regex) | list | length == 0
+    quiet: true
+    fail_msg:
+      - nexus_custom_jvm_settings must be list
+      - and cannot contain any settings related to memory
+      - (-{{ option_blacklist | join(', -') }})
