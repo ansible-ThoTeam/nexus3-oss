@@ -50,6 +50,8 @@
       https_proxy_username: "{{ nexus_https_proxy_username }}"
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
+      nexus_http_proxy_timeout: "{{ nexus_http_proxy_timeout }}"
+      nexus_http_proxy_retries: "{{ nexus_http_proxy_retries }}"
   when: nexus_with_http_proxy or nexus_with_https_proxy
 
 - name: Deleting default repositories
@@ -249,6 +251,16 @@
       capability_typeId: audit
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}
+
+- name: Configure log4j-visualizer capability
+  ansible.builtin.include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    call_args:
+      capability_typeId: "log4j-visualizer"
+      capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
+      capability_properties: {}
+
 - name: Define backup task if backup is configured
   ansible.builtin.set_fact:
     _nexus_backup_task:

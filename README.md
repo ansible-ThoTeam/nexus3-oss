@@ -39,6 +39,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [API access for this role](#api-access-for-this-role)
       * [Branding capabalities](#branding-capabalities)
       * [Audit capability](#audit-capability)
+      * [Log4j Visualizer](#log4j-visualizer)
       * [Reverse proxy setup](#reverse-proxy-setup)
       * [LDAP configuration](#ldap-configuration)
       * [Privileges](#privileges)
@@ -309,6 +310,13 @@ Header and footer branding, those can contain HTML.
 ```
 
 The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/security/auditing) is off by default. You can turn it on by switching this to `true`. Please note that the audit data is stored in nexus db, persits accross reboots and is not automatically rotated/cleared.
+
+### Log4j Visualizer
+```yaml
+    nexus_log4j_visualizer_enabled: false
+```
+
+By default the log4j visualizer is set to false. You can enable this by switching to `true`. This will add the log4j-visualizer capability to your Nexus instance.
 
 ### Reverse proxy setup
 ```yaml
@@ -628,6 +636,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
+        # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+        # content_disposition: inline
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
         # cleanup_policies:
@@ -636,6 +646,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
+        # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+        # content_disposition: inline
     # example with a login/password :
     # - name: secret-remote-repo
     #   remote_url: 'https://company.com/repo/secure/private/go/away'
@@ -645,6 +657,7 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
     #   # maximum_metadata_age: 1440
     #   # negative_cache_enabled: true
     #   # negative_cache_ttl: 1440
+    # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
     # To set HTTP request settings:
     #   # enable_circular_redirects: true
     #   # enable_cookies: true
@@ -1080,6 +1093,14 @@ Feel free to use them or implement your own install scenario at your convenience
          v1_enabled: False
          member_repos:
            - docker-hosted-repo
+    nexus_repos_npm_proxy:
+      - name: npm-proxy-name
+        blob_store: company-artifacts
+        remote_url: https://some-private-registry.dev/
+        remote_username: 'secret-username'
+        remote_password: "{{ vault_alfresco_secret_password }}"
+        # You can use a Preemptive Bearer Token as well by defining the bearerToken property
+        # bearerToken: "{{ vault_alfresco_secret_bearertoken }}"
 
   roles:
 

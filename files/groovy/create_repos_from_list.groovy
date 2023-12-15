@@ -137,6 +137,13 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configure content disposition for maven and raw proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'maven2' || currentRepo.format == 'raw'){
+                configuration.attributes['raw'] = [
+                    contentDisposition: currentRepo.content_disposition ? currentRepo.content_disposition.toUpperCase() : "INLINE"
+                ]
+            }
+
         // Configure cleanup policy
         if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
             def cleanupPolicies = currentRepo.cleanup_policies as Set
@@ -152,6 +159,14 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type == 'proxy' && currentRepo.format == 'nuget') {
             configuration.attributes['nugetProxy'] = [
                     nugetVersion: currentRepo.nuget_version.toUpperCase()
+            ]
+        }
+
+        // Configs for npm proxy repos usign bearer token
+        if (currentRepo.bearerToken && currentRepo.type == 'proxy' && currentRepo.format == 'npm') {
+            configuration.attributes['httpclient']['authentication'] = [
+                    type: 'bearerToken',
+                    bearerToken: currentRepo.bearerToken
             ]
         }
 
