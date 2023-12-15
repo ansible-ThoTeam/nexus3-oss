@@ -225,6 +225,14 @@ parsed_args.each { currentRepo ->
             }
         }
 
+        if (currentRepo.allow_redeploy_latest && currentRepo.type == 'hosted' && currentRepo.format == 'docker') {
+           configuration.attributes['storage'] = [
+                    latestPolicy: currentRepo.allow_redeploy_latest ? currentRepo.allow_redeploy_latest : null,
+                    // When setting the allow_redeploy_latest, the writePolicy must be set to ALLOW_ONCE
+                    writePolicy: currentRepo.allow_redeploy_latest ? 'ALLOW_ONCE' : null
+           ]
+        }
+
     } catch (Exception e) {
         currentResult.put('status', 'error')
         currentResult.put('error_msg', e.toString())
