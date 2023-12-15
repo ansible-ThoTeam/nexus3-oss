@@ -763,3 +763,8 @@ _nexus_repos_go_defaults:
 
 nexus_repos_go_group: []
 nexus_repos_go_proxy: []
+
+# Applies to both http and https 
+# Timeout unit is in seconds
+nexus_http_proxy_retries: 2
+nexus_http_proxy_timeout: 20
