@@ -137,6 +137,13 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configure content disposition for maven and raw proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'maven2' || currentRepo.format == 'raw'){
+                configuration.attributes['raw'] = [
+                    contentDisposition: currentRepo.content_disposition ? currentRepo.content_disposition.toUpperCase() : "INLINE"
+                ]
+            }
+
         // Configure cleanup policy
         if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
             def cleanupPolicies = currentRepo.cleanup_policies as Set
@@ -152,6 +159,14 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type == 'proxy' && currentRepo.format == 'nuget') {
             configuration.attributes['nugetProxy'] = [
                     nugetVersion: currentRepo.nuget_version.toUpperCase()
+            ]
+        }
+
+        // Configs for npm proxy repos usign bearer token
+        if (currentRepo.bearerToken && currentRepo.type == 'proxy' && currentRepo.format == 'npm') {
+            configuration.attributes['httpclient']['authentication'] = [
+                    type: 'bearerToken',
+                    bearerToken: currentRepo.bearerToken
             ]
         }
 
@@ -180,7 +195,17 @@ parsed_args.each { currentRepo ->
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null
+                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null,
+                    subdomain     : currentRepo.sub_domain ? currentRepo.sub_domain : null
+            ]
+        }
+
+        // Configs for all docker group repos
+        if (currentRepo.type == 'group' && currentRepo.format == 'docker') {
+            configuration.attributes['group'] = [
+                // when setting the groupWriteMember, the memberNames must be set as well, API expects both objects
+                    groupWriteMember: currentRepo.writable_member_repo,
+                    memberNames: currentRepo.member_repos
             ]
         }
 
