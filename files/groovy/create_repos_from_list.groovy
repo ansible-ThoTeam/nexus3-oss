@@ -108,10 +108,13 @@ parsed_args.each { currentRepo ->
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
             configuration.attributes['httpclient'] = [
-                    blocked       : false,
-                    autoBlock     : true,
+                    blocked       : currentRepo.get('blocked', false),
+                    autoBlock     : currentRepo.get('auto_block', true),
                     connection    : [
                             useTrustStore: false,
+                            timeout: currentRepo.get('connection_timeout', null),
+                            retries: currentRepo.get('connection_retries', null),
+                            userAgentSuffix: currentRepo.get('user_agent_suffix', null),
                             enableCircularRedirects: currentRepo.get('enable_circular_redirects', false),
                             enableCookies: currentRepo.get('enable_cookies', false)
                     ]
