@@ -80,6 +80,13 @@ nexus_repos_maven_group:
       - jboss
     layout_policy: permissive
     version_policy: mixed
+  - name: public-offline
+    online: false
+    member_repos:
+      - central
+      - jboss
+    layout_policy: permissive
+    version_policy: mixed
 
 nexus_repos_npm_hosted: []
 nexus_repos_npm_group:
