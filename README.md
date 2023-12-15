@@ -1072,6 +1072,14 @@ Feel free to use them or implement your own install scenario at your convenience
           - jboss
           - vaadin-addons
           - jaspersoft
+    nexus_repos_npm_proxy:
+      - name: npm-proxy-name
+        blob_store: company-artifacts
+        remote_url: https://some-private-registry.dev/
+        remote_username: 'secret-username'
+        remote_password: "{{ vault_alfresco_secret_password }}"
+        # You can use a Preemptive Bearer Token as well by defining the bearerToken property
+        # bearerToken: "{{ vault_alfresco_secret_bearertoken }}"
 
 
   roles:
