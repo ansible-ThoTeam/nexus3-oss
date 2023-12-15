@@ -628,6 +628,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
+        # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+        # content_disposition: inline
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
         # cleanup_policies:
@@ -636,6 +638,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
+        # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+        # content_disposition: inline
     # example with a login/password :
     # - name: secret-remote-repo
     #   remote_url: 'https://company.com/repo/secure/private/go/away'
@@ -645,6 +649,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
     #   # maximum_metadata_age: 1440
     #   # negative_cache_enabled: true
     #   # negative_cache_ttl: 1440
+    # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+    #   # content_disposition: inline
     # To set HTTP request settings:
     #   # enable_circular_redirects: true
     #   # enable_cookies: true
