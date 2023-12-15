@@ -50,6 +50,8 @@
       https_proxy_username: "{{ nexus_https_proxy_username }}"
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
+      nexus_http_proxy_timeout: "{{ nexus_http_proxy_timeout }}"
+      nexus_http_proxy_retries: "{{ nexus_http_proxy_retries }}"
   when: nexus_with_http_proxy or nexus_with_https_proxy
 
 - name: Deleting default repositories
