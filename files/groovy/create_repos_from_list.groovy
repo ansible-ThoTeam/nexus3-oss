@@ -195,7 +195,17 @@ parsed_args.each { currentRepo ->
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null
+                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null,
+                    subdomain     : currentRepo.sub_domain ? currentRepo.sub_domain : null
+            ]
+        }
+
+        // Configs for all docker group repos
+        if (currentRepo.type == 'group' && currentRepo.format == 'docker') {
+            configuration.attributes['group'] = [
+                // when setting the groupWriteMember, the memberNames must be set as well, API expects both objects
+                    groupWriteMember: currentRepo.writable_member_repo,
+                    memberNames: currentRepo.member_repos
             ]
         }
 

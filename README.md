@@ -701,6 +701,19 @@ All three repository types are combined with the following default values :
       negative_cache_ttl: 1440 # Nexus gui default. For proxies only
 ```
 
+Docker repositories
+
+```yaml
+nexus_repos_docker_group:
+  - name: some-docker-group
+    sub_domain: hub-proxy # When set this will expose a subdomain url e.g: https://hub-proxy.your-nexus-instance.com
+    writable_member_repo: docker-hosted-repo
+    blob_store: docker-blob
+    v1_enabled: False
+    member_repos:
+      - docker-hosted-repo
+```
+
 Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm, r, p2, conda and go repository types:
 see `defaults/main.yml` for these options. For historical reasons and to keep backward compatibility,
 maven is configured by default
@@ -1072,6 +1085,14 @@ Feel free to use them or implement your own install scenario at your convenience
           - jboss
           - vaadin-addons
           - jaspersoft
+    nexus_repos_docker_group:
+       - name: some-docker-group
+         sub_domain: hub-proxy
+         writable_member_repo: docker-hosted-repo
+         blob_store: docker-blob
+         v1_enabled: False
+         member_repos:
+           - docker-hosted-repo
     nexus_repos_npm_proxy:
       - name: npm-proxy-name
         blob_store: company-artifacts
@@ -1080,7 +1101,6 @@ Feel free to use them or implement your own install scenario at your convenience
         remote_password: "{{ vault_alfresco_secret_password }}"
         # You can use a Preemptive Bearer Token as well by defining the bearerToken property
         # bearerToken: "{{ vault_alfresco_secret_bearertoken }}"
-
 
   roles:
 
