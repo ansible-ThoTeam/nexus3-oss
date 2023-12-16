@@ -214,7 +214,7 @@
 
 - name: Configure mail server
   ansible.builtin.uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}/service/rest/v1/email"
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}service/rest/v1/email"
     user: admin
     password: "{{ current_nexus_admin_password }}"
     method: PUT
