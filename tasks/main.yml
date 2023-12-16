@@ -263,7 +263,7 @@
   vars:
     script_name: setup_capability
     call_args:
-      capability_typeId: "log4j-visualizer"
+      capability_typeId: log4j-visualizer
       capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
       capability_properties: {}
 
