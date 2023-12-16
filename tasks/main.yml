@@ -213,22 +213,28 @@
   when: nexus_rut_auth_header is defined
 
 - name: Configure mail server
-  ansible.builtin.include_tasks: call_script.yml
-  vars:
-    script_name: setup_email
-    call_args:
-      email_server_enabled: "{{ nexus_email_server_enabled }}"
-      email_server_host: "{{ nexus_email_server_host }}"
-      email_server_port: "{{ nexus_email_server_port }}"
-      email_server_username: "{{ nexus_email_server_username }}"
-      email_server_password: "{{ nexus_email_server_password }}"
-      email_from_address: "{{ nexus_email_from_address }}"
-      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
-      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
-      email_tls_required: "{{ nexus_email_tls_required }}"
-      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
-      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
-      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+  ansible.builtin.uri:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}service/rest/v1/email"
+    user: admin
+    password: "{{ current_nexus_admin_password }}"
+    method: PUT
+    force_basic_auth: true
+    validate_certs: "{{ nexus_api_validate_certs }}"
+    body_format: json
+    body:
+      enabled: "{{ nexus_email_server_enabled }}"
+      host: "{{ nexus_email_server_host }}"
+      port: "{{ nexus_email_server_port }}"
+      username: "{{ nexus_email_server_username }}"
+      password: "{{ nexus_email_server_password }}"
+      fromAddress: "{{ nexus_email_from_address }}"
+      subjectPrefix: "{{ nexus_email_subject_prefix }}"
+      startTlsEnabled: "{{ nexus_email_tls_enabled }}"
+      startTlsRequired: "{{ nexus_email_tls_required }}"
+      sslOnConnectEnabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      sslServerIdentityCheckEnabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      nexusTrustStoreEnabled: "{{ nexus_email_trust_store_enabled }}"
+    status_code: 200,204
 
 - name: Configure branding capability
   ansible.builtin.include_tasks: call_script.yml
@@ -257,7 +263,7 @@
   vars:
     script_name: setup_capability
     call_args:
-      capability_typeId: "log4j-visualizer"
+      capability_typeId: log4j-visualizer
       capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
       capability_properties: {}
 
