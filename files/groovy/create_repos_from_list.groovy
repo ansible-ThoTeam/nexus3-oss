@@ -52,7 +52,7 @@ parsed_args.each { currentRepo ->
             configuration = newConfiguration(
                     repositoryName: currentRepo.name,
                     recipeName: recipeName,
-                    online: true,
+                    online: currentRepo.get('online', true),
                     attributes: [
                             storage: [
                                     blobStoreName: currentRepo.blob_store
