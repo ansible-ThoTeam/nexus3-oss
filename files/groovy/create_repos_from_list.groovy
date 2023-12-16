@@ -52,7 +52,7 @@ parsed_args.each { currentRepo ->
             configuration = newConfiguration(
                     repositoryName: currentRepo.name,
                     recipeName: recipeName,
-                    online: true,
+                    online: currentRepo.get('online', true),
                     attributes: [
                             storage: [
                                     blobStoreName: currentRepo.blob_store
@@ -84,7 +84,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type == 'hosted' && currentRepo.format == 'yum') {
             configuration.attributes['yum'] = [
                     repodataDepth: currentRepo.repodata_depth.toInteger(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    deployPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 
@@ -108,10 +108,13 @@ parsed_args.each { currentRepo ->
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
             configuration.attributes['httpclient'] = [
-                    blocked       : false,
-                    autoBlock     : true,
+                    blocked       : currentRepo.get('blocked', false),
+                    autoBlock     : currentRepo.get('auto_block', true),
                     connection    : [
                             useTrustStore: false,
+                            timeout: currentRepo.get('connection_timeout', null),
+                            retries: currentRepo.get('connection_retries', null),
+                            userAgentSuffix: currentRepo.get('user_agent_suffix', null),
                             enableCircularRedirects: currentRepo.get('enable_circular_redirects', false),
                             enableCookies: currentRepo.get('enable_cookies', false)
                     ]
@@ -184,7 +187,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    layoutPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 

@@ -80,6 +80,13 @@ nexus_repos_maven_group:
       - jboss
     layout_policy: permissive
     version_policy: mixed
+  - name: public-offline
+    online: false
+    member_repos:
+      - central
+      - jboss
+    layout_policy: permissive
+    version_policy: mixed
 
 nexus_repos_npm_hosted: []
 nexus_repos_npm_group:
@@ -92,6 +99,13 @@ nexus_repos_npm_proxy:
     negative_cache_enabled: false
     enable_circular_redirects: true
     enable_cookies: true
+    connection_timeout: 300
+    connection_retries: 5
+  - name: npm-registry-blocked
+    remote_url: https://registry.npmjs.org/
+    blocked: true
+    auto_block: false
+    user_agent_suffix: custom-agent
 
 nexus_repos_yum_hosted:
   - name: private_yum_centos_7
