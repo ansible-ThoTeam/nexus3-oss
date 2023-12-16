@@ -1096,6 +1096,11 @@ Feel free to use them or implement your own install scenario at your convenience
     nexus_repos_npm_proxy:
       - name: npm-proxy-name
         blob_store: company-artifacts
+        blocked: false # Default is false
+        auto_block: true # Default is true
+        connection_timeout: 200 # Default is unset
+        connection_retries: 5 # Default is unset
+        user_agent_suffix: custom-agent # Default is unset
         remote_url: https://some-private-registry.dev/
         remote_username: 'secret-username'
         remote_password: "{{ vault_alfresco_secret_password }}"
