@@ -84,7 +84,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type == 'hosted' && currentRepo.format == 'yum') {
             configuration.attributes['yum'] = [
                     repodataDepth: currentRepo.repodata_depth.toInteger(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    deployPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 
@@ -184,7 +184,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    layoutPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 
