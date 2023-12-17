@@ -721,7 +721,7 @@ nexus_repos_docker_hosted:
     v1_enabled: false
     write_policy: allow_once # Values: "allow", "allow_once" or "deny"
     # When set, it will ignore the defined write_policy and allows to redeploy container images with the tag 'latest' only.
-    allow_latest_redeploy: true
+    allow_redeploy_latest: true
 ```
 
 Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm, r, p2, conda and go repository types:
