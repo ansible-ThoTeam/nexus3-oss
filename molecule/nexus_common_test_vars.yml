@@ -130,6 +130,12 @@ nexus_repos_docker_hosted:
     force_basic_auth: true
     v1_enabled: true
     write_policy: allow
+  - name: docker-private-redeploy
+    write_policy: deny # will be ignored when allow_redeploy_latest is true
+    allow_redeploy_latest: true
+  - name: docker-private-no-redeploy
+    write_policy: deny # will be effective when allow_redeploy_latest is false
+    allow_redeploy_latest: false
 
 nexus_repos_docker_proxy: []
 nexus_repos_apt_hosted:
