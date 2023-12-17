@@ -216,7 +216,7 @@ parsed_args.each { currentRepo ->
             configuration.attributes['storage'] = [
                 latestPolicy: currentRepo.allow_redeploy_latest ? currentRepo.allow_redeploy_latest : null,
                 // When setting the allow_redeploy_latest, the writePolicy must be set to ALLOW_ONCE and API expects blobStoreName param
-                writePolicy: currentRepo.allow_redeploy_latest ? "ALLOW_ONCE" : currentRepo.write_policy.toUpperCase()
+                writePolicy: currentRepo.allow_redeploy_latest ? "ALLOW_ONCE" : currentRepo.write_policy.toUpperCase(),
                 blobStoreName: currentRepo.blob_store
            ]
         }
