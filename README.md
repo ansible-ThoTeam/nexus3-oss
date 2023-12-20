@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.com/ansible-ThoTeam/nexus3-oss.svg?branch=main)](https://app.travis-ci.com/github/ansible-ThoTeam/nexus3-oss)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/releases/latest)
 [![GitHub commits since latest release](https://img.shields.io/github/commits-since/ansible-ThoTeam/nexus3-oss/latest)](https://github.com/ansible-ThoTeam/nexus3-oss/commits/main)
-[![Ansible Quality Score](https://img.shields.io/ansible/quality/22637?label=Galaxy%20quality%20score)](https://galaxy.ansible.com/ansible-thoteam/nexus3-oss)
-[![Ansible Role](https://img.shields.io/ansible/role/d/22637?label=Galaxy%20downloads)](https://galaxy.ansible.com/ansible-thoteam/nexus3-oss)
+[![Ansible Role](https://img.shields.io/ansible/role/d/ansible-ThoTeam/nexus3-oss?label=Galaxy%20downloads)](https://galaxy.ansible.com/ui/standalone/roles/ansible-ThoTeam/nexus3-oss/)
 [![GitHub contributors](https://img.shields.io/github/contributors/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/graphs/contributors)
 [![GitHub licence](https://img.shields.io/github/license/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/blob/main/LICENSE.md)
 # Ansible Role: Nexus 3 OSS
