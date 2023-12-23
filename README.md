@@ -713,6 +713,16 @@ nexus_repos_docker_group:
       - docker-hosted-repo
 ```
 
+```yaml
+nexus_repos_docker_hosted:
+  - name: some-docker-repo
+    blob_store: docker-blob
+    v1_enabled: false
+    write_policy: allow_once # Values: "allow", "allow_once" or "deny"
+    # When set, it will ignore the defined write_policy and allows to redeploy container images with the tag 'latest' only.
+    allow_redeploy_latest: true
+```
+
 Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm, r, p2, conda and go repository types:
 see `defaults/main.yml` for these options. For historical reasons and to keep backward compatibility,
 maven is configured by default
