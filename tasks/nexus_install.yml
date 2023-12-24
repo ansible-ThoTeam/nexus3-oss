@@ -236,7 +236,7 @@
   ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: ^-Dkaraf.log=.*
-    line: -Dkaraf.log={{ nexus_data_dir }}log
+    line: -Dkaraf.log={{ nexus_data_dir }}/log
   notify:
     - nexus-service-stop
 
