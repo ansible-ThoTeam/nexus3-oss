@@ -561,7 +561,7 @@
   become: false
   community.general.archive:
     path: "{{ role_path }}/files/groovy/*"
-    dest: /tmp/nexus-upload-groovy-scripts.tar.gz
+    dest: "{{ nexus_local_tmp_dir }}/nexus-upload-groovy-scripts.tar.gz"
     mode: "0644"
   check_mode: false
   run_once: true
