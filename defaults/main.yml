@@ -7,6 +7,7 @@ nexus_version: ""
 # nexus_version_running: <unset>
 
 nexus_download_dir: /tmp
+nexus_local_tmp_dir: /tmp # On shared ansible controller, change this to a path you own (i.e. /home/<user>/tmp)
 nexus_download_url: https://download.sonatype.com/nexus/3
 nexus_download_retries: 0
 nexus_download_delay: 15

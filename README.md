@@ -169,8 +169,17 @@ the role. It can be used later in your playbook if needed (e.g. for an upgrade n
 Directory on target where the nexus package will be downloaded.
 
 **Important note**: if you intend to run the role periodically to maintain/provision your nexus install, you should make
-sure the downloaded files will persists between run. On RHEL/Centos specifically, you should change this dir to a location that
-is not cleaned up automatically. If the package file does not persit, it will be downloaded again which might cause an unnecessary restart of nexus.
+sure the downloaded files will persist between run. On RHEL/Centos specifically, you should change this dir to a location that
+is not cleaned up automatically. If the package file does not persist, it will be downloaded again which might cause an unnecessary restart of nexus.
+
+### Local tmp dir on controller
+```yaml
+nexus_local_tmp_dir: /tmp
+```
+
+This directory is used to create a local archive of groovy script prior to sending them to the target.
+On shared ansible controller, you should modify this path to one you own (e.g. `/home/<user>/tmp`).
+**Important:** this directory **must** exist.
 
 ### Nexus port, context path and listening IP
 ```yaml
