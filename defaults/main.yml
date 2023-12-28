@@ -211,6 +211,9 @@ nexus_privileges:
       - read
       - browse
 
+# You can set a default role to be used with anonymous access for example
+nexus_default_role: ""
+
 nexus_roles:
   - id: developers # can map to a LDAP group id, also used as a key to update a role
     name: developers
