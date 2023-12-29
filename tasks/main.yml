@@ -271,7 +271,7 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
-    args:
+    call_args:
       capability_typeId: defaultrole
       capability_enabled: "{{ (nexus_default_role | length > 0) }}"
       capability_properties:
