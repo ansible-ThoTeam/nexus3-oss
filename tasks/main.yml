@@ -267,6 +267,16 @@
       capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
       capability_properties: {}
 
+- name: Configure Default Role capability
+  ansible.builtin.include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    call_args:
+      capability_typeId: defaultrole
+      capability_enabled: "{{ (nexus_default_role | length > 0) }}"
+      capability_properties:
+        role: "{{ nexus_default_role }}"
+
 - name: Define backup task if backup is configured
   ansible.builtin.set_fact:
     _nexus_backup_task:

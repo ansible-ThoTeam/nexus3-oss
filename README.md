@@ -537,6 +537,12 @@ Those items are combined with the following default values :
         roles: [] # references to other role names
 ```
 
+Besides creating roles, it's also possible to define a default role which will be applied to users and anonymous requests when Nexus can not find or map the according role. Default role can be defined using:
+
+```yaml
+nexus_default_role: "developers" # uses the 'developers' role to all users/requests without an explicitly assigned role. Default: ""
+```
+
 List of the [roles](https://help.sonatype.com/display/NXRM3/Roles) to setup.
 
 ### Users
