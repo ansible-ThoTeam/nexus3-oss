@@ -198,10 +198,12 @@ your own proxy)
 ### Nexus OS user and group
 ```yaml
     nexus_os_group: 'nexus'
+    nexus_os_gid: 1000
     nexus_os_user: 'nexus'
+    nexus_os_uid: 1000
 ```
 
-User and group used to own the nexus files and run the service, those will be created by the role if absent.
+User and group used to own the nexus files and run the service, those will be created by the role if absent. If defined a uid and gid will be used apon creation.
 
 ```yaml
     nexus_os_user_home_dir: '/home/nexus'
