@@ -9,9 +9,9 @@ driver:
     - nexus-downloads
 
 platforms:
-  - name: nexus3-oss-debian-buster
-    hostname: nexus3-oss-debian-buster
-    image: thoteam/molecule_apache_openjdk8:debian_buster
+  - name: nexus3-oss-debian-bullseye
+    hostname: nexus3-oss-debian-bullseye
+    image: thoteam/molecule_apache_openjdk8:debian_bullseye
     command: lib/systemd/systemd
     pull: true
     pre_build_image: true
