@@ -9,7 +9,7 @@
   ansible.builtin.systemd:
     name: nexus.service
     state: restarted
-    no_block: true
+    no_block: "{{ nexus_install_systemd_no_block }}"
   listen: nexus-service-restart
   when: ansible_service_mgr == 'systemd'
 

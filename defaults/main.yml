@@ -22,6 +22,7 @@ nexus_tmp_dir: "{{ (ansible_os_family == 'RedHat') | ternary('/var/nexus-tmp', '
 nexus_script_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/scripts"
 nexus_plugin_urls: []
 nexus_onboarding_wizard: false
+nexus_install_systemd_no_block: true
 
 # These are the default values for JVM Ram
 # don't touch those unless you have read
