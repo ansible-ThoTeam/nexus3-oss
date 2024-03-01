@@ -8,28 +8,24 @@ driver:
   safe_files:
     - nexus-downloads
 
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
-
 platforms:
-  - name: nexus3-oss-centos-7
-    hostname: nexus3-oss-centos7
-    image: thoteam/molecule_apache_openjdk8:centos7
+  - name: nexus3-oss-rockylinux9
+    hostname: nexus3-oss-rockylinux9
+    image: thoteam/molecule_apache_openjdk8:rockylinux9
     pull: true
     pre_build_image: true
     privileged: true
     published_ports:
-      - 8090:443
+      - 8091:443
     override_command: false
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads
+    cgroupns_mode: host
     groups:
       - nexus
     networks: &nexus_networks
       - name: nexus-default
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/molecule/.nexus-downloads:/nexus-downloads
 
   - name: slapd-server-mock
     hostname: slapd-server-mock

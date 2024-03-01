@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.com/ansible-ThoTeam/nexus3-oss.svg?branch=main)](https://app.travis-ci.com/github/ansible-ThoTeam/nexus3-oss)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/releases/latest)
 [![GitHub commits since latest release](https://img.shields.io/github/commits-since/ansible-ThoTeam/nexus3-oss/latest)](https://github.com/ansible-ThoTeam/nexus3-oss/commits/main)
-[![Ansible Quality Score](https://img.shields.io/ansible/quality/22637?label=Galaxy%20quality%20score)](https://galaxy.ansible.com/ansible-thoteam/nexus3-oss)
-[![Ansible Role](https://img.shields.io/ansible/role/d/22637?label=Galaxy%20downloads)](https://galaxy.ansible.com/ansible-thoteam/nexus3-oss)
+[![Ansible Role](https://img.shields.io/ansible/role/d/ansible-ThoTeam/nexus3-oss?label=Galaxy%20downloads)](https://galaxy.ansible.com/ui/standalone/roles/ansible-ThoTeam/nexus3-oss/)
 [![GitHub contributors](https://img.shields.io/github/contributors/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/graphs/contributors)
 [![GitHub licence](https://img.shields.io/github/license/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/blob/main/LICENSE.md)
 # Ansible Role: Nexus 3 OSS
@@ -39,6 +38,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [API access for this role](#api-access-for-this-role)
       * [Branding capabalities](#branding-capabalities)
       * [Audit capability](#audit-capability)
+      * [Log4j Visualizer](#log4j-visualizer)
       * [Reverse proxy setup](#reverse-proxy-setup)
       * [LDAP configuration](#ldap-configuration)
       * [Privileges](#privileges)
@@ -169,8 +169,17 @@ the role. It can be used later in your playbook if needed (e.g. for an upgrade n
 Directory on target where the nexus package will be downloaded.
 
 **Important note**: if you intend to run the role periodically to maintain/provision your nexus install, you should make
-sure the downloaded files will persists between run. On RHEL/Centos specifically, you should change this dir to a location that
-is not cleaned up automatically. If the package file does not persit, it will be downloaded again which might cause an unnecessary restart of nexus.
+sure the downloaded files will persist between run. On RHEL/Centos specifically, you should change this dir to a location that
+is not cleaned up automatically. If the package file does not persist, it will be downloaded again which might cause an unnecessary restart of nexus.
+
+### Local tmp dir on controller
+```yaml
+nexus_local_tmp_dir: /tmp
+```
+
+This directory is used to create a local archive of groovy script prior to sending them to the target.
+On shared ansible controller, you should modify this path to one you own (e.g. `/home/<user>/tmp`).
+**Important:** this directory **must** exist.
 
 ### Nexus port, context path and listening IP
 ```yaml
@@ -189,10 +198,12 @@ your own proxy)
 ### Nexus OS user and group
 ```yaml
     nexus_os_group: 'nexus'
+    nexus_os_gid: 1000
     nexus_os_user: 'nexus'
+    nexus_os_uid: 1000
 ```
 
-User and group used to own the nexus files and run the service, those will be created by the role if absent.
+User and group used to own the nexus files and run the service, those will be created by the role if absent. If defined a uid and gid will be used apon creation.
 
 ```yaml
     nexus_os_user_home_dir: '/home/nexus'
@@ -309,6 +320,13 @@ Header and footer branding, those can contain HTML.
 ```
 
 The [Auditing capability of nexus](https://help.sonatype.com/repomanager3/security/auditing) is off by default. You can turn it on by switching this to `true`. Please note that the audit data is stored in nexus db, persits accross reboots and is not automatically rotated/cleared.
+
+### Log4j Visualizer
+```yaml
+    nexus_log4j_visualizer_enabled: false
+```
+
+By default the log4j visualizer is set to false. You can enable this by switching to `true`. This will add the log4j-visualizer capability to your Nexus instance.
 
 ### Reverse proxy setup
 ```yaml
@@ -521,6 +539,12 @@ Those items are combined with the following default values :
         roles: [] # references to other role names
 ```
 
+Besides creating roles, it's also possible to define a default role which will be applied to users and anonymous requests when Nexus can not find or map the according role. Default role can be defined using:
+
+```yaml
+nexus_default_role: "developers" # uses the 'developers' role to all users/requests without an explicitly assigned role. Default: ""
+```
+
 List of the [roles](https://help.sonatype.com/display/NXRM3/Roles) to setup.
 
 ### Users
@@ -628,6 +652,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
+        # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+        # content_disposition: inline
       - name: jboss
         remote_url: 'https://repository.jboss.org/nexus/content/groups/public-jboss/'
         # cleanup_policies:
@@ -636,6 +662,8 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
         # maximum_metadata_age: 1440
         # negative_cache_enabled: true
         # negative_cache_ttl: 1440
+        # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+        # content_disposition: inline
     # example with a login/password :
     # - name: secret-remote-repo
     #   remote_url: 'https://company.com/repo/secure/private/go/away'
@@ -645,6 +673,10 @@ Configuring blobstore on S3 is provided as a convenience and is not part of the 
     #   # maximum_metadata_age: 1440
     #   # negative_cache_enabled: true
     #   # negative_cache_ttl: 1440
+    # Content disposition is only supported for raw and maven2 proxies and can be set to attachment or inline. Inline is Nexus default, even when the property is not set explicitly.
+    # To set HTTP request settings:
+    #   # enable_circular_redirects: true
+    #   # enable_cookies: true
 ```
 
 Maven [proxy repositories](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-ProxyRepository) configuration.
@@ -683,6 +715,29 @@ All three repository types are combined with the following default values :
       maximum_metadata_age: 1440  # Nexus gui default. For proxies only
       negative_cache_enabled: true # Nexus gui default. For proxies only
       negative_cache_ttl: 1440 # Nexus gui default. For proxies only
+```
+
+Docker repositories
+
+```yaml
+nexus_repos_docker_group:
+  - name: some-docker-group
+    sub_domain: hub-proxy # When set this will expose a subdomain url e.g: https://hub-proxy.your-nexus-instance.com
+    writable_member_repo: docker-hosted-repo
+    blob_store: docker-blob
+    v1_enabled: False
+    member_repos:
+      - docker-hosted-repo
+```
+
+```yaml
+nexus_repos_docker_hosted:
+  - name: some-docker-repo
+    blob_store: docker-blob
+    v1_enabled: false
+    write_policy: allow_once # Values: "allow", "allow_once" or "deny"
+    # When set, it will ignore the defined write_policy and allows to redeploy container images with the tag 'latest' only.
+    allow_redeploy_latest: true
 ```
 
 Maven, Pypi, Docker, Raw, Rubygems, Bower, NPM, Git-LFS, yum, apt, helm, r, p2, conda and go repository types:
@@ -1056,7 +1111,27 @@ Feel free to use them or implement your own install scenario at your convenience
           - jboss
           - vaadin-addons
           - jaspersoft
-
+    nexus_repos_docker_group:
+       - name: some-docker-group
+         sub_domain: hub-proxy
+         writable_member_repo: docker-hosted-repo
+         blob_store: docker-blob
+         v1_enabled: False
+         member_repos:
+           - docker-hosted-repo
+    nexus_repos_npm_proxy:
+      - name: npm-proxy-name
+        blob_store: company-artifacts
+        blocked: false # Default is false
+        auto_block: true # Default is true
+        connection_timeout: 200 # Default is unset
+        connection_retries: 5 # Default is unset
+        user_agent_suffix: custom-agent # Default is unset
+        remote_url: https://some-private-registry.dev/
+        remote_username: 'secret-username'
+        remote_password: "{{ vault_alfresco_secret_password }}"
+        # You can use a Preemptive Bearer Token as well by defining the bearerToken property
+        # bearerToken: "{{ vault_alfresco_secret_bearertoken }}"
 
   roles:
 
@@ -1093,15 +1168,15 @@ This role includes tests and CI integration through travis. At time being, we te
 * groovy scripts syntax
 * yaml syntax and coding standard (yamllint)
 * ansible good practices (ansible lint)
-* a set of basic deployments on 3 different linux platforms
-    * Centos 8
-    * Debian buster
-    * Ubuntu bionic (18.04)
+* a set of basic deployments on 2 different linux platforms
+    * Rockylinux 9 (as a close parent of RHEL products since centos is deprecated)
+    * Debian 12 Bookworm
 
-Other tests are available for older platforms but not played on CI for performance reasons:
-* Centos 7
-* Debian stretch
-* Ubuntu xenial (16.04)
+Other tests are available for older/different platforms but not played on CI for performance reasons:
+* Rockylinux 8
+* Debian 11 bullseye
+* Ubuntu 20.04 Focal
+* Ubuntu 22.04 Jammy
 
 
 #### Groovy syntax
@@ -1129,11 +1204,14 @@ deactivate
 ```
 Please have a look at molecule documentation (a good start is `molecule --help`) for further usage.
 
-The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario ans leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail. As a convenience, here is the correspondence between scenarii and configured ports:
-* default-centos7 => https://localhost:8090
-* default-centos8 => https://localhost:8091
+The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario
+and leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance
+from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail.
+As a convenience, here is the correspondence between scenarii and configured ports:
+* default-rockylinux8 => https://localhost:8090
+* default-rockylinux9 => https://localhost:8091
 * efault-debian_bullseye => https://localhost:8092
-* default-debian_buster => https://localhost:8093
+* default-debian_bookworm => https://localhost:8093
 * default-ubuntu_20.04 => https://localhost:8094
 * default-ubuntu_22.04 => https://localhost:8095
 

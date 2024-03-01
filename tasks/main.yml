@@ -38,7 +38,7 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_http_proxy
-    args:
+    call_args:
       with_http_proxy: "{{ nexus_with_http_proxy }}"
       http_proxy_host: "{{ nexus_http_proxy_host }}"
       http_proxy_port: "{{ nexus_http_proxy_port }}"
@@ -50,6 +50,8 @@
       https_proxy_username: "{{ nexus_https_proxy_username }}"
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
+      nexus_http_proxy_timeout: "{{ nexus_http_proxy_timeout }}"
+      nexus_http_proxy_retries: "{{ nexus_http_proxy_retries }}"
   when: nexus_with_http_proxy or nexus_with_https_proxy
 
 - name: Deleting default repositories
@@ -87,7 +89,7 @@
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: create_content_selectors_from_list
-        args: "{{ nexus_content_selectors }}"
+        call_args: "{{ nexus_content_selectors }}"
       when: nexus_content_selectors | length > 0
 
     - name: Apply defaults to privileges
@@ -120,7 +122,7 @@
           ansible.builtin.include_tasks: call_script.yml
           vars:
             script_name: create_blobstores_from_list
-            args: "{{ nexus_blobstores }}"
+            call_args: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
 - name: Restore nexus backup
@@ -134,7 +136,7 @@
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: create_cleanup_policies_from_list
-        args: "{{ nexus_repos_cleanup_policies }}"
+        call_args: "{{ nexus_repos_cleanup_policies }}"
       when: nexus_repos_cleanup_policies | length > 0
 
     - name: Apply defaults to repositories configurations and process a single list
@@ -144,55 +146,55 @@
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: create_repos_from_list
-        args: "{{ _nexus_repos_global_list | d([]) }}"
+        call_args: "{{ _nexus_repos_global_list | d([]) }}"
 
     - name: Create/check privileges
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_privileges_from_list
-        args: "{{ nexus_privileges }}"
+        call_args: "{{ nexus_privileges }}"
       when: nexus_privileges | length > 0
 
     - name: Create/check roles
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_roles_from_list
-        args: "{{ nexus_roles }}"
+        call_args: "{{ nexus_roles }}"
       when: nexus_roles | length > 0
 
     - name: Create/check local users
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_users_from_list
-        args: "{{ nexus_local_users }}"
+        call_args: "{{ nexus_local_users }}"
       when: nexus_local_users | length > 0
 
     - name: Create/check ldap users
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: setup_ldap_users_from_list
-        args: "{{ nexus_ldap_users }}"
+        call_args: "{{ nexus_ldap_users }}"
       when: nexus_ldap_users | length > 0
 
 - name: Configure anonymous access
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_anonymous_access
-    args:
+    call_args:
       anonymous_access: "{{ nexus_anonymous_access }}"
 
 - name: Configure base url
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_base_url
-    args:
+    call_args:
       base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
 
 - name: Configure realms
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_realms
-    args:
+    call_args:
       nuget_api_key_realm: "{{ nexus_nuget_api_key_realm }}"
       npm_bearer_token_realm: "{{ nexus_npm_bearer_token_realm }}"
       rut_auth_realm: "{{ nexus_rut_auth_realm }}"
@@ -203,7 +205,7 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
-    args:
+    call_args:
       capability_typeId: rutauth
       capability_enabled: true
       capability_properties:
@@ -211,28 +213,34 @@
   when: nexus_rut_auth_header is defined
 
 - name: Configure mail server
-  ansible.builtin.include_tasks: call_script.yml
-  vars:
-    script_name: setup_email
-    args:
-      email_server_enabled: "{{ nexus_email_server_enabled }}"
-      email_server_host: "{{ nexus_email_server_host }}"
-      email_server_port: "{{ nexus_email_server_port }}"
-      email_server_username: "{{ nexus_email_server_username }}"
-      email_server_password: "{{ nexus_email_server_password }}"
-      email_from_address: "{{ nexus_email_from_address }}"
-      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
-      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
-      email_tls_required: "{{ nexus_email_tls_required }}"
-      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
-      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
-      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+  ansible.builtin.uri:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}{{ nexus_api_context_path }}service/rest/v1/email"
+    user: admin
+    password: "{{ current_nexus_admin_password }}"
+    method: PUT
+    force_basic_auth: true
+    validate_certs: "{{ nexus_api_validate_certs }}"
+    body_format: json
+    body:
+      enabled: "{{ nexus_email_server_enabled }}"
+      host: "{{ nexus_email_server_host }}"
+      port: "{{ nexus_email_server_port }}"
+      username: "{{ nexus_email_server_username }}"
+      password: "{{ nexus_email_server_password }}"
+      fromAddress: "{{ nexus_email_from_address }}"
+      subjectPrefix: "{{ nexus_email_subject_prefix }}"
+      startTlsEnabled: "{{ nexus_email_tls_enabled }}"
+      startTlsRequired: "{{ nexus_email_tls_required }}"
+      sslOnConnectEnabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      sslServerIdentityCheckEnabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      nexusTrustStoreEnabled: "{{ nexus_email_trust_store_enabled }}"
+    status_code: 200,204
 
 - name: Configure branding capability
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
-    args:
+    call_args:
       capability_typeId: rapture.branding
       capability_enabled: "{{ (nexus_branding_footer | length > 0) and (nexus_branding_header | length > 0) }}"
       capability_properties:
@@ -245,10 +253,29 @@
   ansible.builtin.include_tasks: call_script.yml
   vars:
     script_name: setup_capability
-    args:
+    call_args:
       capability_typeId: audit
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}
+
+- name: Configure log4j-visualizer capability
+  ansible.builtin.include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    call_args:
+      capability_typeId: log4j-visualizer
+      capability_enabled: "{{ nexus_log4j_visualizer_enabled | bool }}"
+      capability_properties: {}
+
+- name: Configure Default Role capability
+  ansible.builtin.include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    call_args:
+      capability_typeId: defaultrole
+      capability_enabled: "{{ (nexus_default_role | length > 0) }}"
+      capability_properties:
+        role: "{{ nexus_default_role }}"
 
 - name: Configure analytics-configuration capability
   ansible.builtin.include_tasks: call_script.yml

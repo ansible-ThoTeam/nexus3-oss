@@ -86,6 +86,7 @@
 - name: Ensure Nexus o/s group exists
   ansible.builtin.group:
     name: "{{ nexus_os_group }}"
+    uid: "{{ nexus_os_gid | default(omit) }}"
     state: present
 
 - name: Ensure Nexus o/s user exists
@@ -94,6 +95,7 @@
     group: "{{ nexus_os_group }}"
     home: "{{ nexus_os_user_home_dir }}"
     shell: /bin/bash
+    uid: "{{ nexus_os_uid | default(omit) }}"
     state: present
 
 - name: Ensure Nexus installation directory exists
@@ -236,7 +238,7 @@
   ansible.builtin.lineinfile:
     dest: "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions"
     regexp: ^-Dkaraf.log=.*
-    line: -Dkaraf.log={{ nexus_data_dir }}log
+    line: -Dkaraf.log={{ nexus_data_dir }}/log
   notify:
     - nexus-service-stop
 
@@ -561,7 +563,7 @@
   become: false
   community.general.archive:
     path: "{{ role_path }}/files/groovy/*"
-    dest: /tmp/nexus-upload-groovy-scripts.tar.gz
+    dest: "{{ nexus_local_tmp_dir }}/nexus-upload-groovy-scripts.tar.gz"
     mode: "0644"
   check_mode: false
   run_once: true
@@ -608,7 +610,7 @@
       ansible.builtin.include_tasks: call_script.yml
       vars:
         script_name: update_admin_password
-        args:
+        call_args:
           new_password: "{{ nexus_admin_password }}"
 
     - name: Admin password changed

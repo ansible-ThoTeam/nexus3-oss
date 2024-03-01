@@ -52,7 +52,7 @@ parsed_args.each { currentRepo ->
             configuration = newConfiguration(
                     repositoryName: currentRepo.name,
                     recipeName: recipeName,
-                    online: true,
+                    online: currentRepo.get('online', true),
                     attributes: [
                             storage: [
                                     blobStoreName: currentRepo.blob_store
@@ -84,7 +84,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.type == 'hosted' && currentRepo.format == 'yum') {
             configuration.attributes['yum'] = [
                     repodataDepth: currentRepo.repodata_depth.toInteger(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    deployPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 
@@ -108,10 +108,15 @@ parsed_args.each { currentRepo ->
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
             configuration.attributes['httpclient'] = [
-                    blocked       : false,
-                    autoBlock     : true,
+                    blocked       : currentRepo.get('blocked', false),
+                    autoBlock     : currentRepo.get('auto_block', true),
                     connection    : [
-                            useTrustStore: false
+                            useTrustStore: false,
+                            timeout: currentRepo.get('connection_timeout', null),
+                            retries: currentRepo.get('connection_retries', null),
+                            userAgentSuffix: currentRepo.get('user_agent_suffix', null),
+                            enableCircularRedirects: currentRepo.get('enable_circular_redirects', false),
+                            enableCookies: currentRepo.get('enable_cookies', false)
                     ]
             ]
 
@@ -135,6 +140,13 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configure content disposition for maven and raw proxy repos
+        if (currentRepo.type == 'proxy' && currentRepo.format == 'maven2' || currentRepo.format == 'raw'){
+                configuration.attributes['raw'] = [
+                    contentDisposition: currentRepo.content_disposition ? currentRepo.content_disposition.toUpperCase() : "INLINE"
+                ]
+            }
+
         // Configure cleanup policy
         if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
             def cleanupPolicies = currentRepo.cleanup_policies as Set
@@ -153,6 +165,14 @@ parsed_args.each { currentRepo ->
             ]
         }
 
+        // Configs for npm proxy repos usign bearer token
+        if (currentRepo.bearerToken && currentRepo.type == 'proxy' && currentRepo.format == 'npm') {
+            configuration.attributes['httpclient']['authentication'] = [
+                    type: 'bearerToken',
+                    bearerToken: currentRepo.bearerToken
+            ]
+        }
+
         // Configs for docker proxy repos
         if (currentRepo.type == 'proxy' && currentRepo.format == 'docker') {
             configuration.attributes['dockerProxy'] = [
@@ -167,7 +187,7 @@ parsed_args.each { currentRepo ->
         if (currentRepo.format == 'maven2') {
             configuration.attributes['maven'] = [
                     versionPolicy: currentRepo.version_policy.toUpperCase(),
-                    layoutPolicy : currentRepo.layout_policy.toUpperCase()
+                    layoutPolicy : currentRepo.get('layout_policy','strict').toUpperCase()
             ]
         }
 
@@ -178,8 +198,27 @@ parsed_args.each { currentRepo ->
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null
+                    httpPort      : dockerPort?.isInteger() ? dockerPort.toInteger() : null,
+                    subdomain     : currentRepo.sub_domain ? currentRepo.sub_domain : null
             ]
+        }
+
+        // Configs for all docker group repos
+        if (currentRepo.type == 'group' && currentRepo.format == 'docker') {
+            configuration.attributes['group'] = [
+                // when setting the groupWriteMember, the memberNames must be set as well, API expects both objects
+                    groupWriteMember: currentRepo.writable_member_repo,
+                    memberNames: currentRepo.member_repos
+            ]
+        }
+
+        if (currentRepo.allow_redeploy_latest && currentRepo.type == 'hosted' && currentRepo.format == 'docker') {
+            configuration.attributes['storage'] = [
+                latestPolicy: currentRepo.allow_redeploy_latest ? currentRepo.allow_redeploy_latest : null,
+                // When setting the allow_redeploy_latest, the writePolicy must be set to ALLOW_ONCE and API expects blobStoreName param
+                writePolicy: currentRepo.allow_redeploy_latest ? "ALLOW_ONCE" : currentRepo.write_policy.toUpperCase(),
+                blobStoreName: currentRepo.blob_store
+           ]
         }
 
         if (existingRepository == null) {

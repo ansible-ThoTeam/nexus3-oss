@@ -80,6 +80,13 @@ nexus_repos_maven_group:
       - jboss
     layout_policy: permissive
     version_policy: mixed
+  - name: public-offline
+    online: false
+    member_repos:
+      - central
+      - jboss
+    layout_policy: permissive
+    version_policy: mixed
 
 nexus_repos_npm_hosted: []
 nexus_repos_npm_group:
@@ -90,6 +97,15 @@ nexus_repos_npm_proxy:
   - name: npm-registry
     remote_url: https://registry.npmjs.org/
     negative_cache_enabled: false
+    enable_circular_redirects: true
+    enable_cookies: true
+    connection_timeout: 300
+    connection_retries: 5
+  - name: npm-registry-blocked
+    remote_url: https://registry.npmjs.org/
+    blocked: true
+    auto_block: false
+    user_agent_suffix: custom-agent
 
 nexus_repos_yum_hosted:
   - name: private_yum_centos_7
@@ -100,6 +116,8 @@ nexus_repos_yum_proxy:
     maximum_component_age: -1
     maximum_metadata_age: -1
     negative_cache_ttl: 60
+    enable_circular_redirects: true
+    enable_cookies: true
 nexus_repos_yum_group:
   - name: yum_all
     member_repos:
@@ -112,11 +130,17 @@ nexus_repos_docker_hosted:
     force_basic_auth: true
     v1_enabled: true
     write_policy: allow
+  - name: docker-private-redeploy
+    write_policy: deny # will be ignored when allow_redeploy_latest is true
+    allow_redeploy_latest: true
+  - name: docker-private-no-redeploy
+    write_policy: deny # will be effective when allow_redeploy_latest is false
+    allow_redeploy_latest: false
 
 nexus_repos_docker_proxy: []
 nexus_repos_apt_hosted:
-  - name: private_ubuntu_18.04
-    distribution: bionic
+  - name: private_apt
+    distribution: all
     keypair: |-
       -----BEGIN PGP PRIVATE KEY BLOCK-----
 
@@ -205,7 +229,7 @@ nexus_repos_apt_hosted:
       -----END PGP PRIVATE KEY BLOCK-----
     passphrase: password
     # Allow redeploy to allow repeated failing tests when debugging
-    # !! Don't do this for a release repo on produciton
+    # !! Don't do this for a release repo on production
     write_policy: allow
 
 nexus_repos_apt_proxy:
@@ -332,7 +356,7 @@ nexus_privileges:
 nexus_roles:
   - name: c-ro-private_yum_centos_7
     id: c-ro-private_yum_centos_7
-    description: Custrom read-only role for private_yum_centos_7 hosted repository
+    description: Custom read-only role for private_yum_centos_7 hosted repository
     privileges:
       - nx-repository-view-yum-private_yum_centos_7-read
       - nx-repository-view-yum-private_yum_centos_7-browse
