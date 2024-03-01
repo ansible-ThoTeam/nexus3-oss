@@ -104,6 +104,9 @@ nexus_audit_enabled: false
 # Enable/disable log4j visualizer
 nexus_log4j_visualizer_enabled: false
 
+# Enable/disable analytics
+nexus_analytics_enabled: true
+
 # email server
 nexus_email_server_enabled: false
 nexus_email_server_host: localhost
