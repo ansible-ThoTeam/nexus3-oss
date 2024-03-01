@@ -249,6 +249,16 @@
       capability_typeId: audit
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}
+
+- name: Configure analytics-configuration capability
+  ansible.builtin.include_tasks: call_script.yml
+  vars:
+    script_name: setup_capability
+    call_args:
+      capability_typeId: analytics-configuration
+      capability_enabled: "{{ nexus_analytics_enabled | bool }}"
+      capability_properties: {}
+
 - name: Define backup task if backup is configured
   ansible.builtin.set_fact:
     _nexus_backup_task:
