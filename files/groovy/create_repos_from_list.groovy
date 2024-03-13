@@ -203,8 +203,8 @@ parsed_args.each { currentRepo ->
             ]
         }
 
-        // Configs for all docker group repos
-        if (currentRepo.type == 'group' && currentRepo.format == 'docker') {
+        // Configs for all docker/npm group repos
+        if (currentRepo.type == 'group' && currentRepo.format in ['docker', 'npm']) {
             configuration.attributes['group'] = [
                 // when setting the groupWriteMember, the memberNames must be set as well, API expects both objects
                     groupWriteMember: currentRepo.writable_member_repo,
