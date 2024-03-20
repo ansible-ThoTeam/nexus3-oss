@@ -36,7 +36,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [Default anonymous access](#default-anonymous-access)
       * [Public hostname](#public-hostname)
       * [API access for this role](#api-access-for-this-role)
-      * [Branding capabalities](#branding-capabalities)
+      * [Branding capabilities](#branding-capabilities)
       * [Audit capability](#audit-capability)
       * [Log4j Visualizer](#log4j-visualizer)
       * [Reverse proxy setup](#reverse-proxy-setup)
@@ -57,7 +57,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
          * [Change admin password after first install](#change-admin-password-after-first-install)
          * [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
             * [Fix upgrade failing on timeout waiting for nexus port](#fix-upgrade-failing-on-timeout-waiting-for-nexus-port)
-         * [Skip provisionning tasks](#skip-provisionning-tasks)
+         * [Skip provisioning tasks](#skip-provisioning-tasks)
          * [Force recursive ownership check of blobstores directories](#force-recursive-ownership-check-of-blobstores-directories)
    * [Dependencies](#dependencies)
    * [Example Playbook](#example-playbook)
@@ -65,7 +65,7 @@ _(Created with [gh-md-toc](https://github.com/ekalinin/github-markdown-toc))_
       * [Contributions](#contributions)
       * [Testing](#testing)
          * [Groovy syntax](#groovy-syntax)
-         * [Molecule default-xxxx scenarii](#molecule-default-xxxx-scenarii)
+         * [Molecule default-xxxx scenario](#molecule-default-xxxx-scenario)
    * [License](#license)
    * [Author Information](#author-information)
 
@@ -147,10 +147,10 @@ See [Upgrade nexus to latest version](#upgrade-nexus-to-latest-version)
 If you use an older version of nexus than the lastest, you should make sure you do not use features which are
 not available in the installed release (e.g. yum hosted repositories for nexus < 3.8.0, git lfs repo for nexus < 3.3.0, etc.)
 
-`nexus_timezone` is a Java Timezone name and can be useful in combinationwith `nexus_scheduled_tasks` cron expressions below.
+`nexus_timezone` is a Java Timezone name and can be useful in combination with `nexus_scheduled_tasks` cron expressions below.
 
 You may change the download site for packages by tuning `nexus_download_url` (e.g. closed environment,
-proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likelly fail
+proxy/cache on your network...). **In this case, the automatic detection of the latest version will most likely fail
 and you will have to fix the version to download.** If you still want to take advantage of automatic latest version detection,
 a call to `<your_custom_location>/latest-unix.tar.gz` must return an HTTP 302 redirect to the latest available version
 in your cache/proxy. If your download location uses https with a self-signed certificate (or a from a private PKI) and
@@ -239,11 +239,11 @@ As a second warning, here is an extract from the above document:
 ```yaml
     nexus_custom_jvm_settings: []
 ```
-Additionnal settings to pass to the jvm. Those are empty by default and should not contain any option related to memory above
+Additional settings to pass to the jvm. Those are empty by default and should not contain any option related to memory above
 (i.e. anything which starts with Xms, Xmx, or XX:MaxDirectMemorySize=). Each option should be set as an item of the list
 without the leading dash (`-`).
 
-Here is an example to change the Garbabe collector to G1 and set GC logs with rotation.
+Here is an example to change the Garbage collector to G1 and set GC logs with rotation.
 ```yaml
     nexus_custom_jvm_settings:
       - XX:+UseG1GC
@@ -299,14 +299,14 @@ The fully qualified domain name and scheme under which the nexus instance will b
     nexus_api_port: "{{ nexus_default_port }}"
     nexus_api_timeout: 60
 ```
-These vars control how the role connects to the nexus API for provisionning.
+These vars control how the role connects to the nexus API for provisioning.
 **For advance usage only. You most probably do not want to change these default settings**
 
 Note: the `nexus_api_timeout` was added in v2.4.19 and overrides the default
 [`uri` module timeout](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/uri_module.html) of 30s
 for all calls to the API
 
-### Branding capabalities
+### Branding capabilities
 ```yaml
     nexus_branding_header: ""
     nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
@@ -341,7 +341,7 @@ By default the log4j visualizer is set to false. You can enable this by switchin
 
 Setup an [SSL Reverse-proxy](https://help.sonatype.com/display/NXRM3/Run+Behind+a+Reverse+Proxy#RunBehindaReverseProxy-Example:ReverseProxySSLTerminationatBasePath).
 This needs httpd installed. Note : when `httpd_setup_enable` is set to `true`, nexus binds by default to 127.0.0.1:8081
-thus *not* being directly accessible on HTTP port 8081 from an external IP. (If you want to change this, you can explicitely
+thus *not* being directly accessible on HTTP port 8081 from an external IP. (If you want to change this, you can explicitly
 set `nexus_application_host: 0.0.0.0`)
 
 The default hostname used is `nexus_public_hostname`. If you need different names for whatever reason, you can set
@@ -637,7 +637,7 @@ Delete the default blobstore from the nexus install initial default configuratio
     #     secretAccessKey: "{{ VAULT_ENCRYPTED_ACCESS_KEY }}"
 ```
 
-[Blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisionning).
+[Blobstores](https://help.sonatype.com/display/NXRM3/Repository+Management#RepositoryManagement-BlobStores) to create. A blobstore path and a repository blobstore cannot be updated after initial creation (any update here will be ignored on re-provisioning).
 
 Configuring blobstore on S3 is provided as a convenience and is not part of the automated tests we run on travis. Please note that storing on S3 is only recommended for instances deployed on AWS.
 
@@ -966,12 +966,12 @@ ansible-playbook -i your/inventory.ini your_playbook.yml \
 -e nexus_wait_for_port_retries=2
 ```
 
-#### Skip provisionning tasks
+#### Skip provisioning tasks
 ```yaml
-    nexus_run_provisionning: false
+    nexus_run_provisioning: false
 ```
 This var is unset by default and will default to `true`. Setting it to `false` will cause the role to skip all of the
-provisionning tasks and will therefore *not create/update*:
+provisioning tasks and will therefore *not create/update*:
 * ldap configurations
 * content selectors
 * privileges
@@ -986,7 +986,7 @@ to simply check nexus is correctly installed, or restore a backup, or upgrade ne
 
 We strongly suggest to use this variable only as an extra var to ansible-playbook call
 ```bash
-ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisionning=false
+ansible-playbook -i your/inventory.ini your_playbook.yml -e nexus_run_provisioning=false
 ```
 
 #### Force recursive ownership check of blobstores directories
@@ -1152,14 +1152,14 @@ All contributions to this role are welcome, either for bugfixes, new features or
 
 If you wish to contribute:
 - Fork the repo under your own name/organisation through github interface
-- Create a branch in your own repo with a meaningfull name. We suggest the following naming convention:
+- Create a branch in your own repo with a meaningfully name. We suggest the following naming convention:
   - `feat/<someFeature>` for features
   - `fix/<someBugFix>` for bug fixes
   - `docfix/<someDocFix>` for documentation only fixes
 - If starting an important feature change, open a pull request early describing what you want to do so we can discuss it if needed. This will prevent you from doing a lot of hard work on a lot of code for changes that we cannot finally merge.
 - If there are build error on your pull request, have a look at the travis log and fix the relevant errors.
 
-Moreover, if you have time to devote for code review, merge for realeases, etc... drop an email to contact@thoteam.com to get in touch.
+Moreover, if you have time to devote for code review, merge for releases, etc... drop an email to contact@thoteam.com to get in touch.
 
 
 ### Testing
@@ -1191,7 +1191,7 @@ This will ensure you push groovy files with correct syntax limiting the number o
 
 You will need the groovy package installed locally to run this test.
 
-#### Molecule default-xxxx scenarii
+#### Molecule default-xxxx scenario
 
 The role is tested on travis with [molecule](https://pypi.python.org/pypi/molecule). You can run these tests locally. The best way to achieve this is through a python virtualenv. You can find some more details in [requirements.txt](requirements.txt).
 ```bash
@@ -1204,10 +1204,10 @@ deactivate
 ```
 Please have a look at molecule documentation (a good start is `molecule --help`) for further usage.
 
-The current proposed scenarii refer to the tested platforms (see `molecule/` directory). If you launch a scenario
+The current proposed scenario refer to the tested platforms (see `molecule/` directory). If you launch a scenario
 and leave the container running (i.e. using `converge` for a simple deploy), you can access the running instance
 from your browser at https://localhost:<linkedPort>. See the `molecule/<scenario>/molecule.yml` file for detail.
-As a convenience, here is the correspondence between scenarii and configured ports:
+As a convenience, here is the correspondence between scenario and configured ports:
 * default-rockylinux8 => https://localhost:8090
 * default-rockylinux9 => https://localhost:8091
 * efault-debian_bullseye => https://localhost:8092

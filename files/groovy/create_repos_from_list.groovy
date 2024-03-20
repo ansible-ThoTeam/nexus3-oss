@@ -165,7 +165,7 @@ parsed_args.each { currentRepo ->
             ]
         }
 
-        // Configs for npm proxy repos usign bearer token
+        // Configs for npm proxy repos using bearer token
         if (currentRepo.bearerToken && currentRepo.type == 'proxy' && currentRepo.format == 'npm') {
             configuration.attributes['httpclient']['authentication'] = [
                     type: 'bearerToken',

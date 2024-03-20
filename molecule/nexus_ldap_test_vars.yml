@@ -21,7 +21,7 @@ ldap_connections:
     ldap_group_member_attribute: memberUID
     ldap_group_member_format: ${username}
 
-# Add some roles to ldap users so we test the relevent script
+# Add some roles to ldap users so we test the relevant script
 nexus_ldap_users:
   - username: developer3
     roles:

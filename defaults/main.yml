@@ -82,7 +82,7 @@ nexus_anonymous_access: false
 nexus_public_hostname: nexus.vm
 nexus_public_scheme: https
 
-# How should the role access the API for provisionning
+# How should the role access the API for provisioning
 nexus_api_hostname: localhost
 nexus_api_scheme: http
 nexus_api_validate_certs: "{{ nexus_api_scheme == 'https' }}"
@@ -119,7 +119,7 @@ nexus_email_ssl_check_server_identity_enabled: false
 nexus_email_trust_store_enabled: false
 
 nexus_branding_header: ""
-nexus_branding_footer: Last provisionned {{ ansible_date_time.iso8601 }}
+nexus_branding_footer: Last provisioned {{ ansible_date_time.iso8601 }}
 
 httpd_setup_enable: false
 httpd_server_name: "{{ nexus_public_hostname }}"
@@ -130,7 +130,7 @@ httpd_ssl_certificate_key_file: files/nexus.vm.key
 # If httpd_copy_ssl_files is false you need to provide the following variables:
 # - httpd_ssl_cert_file_location
 # - httpd_ssl_cert_key_location
-# - httpd_ssl_cert_chain_file_location <= optionnal. Leave unset if none
+# - httpd_ssl_cert_chain_file_location <= optional. Leave unset if none
 httpd_copy_ssl_files: true
 # These specifies to the vhost file where to find on the remote file system the certificates files.
 httpd_ssl_cert_file_location: /etc/pki/tls/certs/nexus.vm.crt
@@ -143,7 +143,7 @@ ldap_connections: []
 #    ldap_protocol: 'ldaps' # ldap or ldaps
 #    ldap_hostname: 'ldap.mycompany.com'
 #    ldap_port: 636
-#    ldap_use_trust_store: false  # Wether or not to use certs in nexus trust store
+#    ldap_use_trust_store: false  # Whether to use certs in nexus trust store
 #    ldap_auth: 'simple' or 'none'
 #    ldap_auth_username: 'username' (or DN)   (optional)
 #    ldap_auth_password: 'password'           (optional)
