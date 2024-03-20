@@ -10,7 +10,7 @@ import org.sonatype.nexus.cleanup.storage.CleanupPolicyStorage
 import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.IS_PRERELEASE_KEY
 import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.LAST_BLOB_UPDATED_KEY
 import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.LAST_DOWNLOADED_KEY
-import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.REGEX_KEY;
+import static org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer.REGEX_KEY
 
 
 CleanupPolicyStorage cleanupPolicyStorage = container.lookup(CleanupPolicyStorage.class.getName())

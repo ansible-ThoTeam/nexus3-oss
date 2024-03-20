@@ -28,7 +28,7 @@ def updateUser(userDef, currentResult) {
     Set<RoleIdentifier> existingRoles = user.getRoles()
     Set<RoleIdentifier> definedRoles = []
     userDef.roles.each { roleDef ->
-        RoleIdentifier role = new RoleIdentifier("default", authManager.getRole(roleDef).roleId);
+        RoleIdentifier role = new RoleIdentifier("default", authManager.getRole(roleDef).roleId)
         definedRoles.add(role)
     }
     if (! existingRoles.equals(definedRoles)) {

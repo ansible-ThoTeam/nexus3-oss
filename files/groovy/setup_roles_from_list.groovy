@@ -28,7 +28,7 @@ parsed_args.each { roleDef ->
         newRole.setRoles(roles)
         Role currentRole = authManager.getRole(roleDef.id)
         if (
-                // Role comparison does not include roles and priviliges
+                // Role comparison does not include roles and privileges
                 newRole != currentRole
                 || newRole.getRoles() != currentRole.getRoles()
                 || newRole.getPrivileges() != currentRole.getPrivileges()

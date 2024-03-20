@@ -79,7 +79,7 @@
   when: (nexus_data_dir_contents.matched == 0) and nexus_delete_default_blobstore
 
 - name: Provisioning (ldap, content selectors, blobstores, prepare privileges)
-  when: nexus_run_provisionning | default(true) | bool
+  when: nexus_run_provisioning | default(true) | bool
   block:
     - name: Create/check ldap servers
       ansible.builtin.include_tasks: setup_ldap_each.yml
@@ -129,8 +129,8 @@
   ansible.builtin.include_tasks: nexus-restore.yml
   when: nexus_restore_point is defined
 
-- name: Provisionning part 2 (cleanup policies, repositories, privileges, roles, ...)
-  when: nexus_run_provisionning | default(true) | bool
+- name: Provisioning part 2 (cleanup policies, repositories, privileges, roles, ...)
+  when: nexus_run_provisioning | default(true) | bool
   block:
     - name: Create/check cleanup policies
       ansible.builtin.include_tasks: call_script.yml
@@ -295,4 +295,4 @@
 - name: Create scheduled tasks (with backup task if relevant)
   ansible.builtin.include_tasks: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks + _nexus_backup_task | default([]) }}"
-  when: nexus_run_provisionning | default(true) | bool
+  when: nexus_run_provisioning | default(true) | bool

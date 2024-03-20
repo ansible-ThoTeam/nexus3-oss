@@ -44,7 +44,7 @@ parsed_args.booleanTaskProperties.each { key, value ->
 // Type of schedule. Defaults to cron
 type = parsed_args.get('schedule_type', 'cron')
 
-// Cron expression. Used only for cron schecule. Defaults to null
+// Cron expression. Used only for cron schedule. Defaults to null
 cron = parsed_args.get('cron', null)
 
 // Start date time. Defaults to now. Unused for manual, now and cron schedules
@@ -84,7 +84,7 @@ switch(type) {
         break
     case 'weekly':
         if (!weekly_days)
-            throw new Exception('Weekly scehedule requires a weekly_days list parameter')
+            throw new Exception('Weekly schedule requires a weekly_days list parameter')
         Set<Weekly.Weekday> weekdays = []
         weekly_days.each { day ->
             weekdays.add(Weekly.Weekday.valueOf(day))
@@ -93,7 +93,7 @@ switch(type) {
         break
     case 'monthly':
         if (!monthly_days)
-            throw new Exception('Monthly scehedule requires a weekly_days list parameter')
+            throw new Exception('Monthly schedule requires a weekly_days list parameter')
         Set<Monthly.CalendarDay> calendardays = []
         monthly_days.each { day ->
             calendardays.add(Monthly.CalendarDay.day(day as Integer))

@@ -311,7 +311,7 @@ nexus_privileges:
       - browse
   - name: wildcard1
     type: wildcard
-    description: first wilcard
+    description: first wildcard
     pattern: nexus:repository-view:yum:*
   - name: some_application
     type: application

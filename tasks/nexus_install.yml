@@ -356,7 +356,7 @@
 
 # Note: this one is mandatory until we move all our groovy scripts
 # to REST API calls. Once this is done, we will move this to an
-# optionnal setting defaulting to false as recommended by sonatype
+# optional setting defaulting to false as recommended by sonatype
 - name: Enable creating groovy scripts in nexus
   ansible.builtin.lineinfile:
     dest: "{{ nexus_default_settings_file }}"

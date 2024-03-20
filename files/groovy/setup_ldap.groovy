@@ -13,7 +13,7 @@ def ldapConfig = ldapConfigMgr.newConfiguration()
 ldapConfig.setName(parsed_args.name)
 
 // Look for existing config to update and replace the blank one created earlier if found
-boolean update = false;
+boolean update = false
 ldapConfigMgr.listLdapServerConfigurations().each {
     if (it.name == parsed_args.name) {
         ldapConfig = it
