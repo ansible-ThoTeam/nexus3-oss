@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
-import org.sonatype.nexus.security.role.RoleIdentifier;
-import org.sonatype.nexus.security.user.User;
-import org.sonatype.nexus.security.user.UserManager;
+import org.sonatype.nexus.security.role.RoleIdentifier
+import org.sonatype.nexus.security.user.User
+import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.user.UserNotFoundException
 import groovy.json.JsonSlurper
 
@@ -23,7 +23,7 @@ parsed_args.each { currentUserDef ->
         currentUserDef.roles.each { role ->
             log.info("RoleID : " + authManager.getRole(role).roleId.toString())
             Set<RoleIdentifier> existingRoles = user.getRoles()
-            RoleIdentifier newRole = new RoleIdentifier("default", authManager.getRole(role).roleId);
+            RoleIdentifier newRole = new RoleIdentifier("default", authManager.getRole(role).roleId)
             if (state == 'absent' && newRole in existingRoles) {
                 user.removeRole(newRole)
                 log.info("Role {} removed from user {}", authManager.getRole(role).roleId.toString(), user.getUserId() )
@@ -36,7 +36,7 @@ parsed_args.each { currentUserDef ->
                 scriptResults['changed'] = true
             }
         }
-        security.securitySystem.setUsersRoles(user.getUserId(), "LDAP", user.getRoles());
+        security.securitySystem.setUsersRoles(user.getUserId(), "LDAP", user.getRoles())
     } catch(UserNotFoundException e) {
         if (state == 'absent') {
             currentResult.put('status', 'absent')
