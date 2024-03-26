@@ -77,7 +77,9 @@
     mode: "0644"
   check_mode: false
   register: download_status
-  until: download_status.status_code == 200
+  until:
+    - download_status.status_code is defined
+    - download_status.status_code == 200 or download_status.status_code == 304
   retries: "{{ nexus_download_retries }}"
   delay: "{{ nexus_download_delay }}"
   notify:
@@ -449,6 +451,12 @@
     owner: root
     group: root
     mode: "0644"
+  register: download_status
+  until:
+    - download_status.status_code is defined
+    - download_status.status_code == 200 or download_status.status_code == 304
+  retries: "{{ nexus_download_retries }}"
+  delay: "{{ nexus_download_delay }}"
   with_items: "{{ nexus_plugin_urls }}"
 
 - name: Run all notified handlers now
