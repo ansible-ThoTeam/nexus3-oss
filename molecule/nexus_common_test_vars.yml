@@ -28,7 +28,6 @@ nexus_config_pypi: true
 nexus_config_docker: true
 nexus_config_raw: true
 nexus_config_rubygems: true
-nexus_config_bower: true
 nexus_config_npm: true
 nexus_config_nuget: true
 nexus_config_gitlfs: true
@@ -47,14 +46,169 @@ nexus_rut_auth_realm: false
 nexus_rut_auth_header: CUSTOM_RUT_HEADER
 
 nexus_repos_cleanup_policies:
-  - name: mvn_cleanup
-    format: maven2
-    mode:
-    notes: ""
+  - name: all_cleanup
+    format: all
+    notes: "All"
     criteria:
       lastBlobUpdated: 60
       lastDownloaded: 120
-
+  - name: mvn_cleanup
+    format: maven2
+    notes: "mvn"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+  - name: mvn_releases_cleanup
+    format: maven2
+    notes: "mvn RELEASES"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      isPrerelease: RELEASES
+  - name: mvn_prereleases_cleanup
+    format: maven2
+    notes: "mvn PRERELEASES"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      isPrerelease: PRERELEASES
+  - name: python_cleanup
+    format: pypi
+    notes: "Python pip"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: docker_cleanup
+    format: docker
+    notes: "Docker"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: raw_cleanup
+    format: raw
+    notes: "Raw"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: rubygems_cleanup
+    format: rubygems
+    notes: "Rubygems"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: npm_cleanup
+    format: npm
+    notes: ""
+    criteria:
+      regexKey: 'beta-*'
+  - name: npm_releases_cleanup
+    format: npm
+    notes: "npm RELEASES"
+    criteria:
+      regexKey: 'beta-*'
+      isPrerelease: RELEASES
+  - name: npm_prereleases_cleanup
+    format: npm
+    notes: "npm PRERELEASES"
+    criteria:
+      regexKey: 'beta-*'
+      isPrerelease: PRERELEASES
+  - name: nuget_cleanup
+    format: nuget
+    notes: "NuGet"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: gitlfs_cleanup
+    format: gitlfs
+    notes: "gitlfs"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+  - name: yum_prerelease_cleanup
+    format: yum
+    notes: "yum PRERELEASES"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+      isPrerelease: PRERELEASES
+  - name: yum_release_cleanup
+    format: yum
+    notes: "yum RELEASES"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+      isPrerelease: RELEASES
+  - name: yum_cleanup
+    format: yum
+    notes: "yum"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: apt_cleanup
+    format: apt
+    notes: "apt"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: helm_cleanup
+    format: helm
+    notes: "Helm"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: r_cleanup
+    format: r
+    notes: "r"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: conda_cleanup
+    format: conda
+    notes: "conda"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: go_cleanup
+    format: go
+    notes: "go"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: cocoapods_cleanup
+    format: cocoapods
+    notes: "cocoapods"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: conan_cleanup
+    format: conan
+    notes: "conan"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
+  - name: p2_cleanup
+    format: p2
+    notes: "p2"
+    criteria:
+      lastBlobUpdated: 60
+      lastDownloaded: 120
+      regexKey: 'beta-*'
 nexus_repos_maven_proxy:
   - name: central
     remote_url: https://repo1.maven.org/maven2/
