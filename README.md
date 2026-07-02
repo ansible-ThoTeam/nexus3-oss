@@ -1,9 +1,20 @@
-[![Build Status](https://travis-ci.com/ansible-ThoTeam/nexus3-oss.svg?branch=main)](https://app.travis-ci.com/github/ansible-ThoTeam/nexus3-oss)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/releases/latest)
-[![GitHub commits since latest release](https://img.shields.io/github/commits-since/ansible-ThoTeam/nexus3-oss/latest)](https://github.com/ansible-ThoTeam/nexus3-oss/commits/main)
 [![Ansible Role](https://img.shields.io/ansible/role/d/ansible-ThoTeam/nexus3-oss?label=Galaxy%20downloads)](https://galaxy.ansible.com/ui/standalone/roles/ansible-ThoTeam/nexus3-oss/)
 [![GitHub contributors](https://img.shields.io/github/contributors/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/graphs/contributors)
 [![GitHub licence](https://img.shields.io/github/license/ansible-ThoTeam/nexus3-oss)](https://github.com/ansible-ThoTeam/nexus3-oss/blob/main/LICENSE.md)
+
+---
+
+[![Archived](https://img.shields.io/badge/status-archived-red)](https://github.com) on 2nd of July 2026
+
+🛑 After every sunrise comes a sunset...
+
+This repo has been staled for now several dozen of months. I moved to different responsabilities, I do not operate nor manage nexus infrastructures anymore and I don't have time anymore to continue maintaining this work keeping an acceptable experience for the users. Hence this repo has been archived.
+
+Thanks to all the contributors throuhout the years. For a more recent work, I suggest you head to the excellent work carried out by @brianveltman in a new collection including work from this repo => https://github.com/CloudKrafter/nexus-ansible-collection
+
+---
+
 # Ansible Role: Nexus 3 OSS
 
 This role installs and configures Nexus Repository Manager OSS version 3.x.
