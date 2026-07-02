@@ -11,7 +11,7 @@
 
 This repo has been staled for now several dozen of months. I moved to different responsabilities, I do not operate nor manage nexus infrastructures anymore and I don't have time anymore to continue maintaining this work keeping an acceptable experience for the users. Hence this repo has been archived.
 
-Thanks to all the contributors throuhout the years. For a more recent work, I suggest you head to the excellent work carried out by @brianveltman in a new collection including work from this repo => https://github.com/CloudKrafter/nexus-ansible-collection
+Thanks to all the contributors throuhout the years. For a more recent work, I suggest you head to this new collection by [@brianveltman](https://github.com/brianveltman) / CloudKrafter including work from this repo => https://github.com/CloudKrafter/nexus-ansible-collection
 
 ---
 
